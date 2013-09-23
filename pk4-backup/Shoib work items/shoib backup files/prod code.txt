@@ -1,0 +1,45 @@
+{
+	$('body').on('mousemove', '#addEditDiv', function () {.
+
+
+    var ctId = $('table #0-1-43'); var cnParent = ctId.parent();
+    var disableDiv = "\<div style="position:absolute;left:0;right:0;top:0;bottom:0;opacity:0;"\>\<\/div\>";
+    if (!cnParent.hasClass('disabledField') && $('table #0-1-43').length > 0) {
+        ctId.attr('disabled', 'disabled');cnParent.css('position', 'relative');cnParent.prepend(disableDiv);
+        cnParent.addClass('disabledField');}
+
+    var stId = $('table #0-1-33'),stParent = stId.parent();
+    if (!stParent.hasClass('disabledField') && $('table #0-1-33').length > 0) {
+        if (stId.val() == '42872') {
+            stId.attr('disabled', 'disabled');stParent.css('position', 'relative');
+            stParent.prepend(disableDiv);
+        }
+        stParent.addClass('disabledField');
+
+
+    }});
+
+
+$('body').on('change', 'table #0-1-33', function () {
+
+    if ($(this).val() == '42872') {
+        var mandIds = ["#0-1-111", "#0-1-112", "#0-1-113", "#0-1-159", "#0-1-161", "#0-1-701-708", "#0-1-701-714", "#0-1-701-721", "#0-1-701-720", "#0-1-701-711", "#0-1-701-717"],
+            flag = true;
+        $.each(mandIds, function (k, v) {
+            if (!$('table').find(v).is(':checked')) {
+                flag = false;
+            }
+
+        });
+
+        if (flag === false) {
+            $(this).val($.data(this, 'current')); alert('Abort!! Mandatory fields are unchecked.'');return false;
+        } } 
+
+
+        });
+}
+
+{ $('body').on('mousemove', '#addEditDiv', function () { var disableDiv = '<div style=\"position:absolute;left:0;right:0;top:0;bottom:0;opacity:0;\"></div>'; if (!cnParent.hasClass('disabledField') && $('table #0-1-43').length > 0) { if (stId.val() == '42872') { stId.attr('disabled', 'disabled');stParent.css('position', 'relative'); stParent.prepend(disableDiv); } stParent.addClass('disabledField'); } });  $('body').on('change', 'table #0-1-33', function () {  if ($(this).val() == '42872') { var mandIds = ['#0-1-111', '#0-1-112', '#0-1-113', '#0-1-159', '#0-1-161', '#0-1-701-708', '#0-1-701-714', '#0-1-701-721', '#0-1-701-720', '#0-1-701-711', '#0-1-701-717'],flag = true;  $.each(mandIds, function (k, v) { if (!$('table').find(v).is(':checked')) flag = false;  });   if (flag === false) {$(this).val($.data(this, 'current')); alert('Abort!! Mandatory fields are unchecked.'');return false; }  }  }); }
+
+{ stConverted=false; var appliCbx = { '0-1-113':'virtual0-1-114', '0-1-159':'virtual0-1-160', '0-1-161':'virtual0-1-162', '0-1-163':'virtual0-1-164', '0-1-701-708':'virtual0-1-701-709', '0-1-701-714':'virtual0-1-701-715','0-1-701-711':'virtual0-1-701-712','0-1-701-717':'virtual0-1-701-718','0-1-701-723':'virtual0-1-701-724','0-1-701-726':'virtual0-1-701-728','0-1-701-731':'virtual0-1-701-733','0-1-701-732':'virtual0-1-701-734','0-1-701-740':'virtual0-1-701-742','0-1-701-741':'virtual0-1-701-743','0-1-701-746':'virtual0-1-701-748','0-1-701-747':'virtual0-1-701-749'}; $('body').on('mousemove', '#addEditDiv', function () {  var ctId = $('table #0-1-43'); if ($('table #0-1-43').length > 0) {ctId.attr('disabled', 'disabled'); } var stId = $('table #0-1-33'); if ($('table #0-1-33').length > 0) {  if (stId.val() == '42872' && stConverted===false) { stId.attr('disabled', 'disabled'); } }   $.each(appliCbx, function(k,v) { var cCbx = $('#'+k), cMutpSel = $('#'+v);	if(cCbx.length > 0)	if(cCbx.is(':checked'))	cMutpSel.removeAttr('disabled');	else cMutpSel.attr('disabled', 'true'); });   });  $('body').on('change', 'table #0-1-33', function () { stConverted = true; if ($(this).val() == '42872') { var mandIds = ['#0-1-111', '#0-1-112', '#0-1-113', '#0-1-159', '#0-1-161', '#0-1-701-708', '#0-1-701-714', '#0-1-701-721', '#0-1-701-720', '#0-1-701-711', '#0-1-701-717'],flag = true;  $.each(mandIds, function (k, v) { if (!$('table').find(v).is(':checked')) flag = false;  });   if (flag === false) {$(this).val($.data(this, 'current')); alert('Abort!! Mandatory fields are unchecked.');return false; }  }  }); $('body').on('click', '#addEditDiv table input[type=checkbox]', function() { var idVal = $(this).attr('id');  if(idVal in appliCbx) {  var id = $('#'+idVal), relatedSelect = $('#'+appliCbx[idVal]);  if(id.is(':checked')) { relatedSelect.removeAttr('disabled');  } else {  relatedSelect.attr('disabled', 'true'); } } });  }

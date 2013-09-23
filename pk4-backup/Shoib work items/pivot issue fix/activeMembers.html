@@ -1,0 +1,471 @@
+
+<html>
+<head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+    <META NAME="Generator" CONTENT="ZeroCode version V42007.10.01 (Tomcat)">
+    <link rel="stylesheet" href="/atCRM/stylesheets/entityView.css">
+    <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"> 
+    <title>Active members</title>
+</head>
+
+
+<function emitSecureUrl (text, link)>
+  <if link && link != "" && access_allowed (link)>
+    <a href="${link}">${text}</a>
+  <else>
+    ${text}
+  </if>
+</function>
+
+
+<script>
+var date_format="dd/MM/yyyy";
+var zcServletPrefix = "${servlet_prefix}";
+var src = navigator.appName.indexOf ("Microsoft") >= 0 ? "calendar" : "calendar-moz";
+// document.write ('<script src="/atCRM/javascript/' + src + '.js"></scr' +
+//                 'ipt>');
+</script>
+
+<script src="/atCRM/javascript/validate.js"></script>
+<script src="/atCRM/javascript/descriptor.js"></script>
+
+
+<script>
+var calendar;
+var isIE = document.all ? true : false;
+var descriptors;
+
+
+function buildDescriptors () {
+    var form = document.mainForm ? document.mainForm : null;
+    var descArray = new Array();
+    var checkbox;
+    
+    return descArray;
+}
+
+
+function initialize () {
+    var now = new Date ();
+    var nowYear = now.getFullYear();
+    var todaysDate = fmt (now.getMonth()+1) + "/" + fmt (now.getDate()) + "/" + nowYear;
+    var timeNow = fmt (now.getHours()) + ":" + fmt (now.getMinutes()) + ":" + fmt(now.getSeconds());
+    descriptors = buildDescriptors();
+    for (var i = 0; i < descriptors.length; i++) {
+        initializeTag (descriptors[i], todaysDate, timeNow);
+    }
+    calendar = new CalendarControl ('calendar');
+
+
+    if (listNodeProperties) {
+        for (var nodeId in listNodeProperties) {
+            setupLetterLink (nodeId);
+        }
+    }
+	if (getQueryParameter('startDate'))
+	{
+		document.getElementById('startDate').value = getQueryParameter('startDate');
+	}
+}
+
+
+var invalidFields = null;
+function validate () {
+
+    var msg = "";
+
+    // First, restore the state of any fields that were previously found invalid.
+    if (invalidFields && invalidFields.length) {
+        for (var i = 0; i < invalidFields.length; i++) {
+            invalidFields[i].className = "inputFieldClass";
+        }
+    }
+
+    // Now check all the fields.
+    invalidFields = new Array();
+    for (var i = 0, count = 0; i < descriptors.length; i++) {
+        var result = null;
+        try {
+            result = verifyValidity (descriptors[i]);
+        } catch (e) {
+            alert ("Validation exception for '" + descriptors[i].description +
+                   "' (" + descriptors[i].tagName + "): " + e.message);
+            return false;
+        }
+        if (result) {
+            count++;
+            msg += "\n<li>" + result.message + "</li>";
+            if (result.field) {
+                result.field.className = "invalidInputFieldClass";
+                invalidFields[invalidFields.length] = result.field;
+                if (count == 1) result.field.focus();
+            }
+        }
+    }
+    var errorDiv = document.getElementById ("zc__errorDiv");
+    if (msg != "") {
+        msg = "Invalid input:\n" +
+            "<ul type=1>\n" + msg + "\n</ul>Please correct these errors.";
+        if (errorDiv) {
+            errorDiv.innerHTML = msg;
+        } else {
+            alert (msg);
+        }
+        return false;
+    }
+
+    if (errorDiv && errorDiv.innerHTML != "") {
+        errorDiv.innerHTML = "";
+    }
+    return true;
+}
+
+
+function checkAll (controlObj, id) {
+    if (!controlObj) return;
+    var form = document.mainForm;
+    var isChecked = controlObj.checked ? false : true;
+    controlObj.checked = isChecked;
+    var n = form.elements.length;
+    for (var i = 0; i < n; i++) {
+        var x = form.elements [i];
+        var xName = x.name;
+        var suffix = xName.substring (xName.length - id.length - 1);
+        if (suffix == "-" + id && x.type == "checkbox" ) {
+            x.checked = isChecked;
+        }
+    }
+}
+
+
+// Construct a URL string that can be used to reload this window. Use all the parameters of the
+// current window, adding (or replacing) the given parameter with the given value.
+function windowReloadUrl (parameterName, value, dontUseSearchId) {
+    var queryStringPkt = getQueryParameterPacket();
+    if (!queryStringPkt) {
+        queryStringPkt = new Array();
+    }
+    if (!dontUseSearchId) {
+        var searchId = "${search__id}";
+        if (searchId != "") {
+            queryStringPkt["search__id"] = searchId;
+        }
+    }
+    if (parameterName) queryStringPkt [parameterName] = value;
+    return  window.location.pathname + makeQueryString (queryStringPkt);
+}
+
+
+function reloadWindow (parameterName, value, dontUseSearchId) {
+    window.location.href = windowReloadUrl (parameterName, value, dontUseSearchId);
+}
+
+
+</script>
+
+
+<script src="/atCRM/javascript/pagination.js"></script>
+<script>
+
+function doSort (pagingNodeId) {
+    var sortSelector = document.getElementById ("sortSelector__" + pagingNodeId);
+    if (!sortSelector) {
+        alert ("Huh? No sort selector!");
+        return;
+    }
+    var sortId = sortSelector.options[sortSelector.selectedIndex].value;
+    reloadWindow ("order__by__" + pagingNodeId, sortId);
+}
+
+
+var listNodeProperties = new Array();
+
+  
+listNodeProperties[401] = {
+    "recNo"      : eval ("<if activeMembers.integerSequence__listCtl.thisPage>(${activeMembers.integerSequence__listCtl.thisPage} - 1) * ${activeMembers.integerSequence__listCtl.pagingAmount}<else>0</if>"),
+    "pageNumber" : "${activeMembers.integerSequence__listCtl.thisPage}",
+    "linkCount"  : "${activeMembers.integerSequence__listCtl.pageList.size}",
+    "count"      : "${activeMembers.integerSequence__listCtl.count}",
+    "orderBy"    : "${activeMembers.integerSequence__listCtl.orderBy}"
+};
+  
+
+function showNextRecord (nodeId) {
+    var recNo = listNodeProperties[nodeId].recNo;
+    if (!recNo) {
+        recNo = 0;
+    }
+    document.write (++recNo);
+    listNodeProperties[nodeId].recNo = recNo;
+}
+
+
+function showPage (pageNumber, pagingNodeId) {
+    reloadWindow ("page__number__" + pagingNodeId, pageNumber);
+}
+
+
+function generationhref (pageNumber, pagingNodeId) {
+    return "javascript:showPage (" + pageNumber + "," + pagingNodeId + ")";
+}
+
+
+function emitPagingRibbon (pagingNodeId) {
+    var props = listNodeProperties[pagingNodeId];
+    if (props) {
+        paging (props.linkCount, props.pageNumber, 'atCRM', pagingNodeId);
+    }
+}
+
+
+function emitSortingArrow (listNodeId, columnNodeId, derefNodeId, columnNodeDesc) {
+    var props = listNodeProperties[listNodeId];
+    if (!props) return;
+    var count = parseInt (props.count);
+    if (isNaN(count) || count == 0) return;
+    var result = "";
+    var orderByField = props.orderBy;
+    var sortKeyId = derefNodeId != "" ? derefNodeId : columnNodeId;
+    var orderByParam = "order__by__" + listNodeId;
+    if (orderByField == sortKeyId ||
+        isPrefix (orderByField, sortKeyId + ",") ||
+        isSuffix (orderByField, "," + sortKeyId)) {
+        
+        result = "<a href=javascript:reloadWindow('" + orderByParam + "',-" + sortKeyId + ")>" +
+            '<img src="/atCRM/images/arrow_dwn.gif" border="0" ' +
+            'title="Sort descending, by ' + columnNodeDesc + '"></a>';
+    } else if (orderByField == ('-' + sortKeyId) ||
+        isPrefix (orderByField, '-' + sortKeyId + ",") ||
+        isSuffix (orderByField, ",-" + sortKeyId)) {
+        result = "<a href=javascript:reloadWindow('" + orderByParam + "'," + sortKeyId + ")>" +
+            '<img src="/atCRM/images/arrow_up.gif" border="0" ' +
+            'title="Sort ascending, by ' + columnNodeDesc + '"></a>';
+    }  else {
+        result = "<a href=javascript:reloadWindow('" + orderByParam + "'," + sortKeyId + ")>" +
+            '<img src="/atCRM/images/arrow_rt.gif" border="0" ' +
+            'title="Sort ascending, by ' + columnNodeDesc + '"></a>';
+    }
+    document.write (result);
+}
+
+
+function isPrefix (s1, s2) {
+    return s1.substring (0, s2.length) == s2;
+}
+
+function isSuffix (s1, s2) {
+    return s1.substring (s1.length - s2.length) == s2;
+}
+
+
+function reloadByLetter (nodeId, columnName, letter) {
+    var condKey = "condition__" + nodeId;
+    var cond = (columnName && letter) ? ("upper (" + columnName + ") like '" + letter + "%'") : "";
+    reloadWindow (condKey, cond, true);
+}
+
+
+function setupLetterLink (nodeId) {
+    var condition = getQueryParameter ("condition__" + nodeId);
+    if (!condition) return;
+    condition = unescape (condition);
+    var letters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+                   "A", "B", "C", "D", "E", "F", "G", "H", "I",
+                   "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+                   "S", "T", "U", "V", "W", "X", "Y", "Z"];
+    try {
+        // Loop through the letter links for the given node id, and if one corresponds to our
+        // current search string, highlight it.
+        for (var i = 0; i < letters.length; i++) {
+            var linkObj = document.getElementById ("letterLink__" + letters[i] + "__" + nodeId);
+            if (linkObj && linkObj.tagName.toLowerCase() == "span" &&
+                isPrefix (condition, "upper (") &&
+                isSuffix(condition, ") like '" + letters[i] + "%'")) {
+                // This link is for the current search, so it must be disabled.
+                linkObj.style.color = "red";
+                linkObj.innerHTML = '<a class="letterLinkClass" title="Records matching ' +
+                    letters[i] + '">' + letters[i] + '</a>';
+                break;
+            }
+        }
+    } catch (e) {
+        // If something bad happened, we just ignore the exception rather than show a JavaScript
+        // error, because it isn't a big deal to fail to show the one link in red anyway.
+    }
+}
+function getQueryDate()
+	{
+	var startDate = document.getElementById('startDate').value;
+	window.location.href="${servlet_prefix}/custom/loy/activeMembers.html?startDate="+startDate;
+	}
+	
+</script>
+
+
+<body class="PageBody" onload="initialize()">
+
+  <div class="pageCaption">Active members</div>
+  <table style="margin-top:5px">
+	<tr>
+		<td class="default" style="padding-left:50px">Select the date</td>
+		<td>
+			<table>
+				<tr>
+			   		<td> 
+						<input onkeypress="return IsDigit(false,false,true);" type="text" id="startDate" class="inputFieldClass"  size="10" maxlength="12"  readonly>
+					</td>
+					   	
+					<td>  
+						<img src="/atCRM/images/calendar.gif" style="cursor: pointer; cursor: hand" title="Show date chooser" onclick="calendar.attach (document.getElementById ('startDate'))">
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td colspan="2" align="center">
+			<input type="button" value="Continue" onClick="javascript:getQueryDate()">
+		</td>
+		
+	</tr>
+	</table>
+  
+  <div id="zc__errorDiv" style="color: red"></div>
+
+  <form name="mainForm" method="post" 
+   >
+
+    <input name="response__uri" type="hidden" value="">
+
+
+      <table class="listCaptionRibbon" style="margin-top: 10px" cellpadding=0 cellspacing=0>
+        <tr class="default">
+         <td align="left" class="default" width="30%">
+            <div class="SubHeading" style="display: inline; padding-right: 5px"></div>
+            
+          </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+  
+      <div style="width: 80%; margin: 0; padding: 0">
+        <!-- Wrapper div, to keep the paging ribbon at the same place across pages -->
+        <table class="ListNodeTable" width="100%"  cellspacing="0" cellpadding="0">
+          <tr>
+  
+    
+    
+            <if !display__mode || display__mode["1301"] == "text">
+              <th class="TblHead" width="30%" >
+      
+        
+                Month
+  
+              </th>
+            </if>
+    
+    
+            <if !display__mode || display__mode["501"] == "text">
+              <th class="TblHead" width="32" >
+      
+        
+                Overall Members
+  
+      
+              </th>
+            </if>
+    
+    
+            <if !display__mode || display__mode["701"] == "text">
+              <th class="TblHead" width="56" >
+      
+        
+                Active Members
+  
+
+              </th>
+            </if>
+    
+    
+            <if !display__mode || display__mode["801"] == "text">
+              <th class="TblHead" width="56" >
+      
+        
+                % Active Members
+  
+
+      
+              </th>
+            </if>
+    
+    
+          </tr>
+          <list activeMembers.integerSequence as e401>
+            <if cellClass401 == "listWhiteRow">
+            <assign cellClass401 = "listGrayRow"><else>
+            <assign cellClass401 = "listWhiteRow"></if>
+            <tr>
+  
+          
+              <if !display__mode || display__mode["1301"] == "text">
+                <td class="${cellClass401}"  >
+          
+            
+                  ${e401.getStartMonthInMMM}
+                
+                
+                </td>
+              </if>
+        
+      
+              <if !display__mode || display__mode["501"] == "text">
+                <td class="${cellClass401}" align="right" >
+          
+            
+                  ${e401.overAllMembers}
+                
+          
+                </td>
+              </if>
+        
+      
+              <if !display__mode || display__mode["701"] == "text">
+                <td class="${cellClass401}" align="right" >
+          
+            
+                  ${e401.activeMembers}
+                
+          
+                </td>
+              </if>
+        
+      
+              <if !display__mode || display__mode["801"] == "text">
+                <td class="${cellClass401}" align="right" >
+          
+            
+                  ${e401.percntOfActivMembers}%
+                
+          
+                </td>
+              </if>
+        
+      
+            </tr>
+          </list>
+        </table>
+      </div>
+      <div class="pagingRibbonDiv" align="right" style="width: 100%">
+        <script>emitPagingRibbon (401);</script>
+      </div>
+
+  
+  </form>
+</body>
+</html>
+
+
+
+<!-- zeroCode ::: V42007.10.01 (Tomcat) ::: betterSample/listTemplate.html ::: 14-Jun-2011 00:46:42 PDT ::: -->
+

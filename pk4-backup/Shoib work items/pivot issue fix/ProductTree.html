@@ -1,0 +1,398 @@
+<html>
+<head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+    <META NAME="Generator" CONTENT="ZeroCode version V42007.10.01 (Tomcat)">
+    <link rel="stylesheet" href="/atCRM/stylesheets/entityView.css">	
+    <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"> 
+    <title>Product</title>
+</head>
+
+<!-- New Folder Tree: Start Added By Venkatesh -->
+	<script type="text/javascript" src="/atCRM/javascript/JSON/simpletreemenu.js"></script>
+	<script type="text/javascript">
+		var height1=top.getScreenSize('height');
+		var parentHTMLObj=window.top;
+		var htmlFrameObj=parentHTMLObj.document.getElementById('htmlIframe');
+		var headerHeight=((13*height1)/100);
+		htmlFrameObj.height=(height1-headerHeight)+"px";
+
+		function disableThisLink(action){
+			if(action=='expand'){
+				document.getElementById('expandOrCollapseDiv').innerHTML="<b>Expand All</b> | <a href=\"javascript:ddtreemenu.flatten('treemenu1', 'contact')\" onclick=\"disableThisLink('collapse');\" style='font-family:Arial, Helvetica; font-size:10px;'>Collapse All</a>";
+			}else if(action=='collapse'){
+				document.getElementById('expandOrCollapseDiv').innerHTML="<a href=\"javascript:ddtreemenu.flatten('treemenu1', 'expand')\" onclick=\"disableThisLink('expand');\" style='font-family:Arial, Helvetica; font-size:10px;'>Expand All</a> | <b>Collapse All</b>";
+			}else{
+				document.getElementById('expandOrCollapseDiv').innerHTML="<a href=\"javascript:ddtreemenu.flatten('treemenu1', 'expand')\" onclick=\"disableThisLink('expand');\" style='font-family:Arial, Helvetica; font-size:10px;'>Expand All</a> | <a href=\"javascript:ddtreemenu.flatten('treemenu1', 'contact')\" onclick=\"disableThisLink('collapse');\" style='font-family:Arial, Helvetica; font-size:10px;'>Collapse All</a>";
+			}
+		}
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/simpletree.css" />
+<!-- New Folder Tree: End Added By Venkatesh -->
+
+
+<assign displayString = ext__.evaluateUdm ("custom/find/getOrgPref","custom/demo/Products4Category")>
+
+<function emitLangString (text)><transform blankLineRemover>
+<assign strlist = displayString.getOrgPref.findstring.findEntries ("base_string", text)>
+<if strlist>
+<assign counter="0">
+<list strlist as l1>
+<if counter == "0">
+<assign counter="1">
+${l1.disp_string}
+</if>
+</list>
+<else>
+${text}
+</if>
+</transform></function>
+
+
+
+<function emitSecureUrl (text, link)>
+  <if link && link != "" && access_allowed (link)>
+    <a href="${link}">${text}</a>
+  <else>
+    ${text}
+  </if>
+</function>
+
+
+<script>
+var date_format="dd/MM/yyyy";
+var zcServletPrefix = "${servlet_prefix}";
+var src = navigator.appName.indexOf ("Microsoft") >= 0 ? "calendar" : "calendar-moz";
+document.write ('<script src="/atCRM/javascript/' + src + '.js"></scr' +
+                'ipt>');
+</script>
+
+<script src="/atCRM/javascript/validate.js"></script>
+<script src="/atCRM/javascript/descriptor.js"></script>
+
+
+<script>
+var calendar;
+var isIE = document.all ? true : false;
+var descriptors;
+
+
+function buildDescriptors () {
+    var form = document.mainForm ? document.mainForm : null;
+    var descArray = new Array();
+    var checkbox;
+    
+    return descArray;
+}
+
+
+function initialize () {
+    var now = new Date ();
+    var nowYear = now.getFullYear();
+    var todaysDate = fmt (now.getMonth()+1) + "/" + fmt (now.getDate()) + "/" + nowYear;
+    var timeNow = fmt (now.getHours()) + ":" + fmt (now.getMinutes()) + ":" + fmt(now.getSeconds());
+    descriptors = buildDescriptors();
+    for (var i = 0; i < descriptors.length; i++) {
+        initializeTag (descriptors[i], todaysDate, timeNow);
+    }
+    calendar = new CalendarControl ('calendar');
+
+
+    if (listNodeProperties) {
+        for (var nodeId in listNodeProperties) {
+            setupLetterLink (nodeId);
+        }
+    }
+
+}
+
+
+var invalidFields = null;
+function validate () {
+
+    var msg = "";
+
+    // First, restore the state of any fields that were previously found invalid.
+    if (invalidFields && invalidFields.length) {
+        for (var i = 0; i < invalidFields.length; i++) {
+            invalidFields[i].className = "inputFieldClass";
+        }
+    }
+
+    // Now check all the fields.
+    invalidFields = new Array();
+    for (var i = 0, count = 0; i < descriptors.length; i++) {
+        var result = null;
+        try {
+            result = verifyValidity (descriptors[i]);
+        } catch (e) {
+            alert ("Validation exception for '" + descriptors[i].description +
+                   "' (" + descriptors[i].tagName + "): " + e.message);
+            return false;
+        }
+        if (result) {
+            count++;
+            msg += "\n<li>" + result.message + "</li>";
+            if (result.field) {
+                result.field.className = "invalidInputFieldClass";
+                invalidFields[invalidFields.length] = result.field;
+                if (count == 1) result.field.focus();
+            }
+        }
+    }
+    var errorDiv = document.getElementById ("zc__errorDiv");
+    if (msg != "") {
+        msg = "Invalid input:\n" +
+            "<ul type=1>\n" + msg + "\n</ul>Please correct these errors.";
+        if (errorDiv) {
+            errorDiv.innerHTML = msg;
+        } else {
+            alert (msg);
+        }
+        return false;
+    }
+
+    if (errorDiv && errorDiv.innerHTML != "") {
+        errorDiv.innerHTML = "";
+    }
+    return true;
+}
+
+
+function checkAll (controlObj, id) {
+    if (!controlObj) return;
+    var form = document.mainForm;
+    var isChecked = controlObj.checked ? false : true;
+    controlObj.checked = isChecked;
+    var n = form.elements.length;
+    for (var i = 0; i < n; i++) {
+        var x = form.elements [i];
+        var xName = x.name;
+        var suffix = xName.substring (xName.length - id.length - 1);
+        if (suffix == "-" + id && x.type == "checkbox" ) {
+            x.checked = isChecked;
+        }
+    }
+}
+
+
+// Construct a URL string that can be used to reload this window. Use all the parameters of the
+// current window, adding (or replacing) the given parameter with the given value.
+function windowReloadUrl (parameterName, value, dontUseSearchId) {
+    var queryStringPkt = getQueryParameterPacket();
+    if (!queryStringPkt) {
+        queryStringPkt = new Array();
+    }
+    if (!dontUseSearchId) {
+        var searchId = "${search__id}";
+        if (searchId != "") {
+            queryStringPkt["search__id"] = searchId;
+        }
+    }
+    if (parameterName) queryStringPkt [parameterName] = value;
+    return  window.location.pathname + makeQueryString (queryStringPkt);
+}
+
+
+function reloadWindow (parameterName, value, dontUseSearchId) {
+    window.location.href = windowReloadUrl (parameterName, value, dontUseSearchId);
+}
+
+
+</script>
+
+
+<script src="/atCRM/javascript/pagination.js"></script>
+<script>
+
+function doSort (pagingNodeId) {
+    var sortSelector = document.getElementById ("sortSelector__" + pagingNodeId);
+    if (!sortSelector) {
+        alert ("Huh? No sort selector!");
+        return;
+    }
+    var sortId = sortSelector.options[sortSelector.selectedIndex].value;
+    reloadWindow ("order__by__" + pagingNodeId, sortId);
+}
+
+
+var listNodeProperties = new Array();
+
+  
+listNodeProperties[1] = {
+    "recNo"      : eval ("<if product.parentcategory__listCtl.thisPage>(${product.parentcategory__listCtl.thisPage} - 1) * ${product.parentcategory__listCtl.pagingAmount}<else>0</if>"),
+    "pageNumber" : "${product.parentcategory__listCtl.thisPage}",
+    "linkCount"  : "${product.parentcategory__listCtl.pageList.size}",
+    "count"      : "${product.parentcategory__listCtl.count}",
+    "orderBy"    : "${product.parentcategory__listCtl.orderBy}"
+};
+  
+
+function showNextRecord (nodeId) {
+    var recNo = listNodeProperties[nodeId].recNo;
+    if (!recNo) {
+        recNo = 0;
+    }
+    document.write (++recNo);
+    listNodeProperties[nodeId].recNo = recNo;
+}
+
+
+function showPage (pageNumber, pagingNodeId) {
+    reloadWindow ("page__number__" + pagingNodeId, pageNumber);
+}
+
+
+function generationhref (pageNumber, pagingNodeId) {
+    return "javascript:showPage (" + pageNumber + "," + pagingNodeId + ")";
+}
+
+
+function emitPagingRibbon (pagingNodeId) {
+    var props = listNodeProperties[pagingNodeId];
+    if (props) {
+        paging (props.linkCount, props.pageNumber, 'atCRM', pagingNodeId);
+    }
+}
+
+
+function emitSortingArrow (listNodeId, columnNodeId, derefNodeId, columnNodeDesc) {
+    var props = listNodeProperties[listNodeId];
+    if (!props) return;
+    var count = parseInt (props.count);
+    if (isNaN(count) || count == 0) return;
+    var result = "";
+    var orderByField = props.orderBy;
+    var sortKeyId = derefNodeId != "" ? derefNodeId : columnNodeId;
+    var orderByParam = "order__by__" + listNodeId;
+    if (orderByField == sortKeyId ||
+        isPrefix (orderByField, sortKeyId + ",") ||
+        isSuffix (orderByField, "," + sortKeyId)) {
+        
+        result = "<a href=javascript:reloadWindow('" + orderByParam + "',-" + sortKeyId + ")>" +
+            '<img src="/atCRM/images/arrow_dwn.gif" border="0" ' +
+            'title="Sort descending, by ' + columnNodeDesc + '"></a>';
+    } else if (orderByField == ('-' + sortKeyId) ||
+        isPrefix (orderByField, '-' + sortKeyId + ",") ||
+        isSuffix (orderByField, ",-" + sortKeyId)) {
+        result = "<a href=javascript:reloadWindow('" + orderByParam + "'," + sortKeyId + ")>" +
+            '<img src="/atCRM/images/arrow_up.gif" border="0" ' +
+            'title="Sort ascending, by ' + columnNodeDesc + '"></a>';
+    }  else {
+        result = "<a href=javascript:reloadWindow('" + orderByParam + "'," + sortKeyId + ")>" +
+            '<img src="/atCRM/images/arrow_rt.gif" border="0" ' +
+            'title="Sort ascending, by ' + columnNodeDesc + '"></a>';
+    }
+    document.write (result);
+}
+
+
+function isPrefix (s1, s2) {
+    return s1.substring (0, s2.length) == s2;
+}
+
+function isSuffix (s1, s2) {
+    return s1.substring (s1.length - s2.length) == s2;
+}
+
+
+function reloadByLetter (nodeId, columnName, letter) {
+    var condKey = "condition__" + nodeId;
+    var cond = (columnName && letter) ? ("upper (" + columnName + ") like '" + letter + "%'") : "";
+    reloadWindow (condKey, cond, true);
+}
+
+
+function setupLetterLink (nodeId) {
+    var condition = getQueryParameter ("condition__" + nodeId);
+    if (!condition) return;
+    condition = unescape (condition);
+    var letters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+                   "A", "B", "C", "D", "E", "F", "G", "H", "I",
+                   "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+                   "S", "T", "U", "V", "W", "X", "Y", "Z"];
+    try {
+        // Loop through the letter links for the given node id, and if one corresponds to our
+        // current search string, highlight it.
+        for (var i = 0; i < letters.length; i++) {
+            var linkObj = document.getElementById ("letterLink__" + letters[i] + "__" + nodeId);
+            if (linkObj && linkObj.tagName.toLowerCase() == "span" &&
+                isPrefix (condition, "upper (") &&
+                isSuffix(condition, ") like '" + letters[i] + "%'")) {
+                // This link is for the current search, so it must be disabled.
+                linkObj.style.color = "red";
+                linkObj.innerHTML = '<a class="letterLinkClass" title="Records matching ' +
+                    letters[i] + '">' + letters[i] + '</a>';
+                break;
+            }
+        }
+    } catch (e) {
+        // If something bad happened, we just ignore the exception rather than show a JavaScript
+        // error, because it isn't a big deal to fail to show the one link in red anyway.
+    }
+}
+</script>
+
+
+<body class="PageBody" onload="initialize()">
+
+<form name="mainForm">
+	<input name="response__uri" type="hidden" value="">
+	<table border="0" cellpadding="5" cellspacing="0" width="100%">
+		<tr valign="top" height="30px">
+			<td  width="25%"  align="center" style="border-right:2px solid #B7B7B7;">
+				 <span style="font-size:14px;"> <call emitLangString ("Product Category")> </span>
+			</td>
+			<td rowspan="3" >
+				<script type="text/javascript">
+					window.top.openLoadingDiv();
+				</script>
+				<iframe name="folderFrame" id="folderFrame" src="${servlet_prefix}/custom/demo/Products4Category.html" width="100%" height="600px" frameborder="0"></iframe>
+			</td>
+		</tr>
+		<tr valign="top" height="20px">
+			<td  width="25%"  align="right" style="border-right:2px solid #B7B7B7;">
+				<a style="text-decoration:none;"  target="folderFrame" href="${servlet_prefix}/custom/advancedAdd/ProductCategory.html?backto=${servlet_prefix}/custom/demo/ProductTree.html" onclick="javascript:window.top.openLoadingDiv();"><span ID="tabIcons_Add" title='Add <call emitLangString ("Category")>' class="tabIconNormalViewClass">Add Category</span></a>
+			</td>
+		</tr>
+		<tr valign="top" height="600px">
+			<td  nowrap align="left" class="default" style="border-right:2px solid #B7B7B7;">
+				<div style="width:100%; height:100%; float:left;" class="folderTree">
+					<span id="expandOrCollapseDiv"><a href="javascript:ddtreemenu.flatten('treemenu1', 'expand')" onclick="disableThisLink('expand');" style="font-family:Arial, Helvetica; font-size:10px;">Expand All</a> | <a href="javascript:ddtreemenu.flatten('treemenu1', 'contact')" onclick="disableThisLink('collapse');" style="font-family:Arial, Helvetica; font-size:10px;">Collapse All</a></span>
+					<div style="width:100%; height:96%; overflow:auto;">
+					<ul id="treemenu1" class="treeview" style="padding-left:0px;margin-left:0px;">
+						<li><a href="${servlet_prefix}/custom/demo/Products4Category.html" target="folderFrame" onclick="javascript:window.top.openLoadingDiv();"><img src='/atCRM/stylesheets/JSON/img/folder.gif' alt='' style='border:0'/>&nbsp;Product Category</a>
+							<ul rel="open">
+							  <list product.parentcategory as topLevelNode>
+									<call showCategoryTree (topLevelNode, topLevelNode.childcategory, 1)>
+							  </list>
+
+								<function showCategoryTree (subtreeRoot, nodesInTree, depth)>
+								<li><a target="folderFrame" title="${subtreeRoot.name}" href="${servlet_prefix}/custom/demo/Products4Category.html?CatId=${subtreeRoot.category_id}" onclick="javascript:window.top.openLoadingDiv();"><img src='/atCRM/stylesheets/JSON/img/folder.gif' alt='' style='border:0'/>&nbsp;${subtreeRoot.name}</a>
+									<ul>
+										<list nodesInTree as aNode>
+											<if aNode.parent_category == subtreeRoot.category_id>
+												<call showCategoryTree (aNode, nodesInTree, (depth + 1))>
+											</if>
+										</list>
+									</ul>
+								</li>
+								</function>
+							</ul>
+						</li>
+					</ul>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+</form>
+</body>
+<script type="text/javascript">
+ddtreemenu.createTree("treemenu1", false)
+</script>  
+</html>
+
+
+<!-- zeroCode ::: V42007.10.01 (Tomcat) ::: betterSample/customTemplate.html ::: 01-Jul-2008 03:39:51 PDT ::: -->
+

@@ -1,0 +1,1112 @@
+.headermenu
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma;
+    color: #000000;
+    text-decoration: none
+}
+
+.headermenu A
+{
+    FONT-SIZE: 8pt;
+    COLOR: #000000;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.headermenu A:hover
+{
+    FONT-SIZE: 8pt;
+    COLOR: #E36500;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.linkButton
+{
+    BACKGROUND-COLOR: white;
+    FONT-WEIGHT:bold;
+    CURSOR: hand;
+    FONT-FAMILY:  Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt;
+    TEXT-ALIGN: left;
+    TEXT-DECORATION: none;
+    FLOAT:NONE;
+ }
+
+.textAreaClass
+{
+    BACKGROUND-COLOR: white;
+    BORDER-BOTTOM: 0pt;
+    BORDER-LEFT: 0pt;
+    BORDER-RIGHT: 0pt;
+    BORDER-TOP: 0pt;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt;
+    PADDING-RIGHT: 0pt;
+    TEXT-ALIGN: left
+}
+
+.titlename
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma;
+    color: #0072FF;
+    Font-weight: normal;
+    text-decoration: none
+}
+
+.tabnormal
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma;
+    color: #000000;
+    text-decoration: none
+}
+
+.tabnormal A
+{
+    FONT-SIZE: 8pt;
+    COLOR: #000000;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.tabnormal A:hover
+{
+    FONT-SIZE: 8pt;
+    COLOR: #8E8D87;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.tabhighlight
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma;
+    color: #FFFFFF;
+    text-decoration: none
+}
+
+.tabhighlight A
+{
+    FONT-SIZE: 8pt;
+    COLOR: #FFFFFF;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.tabhighlight A:hover
+{
+    FONT-SIZE: 8pt;
+    COLOR: #C4C4C4;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.tabsublink
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma;
+    color: #FFFFFF;
+    text-decoration: none
+}
+
+.tabsublink A
+{
+    FONT-SIZE: 8pt;
+    COLOR: #FFFFFF;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.tabsublink A:hover
+{
+    FONT-SIZE: 8pt;
+    COLOR: #C4C4C4;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.calendarTableClass
+{
+    BACKGROUND: #eeeeee;
+    FONT-FAMILY: verdana, tahoma;
+    FONT-SIZE: 9px;
+    FONT-WEIGHT: bold
+}
+
+.calendarTableCaptionClass
+{
+    BACKGROUND: #eeeeee;
+    FONT-FAMILY: verdana, tahoma;
+    FONT-SIZE: 9px;
+    FONT-WEIGHT: bold
+}
+
+.arrowClass
+{
+    BACKGROUND: #cccccc
+}
+
+.listTableRow
+{
+    BACKGROUND-COLOR: #eeeeee;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt
+}
+
+.CellCont
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt
+}
+
+.CellContBlue
+{
+    BACKGROUND-COLOR: white;
+    COLOR: blue;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt
+}
+
+.ModHead
+{
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial, Times New Roman;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: normal;
+    TEXT-ALIGN: left;
+}
+
+.ModHead1
+{
+    COLOR: #001870;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 12pt;
+    FONT-WEIGHT: bold;
+    TEXT-ALIGN: left;
+    TEXT-TRANSFORM: uppercase
+}
+
+.ModHead2
+{
+    COLOR: #001870;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 12pt;
+    FONT-WEIGHT: bold;
+    TEXT-ALIGN: left;
+}
+
+.ModHeadNew
+{
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial, Times New Roman;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+    TEXT-ALIGN: left;
+}
+
+.TblCont
+{
+    BACKGROUND-COLOR: #9db5d1;
+    BORDER-BOTTOM: 0pt;
+    BORDER-LEFT: 0pt;
+    BORDER-RIGHT: 0pt;
+    BORDER-TOP: 0pt;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt;
+    PADDING-RIGHT: 0pt;
+    TEXT-ALIGN: left
+}
+
+.TblContVertical
+{
+	background-color:#FFFFFF ;
+	font: 11px tahoma,verdana,arial;
+	padding-top:2px;
+	padding-left:2px;
+	padding-bottom:2px;
+	padding-right:2px;	
+	FONT-SIZE: 8pt;
+    TEXT-ALIGN: left
+}
+
+.TblHeadVertical
+{
+    BACKGROUND-COLOR: #FFFFFF;
+     COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt;
+}
+
+.TblHeadVerticalNoCol
+{
+     COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt;
+}
+
+.PageBody
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana
+    FONT-SIZE: 8pt
+}
+
+BODY
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt;
+    overflow: auto;
+    width: 100%;zz
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.Treecellcontent
+{
+    BACKGROUND-COLOR: #fff0e9;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt
+}
+
+.TreeTblHead
+{
+    BACKGROUND-COLOR: #fff0e9;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+    TEXT-TRANSFORM: capitalize
+}
+
+.listTemplateTableClass
+{
+    BACKGROUND-COLOR: #fff0e9;
+    BORDER-BOTTOM-WIDTH: 1px;
+    BORDER-COLLAPSE: collapse;
+    BORDER-LEFT-WIDTH: 1px;
+    BORDER-RIGHT-WIDTH: 1px;
+    BORDER-TOP-WIDTH: 1px
+}
+
+.browseByTemplateTableClass
+{
+    BACKGROUND-COLOR: #fff0e9;
+    BORDER-BOTTOM-WIDTH: 1px;
+    BORDER-COLLAPSE: collapse;
+    BORDER-LEFT-WIDTH: 1px;
+    BORDER-RIGHT-WIDTH: 1px;
+    BORDER-TOP-WIDTH: 1px
+}
+
+.browseByTemplateTableRowClass
+{
+    BACKGROUND-COLOR: #eee0e9
+}
+
+.browseByLabelClass
+{
+    FONT-WEIGHT: bold
+}
+
+.LoginBody
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana
+    FONT-SIZE: 8pt
+}
+
+.BannerWelcomeCell
+{
+    COLOR: black;
+    FONT-FAMILY: Verdana;
+    FONT-SIZE: 12pt;
+    FONT_WEIGHT: bold
+}
+
+.MenuFrameBody
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana
+    FONT-SIZE: 8pt;
+}
+
+.MenuFrameMenuItem
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+}
+
+.ZeroCodeList
+{
+    BACKGROUND-COLOR: #F3F3F3;
+    COLOR: black;
+    padding-top:2px;
+    padding-left:2px;
+    padding-bottom:2px;
+    padding-right:2px;
+}
+
+.ZeroCodeMatrix
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+}
+
+.ZeroCodeMatrixLabel
+{
+    COLOR: black;
+    FONT-FAMILY: Arial, Verdana, Tahoma;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+}
+
+.ZeroCodeMatrixCell
+{
+    BACKGROUND-COLOR: white;
+    BORDER-BOTTOM: 0pt;
+    BORDER-LEFT: 0pt;
+    BORDER-RIGHT: 0pt;
+    BORDER-TOP: 0pt;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt;
+    PADDING-RIGHT: 0pt;
+}
+
+.listGrayRow
+{
+    BACKGROUND-COLOR: white;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 11px;
+}
+
+.listGrayRow2
+{
+    BACKGROUND-COLOR: #E2E1DA;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 11px;
+}
+
+.banner
+{
+     FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 11px;
+}
+
+.buttonClass
+{
+    BACKGROUND-COLOR: #aacccc;
+    BORDER-BOTTOM: 2pt outset;
+    BORDER-LEFT: 2pt outset;
+    BORDER-RIGHT: 2pt outset;
+    BORDER-TOP: 2pt outset;
+    CURSOR: hand;
+    FONT-SIZE: 8pt
+}
+
+.RibbonCellCont
+{
+    BACKGROUND-COLOR: #faebd7;
+    COLOR: black;
+}
+
+.nonNullableItemLabel
+{
+    COLOR: black;
+}
+
+.ClickLinkPage
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+    COLOR:red
+}
+
+.LinkPage
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold;
+    COLOR:blue
+}
+
+.LinkPage1
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 8pt;
+    COLOR:blue
+}
+
+.PageText
+{
+    FONT-FAMILY: Arial;
+    FONT-SIZE: 10pt;
+}
+
+.indentCell
+{
+    BACKGROUND-COLOR: white;
+}
+
+.pagingRibbonBox {
+    font-size: 7pt;
+    font-family: Tahoma, Verdana, Arial;
+}
+
+.pagingRibbonGoButton {
+    font-size: 7pt;
+    font-family: Tahoma, Verdana, Arial;
+}
+
+.smallFontElement {
+    FONT-FAMILY: Arial, Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+}
+
+.inputFieldClass {
+    /* For Mozilla and other CSS-compliant browsers: */
+    background-color: #F7FAFF;
+    /* For IE: */
+    background-color: expression((this!=document.activeElement) ? "#F7FAFF" : "#DAD2FF");
+    border: 1px dotted #999999;
+    font-size: 8pt;
+    font-family: Tahoma, Verdana, Arial;
+}
+
+.inputFieldClass:focus {
+    background-color: #DAD2FF;
+    font-size: 8pt;
+    font-family: Tahoma, Verdana, Arial;
+    border: 1px dotted #999999;
+}
+
+.invalidInputFieldClass {
+    background-color: #ffccee;
+    border: 1px dotted red;
+    font-size: 8pt;
+    font-family: Tahoma, Verdana, Arial;
+}
+
+div#zc__errorDiv {
+    background-color: #ddddee;
+}
+
+.listWhiteRow 
+{    
+	background-color: white;
+	FONT-FAMILY: Verdana, Tahoma;
+         FONT-SIZE: 11px;
+         padding-top:2px;
+	padding-left:2px;
+	padding-bottom:2px;
+	padding-right:2px;
+}
+
+.TblHead
+{
+	font: 11px tahoma,verdana,arial;
+	font-weight:bold;
+	background-color: rgb(192,192,192);
+	color:rgb(0,0,0);
+    padding-top:2px;
+	padding-left:2px;
+	padding-bottom:2px;
+	padding-right:2px;	
+}
+
+.TableHead
+{
+	font: 14px tahoma,verdana,arial;
+	font-weight:bold;
+	background-color: rgb(192,192,192);
+	color:rgb(0,0,0);
+    padding-top:2px;
+	padding-left:2px;
+	padding-bottom:2px;
+	padding-right:2px;
+}
+
+.TblHeadPickList
+{
+	font: 11px tahoma,verdana,arial;
+	font-weight:bold;
+	background-color:#76756D;
+	color:rgb(0,0,0);
+    padding-top:2px;
+	padding-left:2px;
+	padding-bottom:2px;
+	padding-right:2px;
+}
+
+.cssWAMstandardButton
+{
+	cursor: hand;
+	background-color: #F4F4F4;
+	font: 8pt Tahoma;
+	width: 75px;
+}
+
+.tblHeader{
+	font: 11px tahoma,verdana,arial;
+	background-color: rgb(192,192,192);
+	color:rgb(0,0,0);
+}
+
+.tableheader
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma;
+    color: #FFFFFF;
+    Font-weight: bold;
+    text-decoration: none
+}
+
+.tableheader A
+{
+    FONT-SIZE: 8pt;
+    COLOR: #FFFFFF;
+    FONT-FAMILY: Tahoma;
+    Font-weight: bold;
+    text-decoration: none
+}
+
+.tableheader A:hover
+{
+    FONT-SIZE: 8pt;
+    COLOR: #C4C4C4;
+    FONT-FAMILY: Tahoma;
+    Font-weight: bold;
+    text-decoration: none
+}
+
+.Content2highlight
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma;
+    color: #000000;
+    Font-weight: normal;
+    text-decoration: none
+}
+
+.tabSelect{
+	FONT-FAMILY: Tahoma;
+	FONT-SIZE: 8pt;
+	FONT-WEIGHT: bold;
+    text-decoration:none;
+    cursor: hand;
+    background-color: "black";
+    width: 75px;
+    height:20px;	
+	color:"white";
+    text-align:center;
+    text-valign:bottom;
+}
+
+.tabDeselect{
+	FONT-FAMILY: Tahoma;
+	FONT-SIZE: 8pt;
+	FONT-WEIGHT: normal;
+    text-decoration:none;
+    cursor: hand;
+    width: 75px;
+    height:20px;
+    color:"white";
+    text-align:center;
+    text-valign:bottom;
+}
+
+.tabTr{
+	cursor: hand;
+	background-color: rgb(192,192,192);
+	font: 8pt Tahoma;
+	width: 75px;
+	height:20px;
+	text-decoration:none;
+	color:"white";
+	text-align:left;
+	text-valign:bottom;
+	font-weight:bold
+}
+
+.LableBold{
+	FONT-SIZE: 8pt;
+	FONT-FAMILY: Tahoma;
+	color: #8E8D87;
+	Font-weight: bold;
+	text-decoration: none
+}
+
+.buttons
+{
+    FONT-SIZE: 9pt;
+    FONT-FAMILY: Tahoma;
+    color: #000000;
+    Font-weight: normal;
+    text-decoration: none
+}
+
+.buttons A
+{
+    FONT-SIZE: 9pt;
+    COLOR: #000000;
+    FONT-FAMILY: Tahoma;
+    Font-weight: bold;
+    text-decoration: none
+}
+
+.buttons A:hover
+{
+    FONT-SIZE: 9pt;
+    COLOR: #FF8E33;
+    FONT-FAMILY: Tahoma;
+    Font-weight: bold;
+    text-decoration: none
+}
+
+.Items
+{
+	font: 12px tahoma,verdana,arial;
+	color:rgb(0,0,0);
+         padding-top:2px;
+	padding-left:2px;
+	padding-bottom:2px;
+	padding-right:2px;
+}
+
+.tabnormal1
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma;
+    color: #000000;
+    text-decoration: none
+}
+
+.TblContVertical1
+{
+	background-color:#FFFFFF ;
+	font: 11px tahoma,verdana,arial;	
+	FONT-SIZE: 8pt;
+    TEXT-ALIGN: left
+}
+
+.Pageheader
+{
+    COLOR: black;
+    FONT-FAMILY: tahoma,verdana,Times New Roman;
+    FONT-SIZE: 15pt;
+    FONT-WEIGHT: normal;
+    TEXT-ALIGN: left;    
+}
+
+.Darkyellow
+{
+	background-color:brown ;
+}
+
+.TblHead2
+{
+	font: 11px tahoma,verdana,arial;
+	font-weight:bold;
+    color: #FFFFFF
+    background-color:76756D;
+    padding-top:2px;
+	padding-left:2px;
+	padding-bottom:2px;
+	padding-right:2px;	
+}
+
+
+
+.clsContent
+{
+	font-family:Tahoma,verdana,Arial;
+	background-color: white;
+	color:black;
+	font-size:9pt;
+}
+
+.clsContent2
+{
+	font-family:Tahoma,verdana,Arial;
+	background-color:#EAEAEA;
+	color:black;
+	font-size:9pt;
+}
+
+.clsHeader
+{
+	font-family:verdana,Arial;
+	color:white;
+	font-size:10pt;
+	font-weight:bold;
+	background-color:#76756D;
+}
+
+.forCalander{
+	FONT-SIZE: 9pt;
+	FONT-FAMILY: Tahoma;
+	color: black;
+	Font-weight: bold;
+	text-decoration: none
+}
+
+.cssWAMstandardButton1
+{
+    cursor: pointer;
+	cursor: hand;
+	background-color: #F4F4F4;
+	font: 8pt Tahoma;
+	width: 50px;
+}
+
+.cssWAMstandardButtonLogin
+{
+    cursor: pointer;
+	cursor: hand;
+	background-color: #F4F4F4;
+	font: 9pt Tahoma;
+	width: 50px;
+    height:23px;
+}
+
+.bodyWithBorderDashboard
+{
+    border-top: 0px solid;
+    border-left: 0px solid;
+    border-bottom:0px solid;
+    border-right: 1px solid;
+    border-color: black;
+    margin: 0;
+    font-family:verdana,Arial;
+    background-color:#E2E1DA;
+    color:black;
+    font-size:8pt;
+}
+
+.Items1
+{
+	font: 12px tahoma,verdana,arial;
+	color:rgb(0,0,0);
+    background-color:#E2E1DA;
+    padding-top:2px;
+	padding-left:2px;
+	padding-bottom:2px;
+	padding-right:2px;
+    FONT-SIZE: 13pt;
+}
+
+.CellCont2
+{
+    BACKGROUND-COLOR: black;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt
+}
+
+.tabsublink1
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma;
+    color: #FFFFFF;
+    background-color: White;
+    text-decoration: none
+}
+
+.tabsublink1 A
+{
+    FONT-SIZE: 8pt;
+    COLOR: #FFFFFF;
+    background-color: White;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.tabsublink1 A:hover
+{
+    FONT-SIZE: 8pt;
+    COLOR: #C4C4C4;
+    FONT-FAMILY: Tahoma;
+    text-decoration: none
+}
+
+.CellCont3
+{
+    BACKGROUND-COLOR: #E2E1DA;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma, Arial;
+    FONT-SIZE: 8pt
+}
+
+.PageBody1
+{
+    BACKGROUND-COLOR: White;
+    BACKGROUND: /sbe/images/pl46.jpg
+    COLOR: black;
+    FONT-FAMILY: Verdana
+    FONT-SIZE: 8pt
+}
+
+.listWhiteRow1
+{    
+	background-color: white;
+	FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 11px;
+    border-spacing: 0px;
+    padding: 1px;
+}
+
+
+.listGrayRow1
+{
+    BACKGROUND-COLOR:#E2E1DA;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 11px;
+    color: #000000;
+	border-spacing: 0px;
+	padding: 3px;
+}
+
+.folderName
+{
+    FONT-SIZE: 12px;
+    FONT-FAMILY: Tahoma;
+    color: black;
+    Font-weight: normal;
+	padding-top:2px;
+    padding-left:2px;
+    padding-bottom:2px;
+    padding-right:2px;
+}
+
+.messageBodyClass {
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 8pt;
+    position: fixed; bottom: 5;
+    background: white;
+    padding: 4px;
+    OVERFLOW:  auto;
+    HEIGHT: 65%;
+    WIDTH: 100%;
+    border-color: #bbbbbb;
+    border-left: 1px solid;
+    border-top:  0px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+}
+
+.ViewMailPageBody
+{
+    BACKGROUND-COLOR: #717069;
+    COLOR: black;
+    FONT-FAMILY: Verdana
+    FONT-SIZE: 8pt
+}
+
+.ItemLabel {
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 8pt;
+    font-weight: normal;
+	text-align:left
+}
+
+.default 
+{
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 8pt;
+}
+
+.defaultSmall
+{
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 10pt;
+}
+
+
+.tooltipTable 
+{
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 7pt;
+}
+
+.tooltipTable tr td 
+{
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 7pt;
+}
+
+a 
+{
+    text-color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    cursor: hand;
+}
+
+a:visited 
+{
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.labelWithHelp 
+{
+    cursor: help;
+    text-decoration: none;
+    border-bottom: 1px dotted black;
+}
+
+.SectHead
+{
+	font: 12px tahoma,verdana,arial;
+	font-weight:bold;
+	border-color: #336699;
+	border-bottom: 1px solid;
+	color:rgb(0,0,0);
+    padding-top:1px;
+	padding-left:1px;
+	padding-bottom:1px;
+	padding-right:1px;	
+}
+
+.quickFindResultsTable 
+{
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 8pt;
+    border-collapse: collapse;
+    border: 1px 1px 0px 1px solid #cccccc;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.quickFindResultsTable tr td 
+{
+    border: 1px solid #cccccc;
+}
+
+.quickFindResultsTable tr th 
+{
+    background-color: #cccccc;
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 8pt;
+}
+
+.quickFindResultsBody 
+{
+    padding: 5px;
+}
+
+div.PageCaption 
+{
+    font-size: 17px;
+    font-weight: bold;
+    font-family: Tahoma, Verdana, Arial;
+    padding-bottom: 8px;
+}
+
+div.SubHeading 
+{
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Tahoma, Verdana, Arial;
+    padding-bottom: 5px;
+    padding-top: 8px;
+}
+
+.addBottomBar
+{
+	background-color: rgb(192,192,192);
+}
+
+.ListNuggetHeader	{
+	background-color: #e9e9e6;
+	padding: 2px 5px 2px 5px; 
+	color: Black; 
+	width: 100%; 
+}
+
+.ListNuggetBody		{ 
+	padding-top: 2px;  
+	padding-left: 4px; 
+	padding-bottom: 2px; 
+	font-family: Verdana, Arial, Helvetica;  
+	background-color: #e9e9e6; 
+	cursor:default; 
+	color: Black ;
+}
+
+
+.GrayBackground {
+     background-color: #E5E5E5;
+   }
+
+
+.whiteBackground {
+    background-color: #FFFFFF;
+   }
+
+   .TblHead
+{
+    BACKGROUND-COLOR: #83ACCA;
+    COLOR: black;
+    FONT-FAMILY:  Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+    TEXT-ALIGN: center;
+	border-right: 1px solid white;
+}
+
+.tableStructure
+{
+	WIDTH:100%;
+	PADDING: 0;
+	border:1px solid Red;
+	background-color: #65090;
+}
+
+.defaultHeader
+{
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 13pt;
+}
+
+.cssWAMstandardButton2
+{
+    cursor: pointer;
+	cursor: hand;
+	background-color: #F4F4F4;
+	font: 8pt Tahoma;
+	width: 100px;
+}
+
+.inputsearch {
+  background: white url('/atCRM/images/magglass.png') no-repeat 3px 3px;
+  padding-left: 17px ;
+  padding-top: 3px ;
+  padding-bottom: 3px ;
+  height: 19px;
+  color: gray;
+  border: 1px solid #7F9DB9;
+  FONT-FAMILY:  Verdana, Tahoma;
+  FONT-SIZE: 8pt;
+  }
+

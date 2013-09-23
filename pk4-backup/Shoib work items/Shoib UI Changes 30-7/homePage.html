@@ -1,0 +1,1953 @@
+<comment>
+Kishore, 19 Sep. 2012
+-  Changed pageLoad and pageLoadBox mechanism to show div till data loads - now hiding div in closeLoadingDiv function
+
+</comment>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="generator" content="zeroCode version v42007.10.01 (tomcat)">
+	<meta name="Author" content="Vinutha Iyengar">
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
+	<meta name="viewport" content="height=device-height, user-scalable=no" />
+	<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width" />
+<if homePage.user.theme>
+	<assign  theme=homePage.user.theme__deref.derefValue>
+<else>
+	<assign  theme="green">
+</if>
+
+<switch theme>
+	<case "green">
+		<assign jQTheme="Jquery_Green">
+	<break>
+	<case "SilverBlue">
+	<case "blueGreen">
+	<case "boldBlue">
+		<assign jQTheme="Jquery_Blue">
+	<break>
+	<case "purple">
+		<assign jQTheme="Jquery_Purple">	
+	<break>
+</switch>
+
+	<link rel="shortcut icon" href="/favicon.ico"/>
+    <link rel="shortcut icon" href="/atCRM/images/impelWebsite_images/favicon.ico" type="image/x-icon">
+
+	
+<comment>  bootstrap.min.css causes the borders on the cells in the list line. Needs fixing.  NM 19 Sep 2012  </comment>
+
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/jquery/jquery.alerts.css"/>    
+	<link rel="stylesheet" href="/atCRM/stylesheets/style_h/ui.core.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/style_h/ui.tabs.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/style_h/ui.theme.css"/>
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/jquery.dataTables.css"/>
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/pivot/subnav.css"/>
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/pivot/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/pivot/pivot.css"/>
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/TableTools.css"/>
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/TableTools_JUI.css"/>
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/style_h/jquery-ui-1.8.21.custom.css"/>
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/jquery/jquery.impromptu.css">
+	<link rel="stylesheet" href="/atCRM/stylesheets/eDash.css"/>
+	<!-- <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/jquery.css"/> -->
+	<link rel="stylesheet" href="/atCRM/stylesheets/smartSuggest.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/main.css?rn=4"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/quickAdd.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/flexigrid.css?rn=4"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/jquery/stylish-select.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/fly.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/Jquery_Green/jquery.ui.all.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/general.css?rn=3"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/common.css?rn=2"/>
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/jquery/jquery.window.css">
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/k_pivot.css"/>
+	
+
+<style>
+.typeBasedButton a li {
+/*   background: #2f55c9;
+   background: -webkit-gradient(linear, left top, left bottom, from(#46adfc), to(#2f55c9));
+   background: -webkit-linear-gradient(top, #46adfc, #2f55c9);
+   background: -moz-linear-gradient(top, #46adfc, #2f55c9);
+   background: -ms-linear-gradient(top, #46adfc, #2f55c9);
+   background: -o-linear-gradient(top, #46adfc, #2f55c9);*/
+   padding: 12px 12px;
+   -webkit-border-radius: 0px;
+   -moz-border-radius: 0px;
+   border-radius: 0px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: #000000;
+   font-size: 12px;
+   font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif;
+   text-decoration: none;
+   vertical-align: middle;
+   width: 80%;
+   float: left;
+   border-bottom: 1px solid #DFDFDF;
+   display:block;
+   }
+.typeBasedButton:hover {
+   border-top-color: #357828;
+   background: #357828;
+   color: #cccccc;
+   }
+.typeBasedButton:active {
+   border-top-color: #2152a6;
+   background: #2152a6;
+   }
+  #loader_Img{display: none;z-index: 9999;position: fixed;}
+</style>
+
+<!-- added by venkatesh dp for impelchat -->
+<link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/impelChat.css"/>
+
+	<title>Impel</title>
+    <style>
+	body{ font-size: 12px;font-family:Tahoma,Verdana,Helvetica,sans-serif;}
+	#pageLoad        
+	{
+		color: white;
+		text-align: center;
+		position: absolute;
+		top: 35%;
+		left: 0px;
+		width: 100%;
+		height: 1px;
+		overflow: visible;
+		visibility: visible;
+	}
+	 
+	#pageLoadbox    
+	{
+		font-family:Tahoma,Verdana,Helvetica,sans-serif;
+		margin-left: -125px;
+		position: absolute;
+		top: -85px;
+		left: 50%;
+		width: 250px;
+		height: 100px;
+		visibility: visible;
+	}
+    #buttonDiv a:hover {color: #FF0000;}
+	</style>
+</head>
+
+<script>
+if (top != window) {
+    top.location.href = window.location.href;
+}
+
+var src = navigator.appName.indexOf ("Microsoft") >= 0 ? "calendar" : "calendar-moz";
+document.write ('<script src="/atCRM/javascript/' + src + '.js"></scr' + 'ipt>');
+var date_format="dd/MM/yyyy";
+var isIE = document.all ? true : false;
+var zcServletPrefix = "${servlet_prefix}";
+var lastShownDiv;
+var mainUrl;
+var gridAddress;
+var pageWidth;
+var pageWidth1;
+var entityDiv;
+var mnuItmId;
+var subMnuItmId;
+var dropMnuIndex;
+var session_login = "${homePage.user.User_Id}";
+var session_login_name = "${homePage.user.LoginName}";
+var clean_login = session_login_name.replace(/[^\w\s]/gi, '');
+
+var milisec=0;
+var seconds=10; 
+var G_jsonresponse_Contact;
+var G_jsonresponse_Account;
+var G_jsonresponse_Opportunity;
+var G_quickAddResponse_Contact;
+var G_Contact_data;
+var G_Account_data;
+var G_Opportunity_data;
+var G_from_layout=false;
+var G_EntityName;
+var G_allIdsForMassStatus;
+var G_userName = "${homePage.getUserName.Contact__deref.derefValue}";
+var stzo = "${homePage.serverTImeZone}";  //server time-zone offset; 
+if ("${homePage.getUserTimeZoneOffset}")
+	var utzo  = "${homePage.getUserTimeZoneOffset}";
+else
+	var utzo  = "${homePage.getOrgTimeZoneOffset}";
+	 //user time-zone offset; 
+var timeDiffInMin = utzo * 60;
+var srvrtimeDiffInMin = stzo * 60;
+var timeZoneOffset = -new Date().getTimezoneOffset();
+var type_based_layouts_supported_flag = "${homePage.checkFlagValue}"; 
+var G_curr_view_obj;
+var G_curr_view_id;
+var G_curr_view_name;
+var detailDataTdWidth;
+var xhr_request="";
+
+var utzToShow = "<font size='1pt'>"+'(GMT '+utzo.replace('.',':')+')'+"</font>";
+
+callAsync=true;
+
+var flg_firstLoad = true;  //Flag used to check page loaded for first time or not. 
+var flg_pageLoad=true;
+
+
+var emailProcessor=0;  //flag used for email downloading
+var emailClientRefresh=0;	//flag used for email client to refresh the right panel 
+var mailFolderInbox = "${homePage.getMailFolder.user_email_folder_id}";  //this will have folder id for inbox
+var rp = "${homePage.getSiteRoot.value}";
+var un = "${homePage.user.LoginName}";
+var templateType;
+var flagsJSON;
+var currentRecIdsJSON;
+var g_curr_obj = "";
+var callJSON;
+
+function getUTC(dateTime,offset)
+{
+	  // create Date object for current location
+    d = new Date(dateTime);
+   
+    // convert to msec
+    // add local time zone offset
+    // get UTC time in msec
+    utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+   
+    // create new Date object for different city
+    // using supplied offset
+    nd = new Date(utc + (3600000*offset));
+
+	// return time as a string
+    return nd.toLocaleString();
+}
+function getValues(variableName,varHistoryData)
+{
+	for(i=0;i<varHistoryData.length;i++)
+	{
+		varDataArray = varHistoryData[i].split("=");
+		L_label = varDataArray[0];
+		L_data  = varDataArray[1];
+		if(L_label == variableName)
+		{
+			return L_data;
+			break;
+		}
+	}
+}
+
+function hideSmartSuggests()
+{
+	$("#smartSuggestDiv").hide();
+	$("#multiSelectSugg").hide();
+	$("#smartFill").hide();
+	$("#mappedSmartFill").hide();
+	$("#smartSuggestFill").hide();
+	$("#mappedSmartFillWiz").hide();
+	$("#autosuggestUsers").hide();
+}
+function pageload(hash) 
+{
+	hideSmartSuggests();
+	if(hash)
+	{
+		var L_hashArr = hash.split("?");
+		var L_historyGrp  = L_hashArr[0];
+		var L_historyData = L_hashArr[1].split("&");
+		if(L_historyGrp == "mainMenu")
+		{
+			if(flg_firstLoad)
+			{   
+				L_menuId = getValues("menuId",L_historyData);
+				var JSONURL="${servlet_prefix}/custom/JSON/banner.html";
+				$.getJSON(JSONURL,'',function(json){setupMainMenuUrlHistory(json,hash);});
+				flg_firstLoad=false;
+			}
+			else
+			{   console.log("Second");
+				L_menuId = getValues("menuId",L_historyData);
+				checkMenuOrder(L_menuId);
+			}
+		}
+		else if(L_historyGrp == "thirdLevelMenu" )
+		{
+			L_mnuId =  getValues("mnuId",L_historyData);
+			L_uri =  getValues("uri",L_historyData);
+			L_fromMnu =  getValues("drop",L_historyData);
+			L_dropIndex =  getValues("dropIndex",L_historyData);
+		
+			if(flg_firstLoad)
+			{
+				var JSONURL="${servlet_prefix}/custom/JSON/banner.html";
+				$.getJSON(JSONURL,'',function(json){setupMainMenuUrlHistory(json,hash);});
+				flg_firstLoad=false;
+			}
+			else
+			{
+				//L_url= getValue("url",L_historyData);
+				L_url =  getValues("uri",L_historyData);
+		/*		if((L_url.indexOf('Contact.htm')>0)||(L_url.indexOf('Account.htm')>0)||(L_url.indexOf('Opportunity.htm')>0))
+				{
+					getAddDataFrmCache(L_url);
+					return false;
+				}
+				else*/
+				{
+				L_mnuId_para = L_mnuId.split("_");
+				L_mnuId_para  = L_mnuId_para[1];
+				$.ajax
+				({
+					type: "GET",
+					contentType: "application/x-www-form-urlencoded",
+					url: "${servlet_prefix}/custom/JSON/system/getParentMnuItmId.htm?subMnuId="+L_mnuId_para,
+					dataType: "json",
+					sync:true,
+					success: function(data)
+					{
+						L_data=eval(data);
+						L_id = L_data.mnuItmIdname[0].id;
+						showMainMenuHistory("mnuList_"+L_id,true);	
+					}
+				 });
+			
+				L_uri = L_uri.replace(/~/g,"?");
+				L_uri = L_uri.replace(/@/g,"&");
+				L_uri = L_uri.replace(/\*/g,"=");
+				L_fromMnu =  getValues("drop",L_historyData);
+				L_dropIndex =  getValues("dropIndex",L_historyData);
+				L_Reload =  getValues("reload",L_historyData);
+				showSubMenu(L_mnuId,L_uri,L_fromMnu,L_dropIndex,L_Reload) ;
+				}
+			}
+		}
+		else if(L_historyGrp == "subMenu" )
+		{
+			L_mnuId =  getValues("mnuId",L_historyData);
+			L_Reload =  getValues("reload",L_historyData);
+			if(flg_firstLoad)
+			{
+				var JSONURL="${servlet_prefix}/custom/JSON/banner.html";
+				$.getJSON(JSONURL,'',function(json){setupMainMenuUrlHistory(json,hash);});
+				flg_firstLoad=false;
+			}
+			else
+			{
+				L_url	=  getValues("url",L_historyData);
+				if((L_url.indexOf('Contact.htm')>0)||(L_url.indexOf('Account.htm')>0)||(L_url.indexOf('Opportunity.htm')>0))
+				{
+					getAddDataFrmCache(L_url);
+					return false;
+				}
+				else
+				{
+					L_mnuId_para = L_mnuId.split("_");
+					L_mnuId_para  = L_mnuId_para[1];
+					$.ajax
+					({
+						type: "GET",
+						contentType: "application/x-www-form-urlencoded",
+						url: "${servlet_prefix}/custom/JSON/system/getParentMnuItmId.htm?subMnuId="+L_mnuId_para,
+						dataType: "json",
+						sync:true,
+						success: function(data)
+						{
+							L_data=eval(data);
+							L_id = L_data.mnuItmIdname[0].id;
+							showMainMenuHistory("mnuList_"+L_id,true);	
+						}
+					 });
+					 showSubMenu(L_mnuId,'','','',L_Reload) ;
+				 }
+			}
+		}
+		else if(L_historyGrp == "setUpPageParameters")
+		{
+			if(flg_firstLoad)
+			{
+				var JSONURL="${servlet_prefix}/custom/JSON/banner.html";
+				$.getJSON(JSONURL,'',function(json){setupMainMenuUrlHistory(json,hash);});
+				flg_firstLoad=false;
+			}
+			else
+			{
+				L_mnuId =  getValues("shownSubMenu",L_historyData);
+				L_url	=  getValues("url",L_historyData);
+
+				if (L_mnuId != "null" )
+				{
+					L_mnuId_para = L_mnuId.split("_");
+					L_mnuId_para  = L_mnuId_para[1];
+					$.ajax
+					({
+						type: "GET",
+						contentType: "application/x-www-form-urlencoded",
+						url: "/atCRM/custom/JSON/system/getParentMnuItmId.htm?subMnuId="+L_mnuId_para,
+						dataType: "json",
+						sync:true,
+						success: function(data)
+						{
+							L_data=eval(data);
+							L_id = L_data.mnuItmIdname[0].id;
+							
+							showMainMenuHistory("mnuList_"+L_id,true);	
+						 }
+					 });
+					showViewEdit(L_mnuId) 
+					viewUrl = getValues("viewUrl",L_historyData);
+					viewUrl = viewUrl.replace(/~/g,"?");
+					viewUrl = viewUrl.replace(/@/g,"&");
+					viewUrl = viewUrl.replace(/\*/g,"=");
+					L_entityDiv = getValues("entityDiv",L_historyData);
+					setUpPageParameters(viewUrl,L_entityDiv)
+				}
+				else
+				{
+					viewUrl = getValues("viewUrl",L_historyData);
+					viewUrl = viewUrl.replace(/~/g,"?");
+					viewUrl = viewUrl.replace(/@/g,"&");
+					viewUrl = viewUrl.replace(/\*/g,"=");
+					setUpPageParameters(viewUrl)
+				}
+			}			
+		}
+	}
+	else
+	{
+		if(flg_firstLoad)
+		{   
+			reloadPage();
+		}
+	}
+	if(flg_pageLoad)
+	{
+		getJSONResponse();
+		showNotification();
+	}
+}
+
+function callCenterProcess()
+{
+    /*This part is for knowlarity integration added by Dony*/
+	var cti_provider="${homePage.user.cti_provider}";
+	var agentNum="${homePage.user.pbx_extension}";
+	var numLen=parseInt(agentNum.toString().length);
+	if(numLen > 10) {
+		if(agentNum.toString()[0]=='0') agentNum = agentNum.toString().replace('0','+91');
+		else agentNum=agentNum;
+	}
+	else if(numLen == 10) agentNum = '+91'+agentNum.toString();
+	var userId=session_login;
+	var browser= navigator.userAgent;
+	if(cti_provider)
+	{
+	   if(cti_provider == "knowlarity")
+		 {
+				   var socket = io.connect('http://api.knowlarity.com:8088/');
+				   var api_key="${homePage.getUserFlag.flag_value}";                                 //userLevel apikey
+				   if(api_key == "") api_key="${homePage.getflagValueIfNoUsrId.flag_value}";         //orgLevel apikey
+				   socket.emit('feedapp', api_key+'_'+agentNum);
+				   socket.on('message', function(msg) {
+				   msg = msg.replace(/\'/g, '\"');
+				   var respData=JSON.parse(msg);
+				   var dispNumber=respData.dispnumber;var primPhone=respData.caller_id;var extension=respData.extension;
+				   var callid=respData.callid;var destination=respData.destination;var action=respData.action;var inbound_event=respData.event;
+				   dispNumber=dispNumber.toString().replace('+','');primPhone=primPhone.toString().replace('+','');destination=destination.toString().replace('+','');
+				   var postData='0-1-3= knowlarity-Inbound call&0-1-6=1&0-1-385='+escape(dispNumber)+'&0-1-386='+escape(extension)+'&0-1-387='+escape(callid)+'&0-1-388='+escape(destination)+'&0-1-389='+escape(primPhone)+'&0-1-390='+escape(action)+'&0-1-391='+escape(inbound_event);
+				   var url2Hit="${servlet_prefix}/custom/JSON/add/Activity/editAction";
+					$.ajax({
+					  	type: "POST",
+						contentType: "application/x-www-form-urlencoded",
+						url:url2Hit,
+						data: postData,
+						success: function (data)
+						 {
+						   data=JSON.parse(data);
+						   var actvtyId = data.addedId;
+							/*Open window page and show the detail*/
+									$.window.prepare({
+									   dock: 'bottom'       // change the dock direction: 'left', 'right', 'top', 'bottom'
+									});
+									var templtIcon="";
+								   // var divContent="<iframe src="+callUrl+" height='100%' width='100%' border='0'/>";
+									var divContent="<div id='windowDiv' style='height:100%;width:100%'></div><input type='hidden' id='blink_index_input' value='0'/>"
+									var windowHeight=$(window).height();
+									var windowWidth=$(window).width();
+									var jqryWinHt=windowHeight-40;
+									var jqryWinWdth=windowWidth-120;
+									var titleHTML;var intervalId;var windowId;var isMinimize='0';var pageTitle;
+									//var blinkIndex=0;
+									browser = browser.toLowerCase();
+									//prompt("Browser",browser)
+									if(browser.indexOf("firefox")>-1) 
+									titleHTML="<span style='width:80%' id='title_text'></span><span style='width:20%;color:red;text-decoration:blink;margin-left:70%;'>Inbound Call</span>";
+									else{
+									titleHTML="<span style='width:80%' id='title_text'></span><span style='width:20%;float:right;color:red;'><span id='spn_inbound'>****Inbound Call****</span></span>";
+									}
+									$.window({
+											showModal: false,
+											modalOpacity: 0.5,
+											//icon: templtIcon,
+											//title: titleHTML,
+											width: jqryWinWdth,
+											height: jqryWinHt,
+											maxWidth: 870,
+											maxHeight: 570,
+											resizable: false,
+											content: divContent,
+											onShow: function(wnd) {
+												 windowId = wnd.getWindowId();
+												 var windowElem=document.getElementById(windowId);
+												 windowElem.getElementsByClassName("window_title_text")[0].innerHTML=titleHTML;
+												 if(browser.indexOf("firefox")<0){
+												   intervalId=window.setInterval(function(){
+													 blinkIndex=document.getElementById("blink_index_input").value;
+													 if(blinkIndex == "0") {
+														if(document.getElementById('spn_inbound')){
+														document.getElementById('spn_inbound').style.visibility="hidden";
+														document.getElementById("blink_index_input").value ="1";
+														}
+														}
+													 else {
+														 if(document.getElementById('spn_inbound')){
+														 document.getElementById('spn_inbound').style.visibility="visible";
+														 document.getElementById("blink_index_input").value ="0";
+														 }
+														 }
+													 },500);
+												 }
+												var phone_num=primPhone.replace("91","0");
+												var url2Hit="${servlet_prefix}/custom/JSON/view/contact360View.htm?pri_phone="+phone_num;
+												$.ajax({
+												  type: "GET",
+												  contentType: "application/x-www-form-urlencoded",
+												  url:url2Hit,
+												  dataType: "json",
+												  success: function (data)
+													{
+													   var contactId= data.PrimaryKeyValue;
+													   pageTitle= data.PageCaption;
+													   document.getElementById("title_text").innerHTML=pageTitle;
+													   //titleHTML=pageTitle;
+													   if(contactId !='') {
+															handleJson360ViewData(data,'windowDiv');
+															QaddAdd4Activity(actvtyId,userId,'','');
+															if($("#viewPageTopMenuDiv table")) $("#viewPageTopMenuDiv table").hide();
+													   }
+													   else 
+													   {
+														  var mainDiv=document.getElementById("windowDiv");
+														  mainDiv.innerHTML="<div id='errorDiv' style='width:100%;color:red;text-align:center;'>Contact detail not available.</div>";
+														  QaddAdd4Activity(actvtyId,userId,'','');
+													   }
+													}
+												});	
+											 },
+											 onClose: function(wnd) { 
+												  if(intervalId) window.clearInterval(intervalId);
+											  },
+											  afterMinimize: function(wnd) { // a callback function after window minimized
+												  isMinimize='1';
+											   },
+											 afterCascade: function(wnd) { // a callback function after window cascaded
+												  if(isMinimize == '1'){
+													var windowObj=document.getElementById(wnd.getWindowId());
+													windowObj.getElementsByClassName("window_title_text")[0].innerHTML=titleHTML;
+													document.getElementById("title_text").innerHTML=pageTitle;
+												  }
+											  }
+										  });  /**** jquery window function ends *****/
+									 }
+								 });           /*****Activity add function ends  ******/
+							});                /*****Socket connection function ends here*****/
+		 }                             /*****Knowlarity integration codes end here*****/
+		else if(cti_provider == "ozonetel")
+		  {
+			 var userId=session_login;
+             var userName = session_login_name;
+			 /***Function defined in pageLevelFns.js it will show the popup for contact and activity**/
+			 processOzoneTel(userId,userName);
+		  }
+	 }
+}
+
+function showNotification()
+{
+	$.ajax({
+		type: "GET",
+		contentType: "application/x-www-form-urlencoded",
+		url: "${servlet_prefix}/custom/Messages/notificationMsgs.htm",
+		dataType: "json",
+		success: function (data)
+		{
+			//alert(data.notificationTitle);
+		}	
+	});
+}
+
+function reloadPage()
+{
+	var JSONURL="${servlet_prefix}/custom/JSON/banner.html";
+	$.getJSON(JSONURL,'',function(json){setupMainMenuUrl(json);});
+}
+
+function initialize() {
+	var isBrowser = navigator.appVersion;
+	if (isBrowser.indexOf('MSIE') == -1) {
+		document.getElementById("pageContent").style.display="block";
+	}
+	updateSession();
+	checkReminder();            //Added by Venkatesh for reminder
+	checkForExpiryDate();       //Added by Venkatesh for license expiry
+	loadScreen(); 
+	callCenterProcess();       /**Based on cti_provider open soket for call , by Dony**/  
+	var imgWidth = $("#orgLogo").width();
+	var imgheight = $("#orgLogo").height();
+	if(imgWidth>180)document.getElementById('orgLogo').style.width="180px";
+	if(imgheight>45)document.getElementById('orgLogo').style.height="47px";
+
+	mLeft=(document.documentElement.clientWidth-100)/2;
+	document.getElementById('loadingDiv').style.left=mLeft+"px";
+	mLeft=(document.documentElement.clientWidth-450)/2;
+	document.getElementById('commonErrorDiv').style.left=mLeft+"px";
+	detailDataTdWidth=window.document.body.clientWidth-100;
+
+	/** Start: Mail Downloads */
+	if ("${homePage.orgDetails.pop_imap_server}"!='' && "${homePage.orgDetails.pop_imap_port}"!='' && "${homePage.orgDetails.ssl_enabled}"!='' && "${homePage.orgDetails.client_mail_protocol}"!='' && "${homePage.user.MailLogin_Name}"!='' && "${homePage.user.MailPassword}"!='')
+	{
+		if(mailFolderInbox != "" && rp != "" && un != "") {
+			setTimeout("callEmailProcessor('"+mailFolderInbox+"','"+rp+"','"+un+"')", 5000);		
+		}
+	}
+	
+	try {
+		jQuery.history.init(pageload);
+		jQuery("a[@rel='history']").click(function()
+		{
+			// 
+			var hash = this.href;
+			hash = hash.replace(/^.*#/, '');
+			// moves to a new page. 
+			// pageload is called at once. 
+			$j.history.load(hash);
+		});		
+	}
+	catch (e) {
+	
+	}
+  
+   loadScripts();              //Load the js files, By  Dony
+   $.ajax({
+	   type: "GET",
+	   contentType: "application/x-www-form-urlencoded",
+	   url: "${servlet_prefix}/custom/JSON/admin/getFlagsData.htm",
+	   dataType: "json",
+	   success : function(data)
+	   {
+	     var disbl_layout_org= "";
+	     var enbl_layout_usr = "";
+		 flagsJSON = data["flag_data"];
+	     var flagData = data["flag_data"];
+		 /********Get orgflags data*********/
+		 var orgFlgData = flagData[0]["org_flags"];
+	     for(var i=0;i<orgFlgData.length;i++)
+		 {
+		   var orgflgName  = orgFlgData[i]["name"];
+		   var orgflgValue = orgFlgData[i]["flag_value"];
+		   if(orgflgName == "disable_layout"){
+		     disbl_layout_org=orgflgValue;
+		   }
+		   
+		 }
+		 /***********Get user enable_layout flag*************/
+		 var usrFlgData = flagData[1]["user_flags"];
+	     for(var i=0;i<usrFlgData.length;i++)
+		 {
+		   var usrflgName  = usrFlgData[i]["name"];
+		   var usrflgValue = usrFlgData[i]["value"];
+		   if(usrflgName == "enable_layout")
+		   {
+		     enbl_layout_usr=usrflgValue;
+		   }
+		 }
+		 /******Set showLayout flag based on the org and user flags*****/
+		 if(enbl_layout_usr != "" && enbl_layout_usr == "0") document.getElementById("input_layout").value = "false";
+		 else if(enbl_layout_usr != "" && enbl_layout_usr == "1") document.getElementById("input_layout").value = "true";
+		 else if(disbl_layout_org != "" && disbl_layout_org == "1") document.getElementById("input_layout").value = "false";
+		 else if(disbl_layout_org != "" && disbl_layout_org == "0") document.getElementById("input_layout").value = "true";
+		 else document.getElementById("input_layout").value = "true";
+	   }
+	 });
+
+	$.ajax ({
+		type: "GET",
+		url: "${servlet_prefix}/custom/ki1/enttDet.html",
+		success: function(data) {
+			parent.g_curr_obj = JSON.parse(data);
+		},
+		/* error: function(err) {
+			alert ("Error in Entity Detail Data: ", err); 
+		}*/
+	 });
+
+
+	  /*****Set load img position******/
+	  var divObj = document.getElementById("detailDataDiv");
+	  var position=$(divObj).offset();
+	  var topPos=position.top;
+	  var mainWidth=$(window).width();
+	  //var mainHeight=divObj.offsetHeight;
+	  var mainHeight=$(window).height();
+	  var reqWidth = parseInt(mainWidth)/2;reqWidth +=10;
+      var reqHt  = parseInt(mainHeight)/2;
+	  $("#loader_Img").offset({top:reqHt,left:reqWidth});
+      currentRecIdsJSON =JSON.parse('{"acct_id":"","cont_id":"","state_id":"","brch_id":"","prod_id":"","prod_qty":"","rep_id":""}');
+} 
+
+function updateSession()
+{
+	$.ajax({
+	   type: "GET",
+       contentType: "application/x-www-form-urlencoded",
+	   async: false,
+	   url: "${servlet_prefix}/custom/system/createTerrSessionVariable.html"
+	 });
+}
+
+function setUpPageParameters(uri,objId,fromMnu,subItmId,reloadFlag,listPopup,dropIndex,isCancel,recId)
+{
+	L_frm_lz=false;
+	try{
+		L_frm_value=window.location.hash;
+		if(L_frm_value.indexOf('LZValue')>0){
+			L_frm_lz= true;
+		}
+	}
+	catch(e){
+		L_frm_lz = false;
+	}
+
+    if(recId !="undefined"&& recId &&(isCancel==true)) //&&(uri.indexOf('/add/Opportunity.htm')>0)
+	{
+	  uri=uri+"?id="+recId;
+	}
+	if(L_frm_lz == false){ 
+	 var param=uri.substr(uri.indexOf("?"),uri.indexOf("="));
+		if(((G_from_layout!=true)&&((uri.indexOf('/add/Contact.htm')>0)||(uri.indexOf('/add/Account.htm')>0)||(uri.indexOf('/add/Opportunity.htm')>0))&&(param.length<1)&&(isCancel!=true)&&(uri.indexOf('?Account_Id')<0)&&(uri.indexOf('?Contact_id')<0)&&(uri.indexOf('?Opportunity_Id')<0)))
+		{
+			return;
+		}
+	}
+	$("#commonPopupDiv").dialog("close");
+	hideSmartSuggests();
+	if(subItmId){subMnuItmId=subItmId;}
+	if(fromMnu){dropMnuIndex=dropIndex;}
+
+	if(document.getElementById('htmlIframe'))
+	document.getElementById('htmlIframe').src="";
+	
+	dataDiv=document.getElementById('detailDataDiv');
+
+	/*  Change by Kishore to deal with .htm files  */
+	if (uri.indexOf('.html') > 0) {
+		htmlIndex = -1;
+	} else if (uri.indexOf('.htm') > 0) { 
+		uriArray = uri.split('.htm');
+		htmlIndex = uri.indexOf('.htm');
+	} else if (uri.indexOf('.json') > 0) {
+		uriArray = uri.split('.json');
+		htmlIndex = uri.indexOf('.json');
+	}
+	//openLoadingDiv();
+
+	var isFunction=uri.indexOf('ret_fun:'); 
+	hideFullContent();
+	if(isFunction>0)
+	{
+	    if($("#dyna_html").html() !="") $("#dyna_html").html("");
+		var fun2Call=uri.substring(isFunction+8); 
+		if(document.getElementById('htmlIframe'))document.getElementById('htmlIframe').style.display="none";
+		if(document.getElementById(entityDiv))document.getElementById(entityDiv).style.display="none";
+		dispatch(fun2Call);
+		closeLoadingDiv();
+	}
+	else if(htmlIndex > 0)
+	{ 
+	    if($("#dyna_html").html() !="") $("#dyna_html").html("");
+		hideLeftPannel(false);
+		retrieveJSONdata(uri,objId,fromMnu,true,reloadFlag,listPopup);
+	}
+	else
+	{
+	   if($("#dyna_html").html() !="") $("#dyna_html").html("");
+		hideLeftPannel(true);
+		showHtmlIframe(uri,objId);
+	}
+	if(uri.indexOf('invoices_wizard.htm')>0)
+	{
+		hideLeftPannel(true);
+		document.getElementById('detailDataTd').style.width = '100%';
+	}
+
+  <if !homePage.user.hint_question>
+		<if !homePage.getOrgFlagToHideLinks.org_flag_id>
+		alert("You have not chosen a hint question and answer. Please choose it now.");
+		hintQuestion("${homePage.user.LoginName}");
+		</if>
+	</if>
+	if (flg_firstLoad && timeZoneOffset != timeDiffInMin)
+	{
+		timeZoneDiff(timeZoneOffset,timeDiffInMin);
+	}
+}
+
+function showHtmlIframe(uri,objId)
+{
+	if(document.getElementById(entityDiv))
+	{
+		document.getElementById(entityDiv).style.display="none";
+	}
+	var htmlFile;
+	if(uri.indexOf("?") != -1)
+	{
+		var fileUri=uri.split("?");
+        var splitUri=fileUri[0].split("/");
+		var uriSplitLastIndex=parseInt(splitUri.length)-1;
+		htmlFile=splitUri[uriSplitLastIndex];
+	}
+	else{
+		var splitUri=uri.split("/");
+		var uriSplitLastIndex=parseInt(splitUri.length)-1;
+		htmlFile=splitUri[uriSplitLastIndex];
+	}
+	if(htmlFile.indexOf("runReportJ1.html") != -1 || htmlFile.indexOf("editReport.html") != -1)//|| htmlFile.indexOf("changePageLayout.html") != -1
+	{ 
+        // prompt("runReport---",$("#dyna_html").html());
+		// if($("#dyna_html").html() !="") {alert("Not empty");$("#dyna_html").html("");}
+		 var $div = $("#dyna_html");
+		 var $parent = $div.parent();
+		/* var position=$div.offset();
+		 var topPos=position.top;
+		 var windowHeight=$(window).height();
+		 var height=(parseInt(windowHeight)-parseInt(topPos))+"px";
+		 $($div).css({"overflow-y":"scroll","height":height});*/
+		 $div.detach();
+         $div.load(uri);
+         $parent.append($div);
+	}
+	else{
+		if(document.getElementById('htmlIframe'))
+		{  
+		    if($("#dyna_html").html() !="") $("#dyna_html").html("");
+			//prompt("If-InnerHTML-",$("#dyna_html").html());
+			//document.getElementById("dyna_html").innerHTML="";
+			document.getElementById('htmlIframe').src=uri;
+			document.getElementById('htmlIframe').style.display='block';
+		}
+		else
+		{   
+		  // prompt("Else-InnerHTML-",$("#dyna_html").html());
+		   if($("#dyna_html").html() !="") $("#dyna_html").html("");
+		   //document.getElementById("dyna_html").innerHTML="";
+			htmlIframe=document.createElement("iframe");
+			htmlIframe.align="left";
+			htmlIframe.width="100%";
+			htmlIframe.border="0";
+			htmlIframe.frameBorder="0";
+			htmlIframe.scrollBars="no";	
+			htmlIframe.id="htmlIframe";
+			dataDiv.appendChild(htmlIframe);
+			htmlIframe.src=uri;
+			var screenWidth = getScreenSize('width');
+			htmlIframe.width=(screenWidth-10)+"px";
+			var screenHeight = getScreenSize('height');
+			var xyCoordinates = findPos('lastDivOnPage')[1];
+			var bannerHeight = findPos('commonFnDiv')[1]+10;
+			htmlIframe.height = screenHeight-((screenHeight*13)/100)+"px";
+			 
+		}
+	}
+    //$("#dyna_html") .load(uri);  
+	closeLoadingDiv();
+}
+
+/* Start: Get Page Size */
+function getScreenSize(width_or_height){
+	var myWidth;
+	var myHeight;
+	if( typeof( window.innerWidth ) == 'number' ) { 	//Non-IE 
+		myWidth = window.innerWidth;
+		myHeight = window.innerHeight; 
+	}else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {	//IE 6+ in 'standards compliant mode' 
+		myWidth = document.documentElement.clientWidth; 
+		myHeight = document.documentElement.clientHeight; 
+	} else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) { 	//IE 4 compatible 
+		myWidth = document.body.clientWidth; 
+		myHeight = document.body.clientHeight; 
+	} 
+	if(width_or_height=='height'){
+		return myHeight;
+	}else if(width_or_height=='width'){
+		return myWidth;
+	}
+}
+/* End: Get Page Size */
+
+function openLoadingDiv()
+{
+	document.getElementById('loadingDiv').style.display="block";
+	document.getElementById('loadingDiv').innerHTML="Loading...";
+	milisec=0;
+	seconds=10; 
+	document.getElementById('stillWorking').value="10.0"
+	stillLoading();
+	/*$('#loadingDiv').dialog('open');
+	$('#loadingDiv').dialog({
+		autoOpen:true,
+		modal: false,
+		width: 230,
+		height:170,
+		closeOnEscape:false
+	});*/
+
+}
+
+function stillLoading()
+{
+	if(document.getElementById('loadingDiv').style.display=="block")
+	{
+		if(document.getElementById('stillWorking').value=="0.0")
+		{
+			document.getElementById('loadingDiv').innerHTML="Still working...";
+			return;
+		}
+		if (milisec<=0){ 
+			milisec=9 
+			seconds-=1 
+		} 
+		milisec-=1 
+		document.getElementById('stillWorking').value=seconds+"."+milisec 
+		setTimeout("stillLoading()",100) 
+	}
+	else
+		return;
+}
+
+function closeLoadingDiv()
+{
+	document.getElementById('loadingDiv').innerHTML="Loading...";
+	document.getElementById('loadingDiv').style.display="none";
+	$("#pageLoad").hide(); 
+}
+
+function errorInProcess(from_info) {
+	closeLoadingDiv();
+	document.getElementById('commonErrorDiv').style.display="block";
+	hideErrorDiv(from_info);
+	
+}
+
+function hideErrorDiv(from_info) {
+	if (from_info) {
+		document.getElementById('commonErrorDiv').innerHTML= from_info;
+	} else {
+		document.getElementById('commonErrorDiv').innerHTML="Oops! Something broke! Syslog has been written. We'll fix it ASAP.";
+	}
+	setTimeout(function() { document.getElementById('commonErrorDiv').style.display="none"; },5000);
+}
+
+function retrieveJSONdata(uri,objId,fromMnu,add2History,reloadFlag,listPopup)
+{  console.log(uri,objId,fromMnu,add2History,reloadFlag,listPopup);
+	//var parURI=uri.search("custom/JSON/system/getParentMnuItmId.htm");
+	//if(parURI<0&&xhr_request)xhr_request.abort();
+	if(reloadFlag=="true")reloadFlag=true;else if(reloadFlag=="false") reloadFlag=false; else  reloadFlag="neither";
+	if(document.getElementById('htmlIframe'))
+	document.getElementById('htmlIframe').style.display="none";
+	if(document.getElementById(entityDiv))
+	{
+		document.getElementById(entityDiv).style.display="none";
+	}
+	if(uri.search("custom/JSON/list/linkList.htm")>=0)reloadFlag=true;
+	//if(uri.search("custom/JSON/list/container.json")>=0)reloadFlag=true;
+	//if(document.getElementById(subMnuItmId+"-lstTbl")&&fromMnu=='main'){console.log('common list');handleCommonList();}
+
+	if(fromMnu) {
+		mnuItmId=objId;
+		var addPage=uri.indexOf('/add/');
+		var adHocList=uri.indexOf('/JSON/list/container');
+		if(addPage>0)
+		entityDiv='addEditDiv';
+		else if(adHocList>0)
+		entityDiv=subMnuItmId+'-adList';	
+		else
+		entityDiv=objId+'-DataDiv';
+		var fromHTML=entityDiv.indexOf('.html');
+		if(document.getElementById(entityDiv)) {
+			if(fromHTML < 0) {
+				document.getElementById(entityDiv).style.display="block";
+				if(document.getElementById(mnuItmId+'-pageTitle'))
+				document.title=document.getElementById(objId+'-pageTitle').value +' - Impel';
+				var hdnURL=document.getElementById(objId+'-URL').value;		
+
+				if(hdnURL==uri&&reloadFlag!=true) {	
+					closeLoadingDiv();
+					return;
+				}
+				else //if same entity reloaded
+				{	
+					if(entityDiv!="addEditDiv")
+					{
+						try{
+							var pagingAmt=document.getElementById(mnuItmId+'-pagAmt').value;
+						}catch(e){}
+						var quesIndex=uri.indexOf('?') != "-1" ? uri.indexOf('?'): uri.length; 
+						var hdnquesInx=hdnURL.indexOf('?') != "-1" ? hdnURL.indexOf('?'): hdnURL.length; 
+						var mainUrlPath=uri.substring(0,quesIndex); 
+						var hdnUrlPath=hdnURL.substring(0,hdnquesInx); 
+						if(mainUrlPath==hdnUrlPath)
+						{
+							var mainUrlParms=uri.substring(quesIndex+1,uri.length); 
+							var currOrder=getParameterValue (hdnURL,'order__by__1');
+							var currWidth=getParameterValue (hdnURL,'list__column__width');
+							var currFilter=getParameterValue (hdnURL,'filterName');
+							var pageNumber=getParameterValue (hdnURL,'page__number__1'); 
+
+							if (!currFilter)currFilter="";
+							if (!currOrder)currOrder="";
+							//Parameters to remember: "Order by","Paging size","Column width","Filter",
+							var mainUrlParms=changeParameterValue (mainUrlParms,'order__by__1',currOrder);
+							if(pagingAmt)mainUrlParms=changeParameterValue (mainUrlParms,'page__size__1',pagingAmt);	
+							if(currWidth)mainUrlParms=changeParameterValue (mainUrlParms,'list__column__width',currWidth);
+							if(currFilter)mainUrlParms=changeParameterValue (mainUrlParms,'filterName',currFilter);	
+							if(pageNumber)mainUrlParms=changeParameterValue (mainUrlParms,'page__number__1',pageNumber);	
+							uri=mainUrlPath+"?"+mainUrlParms;
+							if(hdnURL!=uri)
+							{	
+								if(pageNumber)mainUrlParms=deleteParameter (mainUrlParms,'page__number__1');
+								uri=mainUrlPath+"?"+mainUrlParms;
+							}
+							if(fromMnu=="sub"&&reloadFlag=="neither")
+							{
+								uri=mainUrlPath+"?"+mainUrlParms;
+							}
+						}
+						if(hdnURL==uri&&reloadFlag!=true)
+						{	
+							closeLoadingDiv();
+							return;
+						}
+					}
+				}
+				document.getElementById(objId+'-URL').value=uri;
+			}
+		}
+		else
+		{
+			var detailDataDiv=document.getElementById('detailDataDiv');
+			CreateDIV(detailDataDiv,'',entityDiv);
+			if(document.getElementById(objId+'-URL'))
+				document.getElementById(objId+'-URL').value=uri;
+			else
+				CreateHIDDEN(document.getElementById('detailDataDiv'), '', objId+'-URL', uri);
+		}
+		
+	}
+	if(document.getElementById(entityDiv))
+	{
+		document.getElementById(entityDiv).style.display="block";
+				
+		var htmlIndex=entityDiv.indexOf('.html');
+		if(htmlIndex > 0)
+		{	
+			mnuItmId=entityDiv.split("-DataDiv")[0];
+		}
+	}
+
+    mainUrl=uri;
+	xhr_request = $.ajax({
+	type: "GET",
+	contentType: "application/x-www-form-urlencoded",
+	url: mainUrl,
+	async:callAsync,
+	success: function (data)
+	{
+		xhr_request="";
+		var loginPage=data.indexOf("<title>Impel login page</title>");
+		var errorPage=data.indexOf("<title>Something wrong!</title>");
+		
+		if(loginPage>0)
+		{
+			//Changes done by Govardhan: if-else condtn
+			if("${homePage.orgDetails.OrgName_Id}" == "668")
+			{				
+				window.location.href="${servlet_prefix}/index.html?u=2&fromUdm=custom/JSON/homePage.html";
+			}
+			else
+			{
+				window.location.href="${servlet_prefix}/index.html?fromUdm=custom/JSON/homePage.html";
+			}			
+		}
+		else if (errorPage>0)
+		{
+			errorInProcess();
+			return;
+		}
+		else
+		{
+			data=ReplaceAll(data,"\t","");
+			data=ReplaceAll(data,"\n"," ");
+			data=ReplaceAll(data,"\r","");
+			data=ReplaceAll(data,"\xa0"," ");
+			
+			doc = JSON.parse(data,function (key,value)
+			{
+				var type;
+				if (value && typeof value === 'object') 
+					{
+						type = value.type;
+						if (typeof type === 'string' && typeof window[type] === 'function') 
+						{
+							return new (window[type])(value);
+						}
+					}
+					return value;
+			}); 
+			if(document.getElementById(objId+'-pageTitle'))
+			document.getElementById(objId+'-pageTitle').value=doc.PageCaption;
+			else
+			{
+				CreateHIDDEN(document.getElementById('detailDataDiv'), '', objId+'-pageTitle', doc.PageCaption);
+			}
+
+			document.title=document.getElementById(objId+'-pageTitle').value +' - Impel';
+
+			jsonPageType=doc.PageType;
+			switch(jsonPageType)
+			{
+			case "List":
+						if(listPopup==true)
+							handleJsonList(doclst,'listPopUp',popUpWidth,popUpHeight,document.getElementById(mnuItmId+'-URL').value);
+						else
+							handleJsonList(doc,null,null,null,objId,add2History);
+						break;
+			case "adhocList":
+							handleCommonList(doc);
+						break;
+			case "Add/Edit":
+						if(document.getElementById('addEdit-URL'))
+							document.getElementById('addEdit-URL').value=mainUrl;
+						else
+							CreateHIDDEN(document.getElementById('detailDataDiv'), '', 'addEdit-URL', mainUrl);
+							handleAddEditJsonData(doc);
+						break;
+			case "360View":
+						if(document.getElementById('360View-URL'))
+							document.getElementById('360View-URL').value=mainUrl;
+						else
+							CreateHIDDEN(document.getElementById('detailDataDiv'), '', '360View-URL', mainUrl);
+							handleJson360ViewData(doc,objId,add2History);
+						break;
+			case "adh360View":
+			               adhoc360ViewData(doc,objId);
+			case "linkList":
+							bldLinkList(doc,objId,document.getElementById(mnuItmId+'-URL').value);				
+						break;
+			case "InvoiceWizardAddEdit":
+							hideLeftPannel(true);
+						if(document.getElementById('addEdit-URL'))
+							document.getElementById('addEdit-URL').value=mainUrl;
+						else
+							CreateHIDDEN(document.getElementById('detailDataDiv'), '', 'addEdit-URL', mainUrl);
+							handleInvoiceWizardAddEditJsonData(doc);
+						break;
+			case "Map":
+						setUpMap(doc);
+						break;
+			case "listTemplate":
+						hideLeftPannel(true);
+						var tempType=doc.tempType;
+						loadTemplatesForType(tempType);
+						setTimeout("listTemplate('templateTd_0',\'"+tempType+"\')",1000); 			
+						break;
+			case "dTbl":
+						hideLeftPannel(true);
+						writeDTbl(dTblHdr, dTblData);
+			case "htm":
+						hideLeftPannel(true);
+						var mainDataDiv = document.getElementById(entityDiv);
+						$(mainDataDiv).html(doc.content);
+			case "rept":
+						hideLeftPannel(true);
+						var into_div = document.getElementById('detailDataDiv');
+						entityDiv = into_div;
+						closeLoadingDiv();
+						exec_rept(doc,into_div);
+			}
+		}
+	},
+	error: function(request,status,errorThrown) 
+	{
+	}
+	});		
+	callAsync=true;
+}
+
+function findPos(objId) 
+{
+	var targetObj = document.getElementById(objId);
+	var curleft = curtop = 0;
+	if (targetObj.offsetParent) {
+		do {
+				curleft += targetObj.offsetLeft;
+				curtop += targetObj.offsetTop;
+			} while (targetObj = targetObj.offsetParent);
+	}
+	return [curleft,curtop];
+}
+
+
+function resizeContentDiv()
+{
+	//body.scroll='none'
+	var targetObj = document.getElementById('detailDataDiv');
+	var xyCoordinates = findPos('lastDivOnPage');
+	targetObj.style.height = (isIE)?parseInt(xyCoordinates[1])-157:parseInt(xyCoordinates[1])-70;
+	pageWidth = (window.document.body.clientWidth)-345;
+	pageWidth1 = (screen.width)-30;
+	//document.getElementById('headerMenuIts').style.width=pageWidth1+'px';
+	//alert(window.innerWidth+" "+document.body.clientHeight/Width)
+}
+
+
+function checkForExpiryDate()
+{
+	if(reDate('${homePage.getLicExpDate}')<reDate('${homePage.getTodaysDate}'))
+	{
+		alert('Your license has expired. Please contact your systems administrator or contact us at support@impelcrm.in');
+		//Changes done by Govardhan: if-else condtn
+		if("${homePage.orgDetails.OrgName_Id}" == "668")
+		{				
+			window.location.href="${servlet_prefix}/index.html?u=2";
+		}
+		else
+		{
+			window.location.href="${servlet_prefix}/index.html";
+		}		
+	}
+}
+
+function reDate(dmy)
+{
+    var d=dmy.split(/\D+/);
+    return new Date(d[2],d[1]-1,d[0]);
+}
+
+	document.getElementsByClassName = function(){
+		if(document.hasChildNodes && arguments[0]){
+			var data = new Array();
+			for(a=0;a<document.getElementsByTagName("*").length;a++){
+				if(document.getElementsByTagName("*")[a].className == arguments[0]){
+				data.push(document.getElementsByTagName("*")[a]);
+				}
+			}
+		return data;
+		}
+	}
+//call for email processor 
+function callEmailProcessor(folder_id,rp,un){
+	if(folder_id)
+	{
+		$.ajax({
+		   type: "GET",
+		   contentType: "application/x-www-form-urlencoded",
+		   url: "http://192.168.11.125:81/emailProcessor/emailProcessor.php?un="+un+"&rp="+rp+"&uefid="+folder_id,
+		   dataType: "text",
+		   success: function(data){
+				var outputString = data;					   
+ 				if (outputString.indexOf('Invalid Email Configuration')!= "-1")
+				{
+					document.getElementById("timerTD").innerHTML = "<font color='#CC0000'>Invalid email server configuration.</font>";
+				}
+				if (outputString.indexOf('Invalid Email username and password')!= "-1")
+				{
+					document.getElementById("timerTD").innerHTML = "<font color='#CC0000'>Invalid email username and password.</font>";
+				}
+				if (outputString.indexOf('Invalid Mail folder name')!= "-1")
+				{						
+					document.getElementById("timerTD").innerHTML = "<font color='#CC0000'>Invalid mail folder name.</font>";
+				}
+				if (outputString.indexOf('Invalid Server Paramaters')!= "-1")
+				{						
+					document.getElementById("timerTD").innerHTML = "<font color='#CC0000'>Invalid server paramaters.</font>";
+				}				   
+				if (outputString.indexOf('Zero new mails found')!= "-1")
+				{						
+					document.getElementById("timerTD").innerHTML = "No new emails.";
+				}					
+				setTimeout("callEmailProcessor('"+mailFolderInbox+"','"+rp+"','"+un+"')", 1200000);		  
+			},
+			error: function(request,status,errorThrown) {
+				document.getElementById ("content").style.visibility="hidden";
+				document.getElementById("timerTD").innerHTML = "<font color='#CC0000'>Internal server error.</font>";		
+				setTimeout("callEmailProcessor('"+mailFolderInbox+"','"+rp+"','"+un+"')", 1200000);		
+			}
+			});			
+	}
+}
+/*function readAllhrefs()
+{
+	var a_link = document.form.getElementsByTagName('a');
+	alert(a_link);
+	/*for (i=0;i<a_link.length;i++)
+	{
+		if(a.innerText
+	}
+}*/
+
+function getJSONResponse()
+{
+	var JSONURL="${servlet_prefix}/custom/JSON/add/Contact.htm";
+	$.ajax({
+		type: "GET",
+		contentType: "application/x-www-form-urlencoded",
+		url: JSONURL,
+		cache: true,
+		dataType: "json",
+		success: function (data){
+			G_jsonresponse_Contact = eval(data);
+		}	
+	});
+	var JSONURL_Acct="${servlet_prefix}/custom/JSON/add/Account.htm";
+	$.ajax({
+		type: "GET",
+		contentType: "application/x-www-form-urlencoded",
+		url: JSONURL_Acct,
+		cache: true,
+		dataType: "json",
+		success: function (data){
+			G_jsonresponse_Account = eval(data);
+		}	
+	});
+	var JSONURL_Oppor="${servlet_prefix}/custom/JSON/add/Opportunity.htm";
+	$.ajax({
+		type: "GET",
+		contentType: "application/x-www-form-urlencoded",
+		url: JSONURL_Oppor,
+		cache: true,
+		dataType: "json",
+		success: function (data){
+			G_jsonresponse_Opportunity = eval(data);
+		}	
+	});
+	var JSONURL_QACont="${servlet_prefix}/custom/JSON/add/Contact.htm?prefsName=quickAddContactPrefs&qA=1&objId=480563";
+	$.ajax({
+		type: "GET",
+		contentType: "application/x-www-form-urlencoded",
+		url: JSONURL_QACont,
+		cache: true,
+		dataType: "json",
+		success: function (data){
+			G_quickAddResponse_Contact = eval(data);
+		}	
+	});
+	
+	flg_pageLoad=false;
+}
+
+function getAddDataFrmCache(url)
+{
+ //changes done by govardhan :- Purpose Single Sign On
+ if(url.indexOf('/SSO/index.php') != "-1")
+ {
+	var quesIndex=url.lastIndexOf('?') != "-1" ? url.lastIndexOf('?'): url.length; 
+	var url=url.substring(quesIndex+1,url.length); 
+ } 
+ if(url.indexOf('?')>0)
+ {
+	var urlArr = url.split("?");
+	var urlLeft  = urlArr[0];
+	var urlLeftArr = urlLeft.split("/");
+	var urlLeftArrLen=urlLeftArr.length;
+	var lastElem= urlLeftArr[urlLeftArrLen-1];
+	var entityArr=lastElem.split(".");
+	var entityName=entityArr[0];
+	entityName=entityName.trim();
+	G_EntityName=entityName;
+  }
+  else
+  {
+     var urlLeftArr = url.split("/");
+	 var urlLeftArrLen=urlLeftArr.length;
+	 var lastElem= urlLeftArr[urlLeftArrLen-1];
+	 var entityArr=lastElem.split(".");
+	 var entityName=entityArr[0];
+	 entityName=entityName.trim();
+	 G_EntityName=entityName;
+  }
+  if(entityName&&entityName=="Opportunity")
+  {
+     var EntityStageType=entityName+"Stage";
+	 var ent=entityName.toLowerCase();
+	 var entitystagetype=ent+"stage";
+	 var str="stage";
+  }
+  else
+  {
+     var EntityStageType=entityName+"Type";
+	 var entitystagetype=entityName.toLowerCase()+"type";
+	 var str="type";
+  }
+  
+     var Entity=entityName.toLowerCase();
+	 var urlLower=url.toLowerCase();
+	 var urlString = urlLower.indexOf('?'+entitystagetype+'_id');
+	 var urlStringWithCont = urlLower.indexOf('?'+entityName.toLowerCase()+'_id');
+
+	 var G_jResponse='G_jsonresponse_'+entityName;
+     var Entitytype=entityName+str;
+    var G_jResponse_type=G_jResponse+"."+Entitytype;
+	if((type_based_layouts_supported_flag == 1 && urlString < 0) || (type_based_layouts_supported_flag == 1 && urlStringWithCont < 0 && urlString < 0 ))
+	{
+			document.getElementById("commonPopupDiv").innerHTML = "";
+				$('#commonPopupDiv').dialog({
+				autoOpen:true,
+				modal: true,
+				title:entityName+" "+str+'s',
+				minHeight:340,
+				minWidth:310,	
+				width:399,
+				height:340,
+				closeOnEscape:true,
+				beforeclose: function() {}
+			});
+			var convertDivContent = "<div width='100' id='accordion' class='actions ui-helper-clearfix' style='font-family:Tahoma,Verdana;padding-top:8px'>&nbsp;&nbsp;&nbsp;Please select the " + str + " of " + Entity + " that you want to add."
+			var listLength =eval(G_jResponse_type).length; 
+			var EntityStageTypeId=EntityStageType+"Id[1]";
+			var EntityStageTypeName=EntityStageType+"Name";
+			
+			for(var i=0,j=0;i<listLength;i++,j++)
+			{
+			 var TypeOrStageName=eval(G_jResponse+"."+Entitytype+"["+j+"]."+EntityStageTypeId+"."+EntityStageTypeName);
+			 var typeOrStageId=eval(G_jResponse+"."+Entitytype+"["+j+"]."+EntityStageType+"Id[0]");
+
+			if (TypeOrStageName!=""){ convertDivContent += "<ul class='ui-multiselect'><li class='ui-helper-hidden-accessible' style='display:none;'></li><li class='typeBasedButton'><a href=\"javascript:sendResponseToHandleEntity('"+typeOrStageId+"','"+G_EntityName+"');\" style='display:block' >"+TypeOrStageName+"</a></li></ul>";}               
+			}
+			convertDivContent += "</div>";
+			document.getElementById("commonPopupDiv").innerHTML = convertDivContent;
+	}
+	else
+	{
+		if(type_based_layouts_supported_flag == 0)
+		{
+			CreateHIDDEN(document.getElementById('detailDataDiv'), '', 'addEdit-URL', url);
+			handleAddEditJsonData(eval(G_jResponse));
+		}
+		else
+		{
+			if(type_based_layouts_supported_flag == 1 && urlString > 0)
+			{
+				var id_str=url.substring(url.lastIndexOf("="),+url.lastIndexOf(""));
+				var EntityTypeId=id_str.split("=")[1];
+				sendResponseToHandleEntity(EntityTypeId,G_EntityName);
+			}
+		}
+	}
+	
+}
+
+function sendResponseToHandleEntity(id,entityName)
+{
+	if(document.getElementById(entityDiv))document.getElementById(entityDiv).style.display="none";
+	if(entityName&&entityName=="Opportunity")
+		  {
+			 var EntityStageType=entityName+"Stage";
+			 var ent=entityName.toLowerCase();
+			 var entitystagetype=ent+"stage";
+			 var str="stage";
+		  }
+		  else
+		  {
+			 var EntityStageType=entityName+"Type";
+			 var entitystagetype=entityName.toLowerCase()+"type";
+			 var str="type";
+		  }
+
+	 var G_jResponse='G_jsonresponse_'+entityName;               //Ex. G_jsonresponse_Contact
+	 var Entitytype=entityName+str;                              //Ex. Contacttype or Opportunitystage
+	 var G_jResponse_type=G_jResponse+"."+Entitytype;
+
+	var listLength = eval(G_jResponse_type).length; 
+	for(var i=0,j=0;i<listLength;i++,j++)
+	{
+		var typeStageId = eval(G_jResponse+"."+Entitytype+"["+j+"]."+EntityStageType+"Id[0]");
+		 if(typeStageId == id)
+		 {
+			addEditdata = eval(G_jResponse+"."+Entitytype+"["+j+"]."+EntityStageType+"Id[1]");
+
+			var G_data=eval(addEditdata);
+			if(G_data.PrefsId!="")
+			{
+				setTimeout("closeCommonPopup()",1000);
+				if(G_data.PageType=="Add/Edit");
+				handleAddEditJsonData(G_data);
+				return;
+				break;
+			}
+			else
+			{
+				if(typeStageId == id)
+				{
+					var prefEntity;  //type of updatePrefsIdOnType  action sequence
+					if(entityName=="Contact"){
+							  prefEntity="Cont";
+						}
+						else if(entityName=="Account"){
+							  prefEntity="Acct";
+						}
+						else if(entityName=="Opportunity"){
+							 prefEntity="Oppty";
+						}
+					document.getElementById("commonPopupDiv").innerHTML = "";
+					$('#commonPopupDiv').dialog({
+						autoOpen:true,
+						modal: true,
+						title:'Set Layout',
+						minHeight:170,
+						minWidth:220,	
+						width:300,
+						height:170,
+						closeOnEscape:true,
+						beforeclose: function() {}
+					});
+					
+					var prefsName = 'add_${homePage.orgDetails.OrgName_Id}_'+prefEntity+'_'+id;
+					var convertDivContent = "<table style='margin-top:5px; border:0px solid red;' cellpadding='3'>";
+					convertDivContent+="<tr><td colspan='2'><div align='center' style='margin-top:30px;'><center> Oops! It seems you don't have a page layout set up for this page. Click OK to add prefs else cancel.</center><div align='center' style='margin-bottom:30px;border:0px solid red'><input style='width:70px;margin-top:20px;' onclick=\"javascript:SetPreferences('"+G_data.PrefsId+"','"+prefsName+"','"+G_data.UDMName+"','addEditDiv','"+G_data.PageType+"','"+G_data.PageCaption+"')\"  class='greenButton' type='button' value='OK' id='commonPopupOK' name='commonPopupOK'/>&nbsp;<input style='width:70px;margin-top:20px;' onclick=\"javascript:closePopup()\"  class='greenButton' type='button' value='Cancel'/></div></td><tr>";
+					convertDivContent += "</table></center>";
+					document.getElementById("commonPopupDiv").innerHTML = convertDivContent;	
+					break;
+				}
+			}
+			break;
+		}
+	}
+	return;
+}
+//$(window).load(function(){alert('yes');}
+
+//Gets the value of the given cookie name
+
+function getCookie(c_name)
+{
+	if (document.cookie.length>0)
+	  {
+	  c_start=document.cookie.indexOf(c_name + "=");
+	  if (c_start!=-1)
+		{
+			c_start=c_start + c_name.length+1;
+			c_end=document.cookie.indexOf(";",c_start);
+			if (c_end==-1) c_end=document.cookie.length;
+			return unescape(document.cookie.substring(c_start,c_end));
+		}
+	  }
+	return "";
+}
+
+//Creates a cookie with the given name and the value and sets the expiry date to the given number of days
+
+function createCookie(name, value, days)
+{
+	if (days) 
+	{
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}
+	else
+	var expires = "";
+	document.cookie = name+"="+value+expires+"; path=/";
+}
+
+//Function which checks whether the user has set remember me option
+
+function SetCookieAndMoveNextPage()
+{	
+	if(document.getElementById('0-1601').value == 'zxcv')
+	{	
+		var name="zeroCode.atCRM";
+		var value= getCookie('zeroCode.atCRM');
+		createCookie(name,value,15);
+		var remMe = "rem.Me";
+		var remMeValue = "${homePage.user.LoginName}";
+		createCookie(remMe,remMeValue,15)
+	}
+}
+
+
+function hidePannel()
+{
+	if(document.getElementById('td_left_pannel').style.display == "none")
+	{ 
+	  //  $("#accordianMainDiv").animate("slow");
+      // $("#accordianMainDiv").slideToggle(2000);
+	    //$("#accordianMainDiv").slideDown(2000);
+		document.getElementById('td_left_pannel').style.display = "block";
+		var slidertd = document.getElementById('slidertd');
+		slidertd.className = "slider";
+		document.getElementById('slidertd').title="click here to hide the left pannel";
+	}
+	else 
+	{
+		// $("#accordianMainDiv").animate("slow");
+	  // $("#accordianMainDiv").slideToggle(2000);
+	   //$("#accordianMainDiv").animate({.slideUp},"slow");
+	    // $("#accordianMainDiv").slideUp(2000);
+		document.getElementById('td_left_pannel').style.display = "none";
+		var slidertd = document.getElementById('slidertd');
+		slidertd.className = "sliderImgChange";
+		document.getElementById('slidertd').title="click here to open the left pannel";
+	}
+}
+</script>
+<script type="text/javascript">
+function webload()
+{
+	var isBrowser = navigator.appVersion;
+	if (isBrowser.indexOf('MSIE') > -1)
+	{			
+		var pcEle = document.getElementById("pageContent");
+		pcEle.style.display = "block";
+		initialize();
+		resizeContentDiv();
+	}
+	else
+	{		
+		setTimeout("initialize()", 3000);
+		resizeContentDiv();		
+	}
+}
+
+//customLogout function written by Govardhan :- For custom index page redirection
+function customLogout()
+{
+	var logoutURL="${servlet_prefix}/logout.html";
+	$.ajax({
+		type: "GET",
+		contentType: "application/x-www-form-urlencoded",
+		url: logoutURL,		
+		async: false			
+	});
+	document.cookie = "zeroCode.atCRM=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT";
+	if("${homePage.orgDetails.OrgName_Id}" == "668")
+	{
+		window.location.href="${servlet_prefix}/index.html?u=2";
+	}
+	else
+	{
+		window.location.href="${servlet_prefix}/index.html";
+	}
+}
+
+//  Function for Meteor - Kishore, 28 Jun 2012
+function respondToMeteor(data) {
+  //alert ("In Meteor Response: " + data);
+  document.getElementById("Experience").innerHTML = decodeURIComponent(data);
+}
+function getPageVal(){
+	var iframe = document.getElementById('htmlIframe');
+	var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+	//alert(innerDoc.getElementById('username_field').value);
+
+//alert(document.getElementById('htmlIframe').src);
+//alert(document.getElementById('username_field').value);
+}
+
+
+/*  Commented by Kishore, 21 Aep. 2012 - don't know why this is here at all...
+$t = $("#table");
+$("#pageLoad").css({
+  opacity : 0.5,
+  top     : $t.offset().top,
+  width   : $t.outerWidth(),
+  height  : $t.outerHeight()
+});
+*/
+</script>
+
+<body id="home_main" class="PageBody" onload="webload();" style="overflow:auto">
+<div id="pageLoad">
+    <div class="pageLoadbox">
+    	<p style="font-size:11px; color:#666; font-family:Georgia, 'Times New Roman', Times, serif;">Loading, please wait...</p>
+    	<img src="${servlet_prefix}/images/loadingbar.gif" width="128" height="15">
+    </div>
+</div>
+<span><img id='loader_Img' src='/atCRM/images/LoadImg/ajax-loader_validate.gif'/></span>
+<div id="pageContent" style="display:none;">
+    <div id='smartSuggestDiv' style='display:none;position: absolute;z-index: 2147483647;'></div>
+	<div id='smartDialog' ></div>          
+    <div id='divForError' class='ui-state-error ui-corner-all' style='display:none;position: absolute;z-index: 2147483647;' ></div>
+    <div id='multiSelectSugg' name='multiSelectSugg' style='display:none;position: absolute;z-index: 2147483647;'></div>
+    <div id='smartFill' name='smartFill' class='sf_suggestion' style='display:none;position: absolute;z-index: 2147483647;'></div>
+    <div id='mappedSmartFill' name='mappedSmartFill' class='sf_suggestion' style='display:none;position: absolute;z-index: 2147483647;'></div>
+	<div id='smartSuggestFill' name='smartSuggestFill' class='sf_suggestion' style='display:none;position: absolute;z-index: 2147483647;'></div>
+    <div id='mappedSmartFillWiz' name='mappedSmartFillWiz' class='sf_suggestion' style='display:none;position: absolute;z-index: 2147483647;'></div>
+    <div id="autosuggestUsers" name="autosuggestUsers" class="autosuggest" style="z-index:999999"></div>
+    <div id="mainContentDiv" style="width:334px; border:0px solid #6699cc;margin:0px;">
+    </div>
+	<div id="eodpopup" title="EOD Alert" style="display:none;min-height:380px;">   
+        <iframe name="eodalertpopup" id="eodalertpopup" valign="top" frameborder="0" width="100%" height="380px" src=""></iframe>    
+        <div id="msg" style="display:none;text-align:center;vertical-align:middle;font-weight:bold; margin-top:30px;"></div> 
+    </div>
+    <table width="100%" cellpadding=0 cellspacing=0 align="center" valign="top" border="0" >
+        <tr >
+    
+            <td scrolling="no" class='bckgrnd_plane' align="left">
+            <input type=hidden name=but_tree value="Tree" onClick="loadScreenTreeView();"  >
+            <!-- <a href="javascript:multiAddOpp()" >+Opp</a> -->
+                <table cellspacing="0" cellpadding="0" border="0" width="100%" class='bannerCls'>
+                    <tr>
+                        <td colspan="3" style="padding-top:0px" >
+                            <table  cellspacing="0" cellpadding="0" name="menuTable" id="menuTable" width="100%" border="0" >
+                                <tr>
+                                    <td id="orgLogoTD" style="width:187px;" class='bckgrnd_plane' rowspan="2"  vAlign="middle"  >
+                                            <div style="width:88px;" id="orgLogoDIV">
+                                            <if homePage.getOrgLogo_Ent_Img.ENTT_IMG_ID><img src="${servlet_prefix}/custom/fileManager/fileContent.html?directoryOffset=${homePage.getDirectoryOffset.value}&filename=${homePage.getOrgLogo_Ent_Img.IMG_FILENAME}" id='orgLogo' name='orgLogo'><else><img src="${servlet_prefix}/images/impel_logo.png" id='orgLogo' name='orgLogo'></if></div>
+                                    </td>
+                                    <td class="headermenu" style="padding:5px;" class='bckgrnd_plane' id="headerMenuIts">  
+                                        <div id="userNameCell" class="headermenu" style="padding:5px;display:inline;"></div>
+                                        <div name="timerTD" id="timerTD" style="text-align:left;padding-right:5px;display:inline;"></div>
+                                        <div name="emaildwnload" id="emaildwnload" style="text-align:left;padding-right:2px;display:inline;"></div>
+                                        <div id="content" style="visibility:hidden;display:inline;"><img src="/atCRM/images/loading5.gif"></div>
+                                    </td>
+                                    <td align="right" class='bckgrnd_plane' style="padding-right:20px;">
+                                        <div class="headermenu" style="align:right;display:inline;">
+                                            <div class="headermenu" style="text-align:right;color:#ED7F21;display:inline;">
+                                            </div><!-- <span id="Experience"> <a href="javascript:experienceEdition();">Experience</a></span> -->
+                                            <span id="impelMsgs"><a id="Aise Hi" class="anchClass"  href="javascript:addChat();" ><div id="aisehi" style="display:inline;">Chat </div></a></span> | 	<span id="impelMsgs"><a id="Aise Hi" class="anchClass"  href="javascript:getPageVal();" ><div id="aisehi" style="display:inline;">Aise he link </div></a></span> | <span id="impelMsgs"><a id="Message" class="anchClass"  href="javascript:setUpPageParameters('${servlet_prefix}/custom/Messages/listMsgsOfCateg.html');" ><div id="MessagesSpan" style="display:inline;">Messages </div></a></span> <if !homePage.getOrgFlagToHideLinks.org_flag_id><span id="impelReportBug">| <a href="javascript:reportABug();">Report a bug</a> | </span><else>| </if> <a id= "setUp" class="anchClass" href="javascript:setUpPageParameters('${servlet_prefix}/custom/adminNew/AdminSetUp.html');">My Profile</a> <span id="impelHelp"><if !homePage.getOrgFlagToHideLinks.org_flag_id>| <a id="help" class="anchClass" href="http://www.impelcrm.in/?q=wiki" target="_blank"> Help</a></span></if> | <a id="Logout"  class="anchClass" href="javascript:customLogout();">Logout</a><!--<a id="Logout"  class="anchClass" href="${servlet_prefix}/logout.html">Logout</a> -->
+                                        </div>									
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td id="firstLevelMenu" class='bckgrnd_plane' colspan="3">  
+                                        <ul id="firstLevelMenu_ul" class="firstLevelMenu_ul" ></ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td id="secondLevelMenu"  class="subMenu" colspan="3">
+                                    </td>
+                                </tr>
+                            </table>
+                            <div id='thirdlevelmenu' style="position:absolute;z-index:500"></div>
+                        </td>
+                    </tr>
+                </table>			
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" class='dataPage' >
+                <div id='div_mailAlert' name='div_mailAlert' class="cls_div_mailchk" onMouseOver="this.className='cls_div_mailchkIN'"  onMouseOut="this.className='cls_div_mailchk'"></div>
+				<div id="dyna_html" class="hidden"></div>
+				<div id="infoDiv" style="width:80%;display:none;background:black;margin-top:3px;font-family: tahoma,verdana; font-size: 12px; padding: 3px; font-weight: bold;position:absolute;text-align:center;z-index:10000;opacity:.6;border-radius:3px;color:white;"></div>
+                <table cellpadding=0 cellspacing=0  valign="top" border="0" width="100%">
+                    <tr>
+                        <td style="width:0px;margin-left:-2px;display:none;" valign="top" id="td_left_pannel">
+                            <div  style="width:100%;border:0px solid red;width:0px;" align="center" id="commonFnDiv" name="commonFnDiv" valign="top">
+                                  <!--   <input type="hidden" id="pcrAcc_AccountId2txt" name="pcrAcc_AccountId2txt">
+                                    <input type="hidden" id="pcrAcc_AccountId2" name="pcrAcc_AccountId2">
+                                    <input type="hidden" id="textbx_contactct2txt" name="textbx_contactct2txt">
+                                    <input type="hidden" id="textbx_contactct2" name="textbx_contactct2">
+                                <div id="accordianMainDiv" class="cls_MainAccordianDiv"></div> -->
+                            </div>
+							 </td>
+						    <td valign="top" id="templateTD" name="templateTD" >&nbsp;</td>
+                            <td  style="padding-left:5px" valign="top" align="left"  id='detailDataTd' name='detailDataTd' >
+                            <div id="loadingDiv" name="loadingDiv" style="width:100px;display:none;background:#f7f7f7;margin-top:3px;font-family: tahoma,verdana; font-size: 12px; padding: 3px; font-weight: bold;position:absolute;text-align:center;z-index:9999;">Loading...</div>
+                            <div id="commonErrorDiv" name="commonErrorDiv" style="width:450px;display:none;background:#f7f7f7;color:red;margin-top:3px;font-family: tahoma,verdana; font-size: 11px;font-weight:bold; padding: 3px; border:1px solid #000f00;position:absolute;text-align:center;"></div>
+                            <div style='position:relative;z-index:0;width:99%' align='center' id='detailDataDiv' name='detailDataDiv' valign='top' width="100%" ></div>		
+                        </td>	     
+                    </tr>				
+                </table>
+            </td>
+        </tr>
+    </table>
+    <!-- hidden field for view Sales automation page -->
+    <input type="hidden" id="globleOpp" name="globleOpp"/>
+    <input type="hidden" id="serverName" name="serverName" value="${homePage.serverName}"/>
+    <input type="hidden" id="stillWorking" name="stillWorking" value="${homePage.serverName}"/>
+    <input type="hidden" id="0-1601" name="0-1601" value="${homePage.getRememberMe}"/>
+	<input type="hidden" id="remindData" name="remindData"/>
+    <input type="hidden" id="setIndexRemind" name="setIndexRemind"/>
+    <input type="hidden" size="70" id="menu-log"/>
+	<input type="hidden" id="input_layout"/>
+    <div id="commonPopupDiv" name="commonPopupDiv" title="commonPopupDiv" style="height:120px;display:none"></div>
+    <div id="viewMappedRecordPopUp" name="viewMappedRecordPopUp" title="View Details" style="height:120px;display:none"></div>
+    <div id="reminderPopupDiv" name="reminderPopupDiv" title="reminderPopupDiv" style="height:120px;display:none"></div>
+    <div id="commonPickListDiv" name="commonPickListDiv" title="commonPopupDiv" style="height:120px;display:none"></div>
+    <div id="templateSelector" name="templateSelector" title="Select template to send SMS" style="display:none"></div>
+    <div id="nonJsoncommonPopupDiv" title="commonPopupDiv" style="height:120px;display:none"></div>
+    <div id="commonErrPopupDiv" name="commonErrPopupDiv" class="commonErrPopupDiv"></div>
+	<div id="callingImg" name="callingImg" style="display:none;z-index:1000;position:absolute;background:url('/atCRM/images/phone_ringing.gif') no-repeat center;left:50%;bottom:50%;height:70px;width:100px;background-size:40%;">&nbsp;</div>
+    <div id="stageValue" name="stageValue" class=""></div>
+    <div class="commonHoverDiv" id="commonHoverDiv" name="commonHoverDiv"></div>
+	<div id="modelOverlayDiv" class="black_overlay"></div>
+	<div id="lightBoxDiv" class="white_content" onkeyup='var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==27)hideImgLightBx();'></div>
+    <div id="lastDivOnPage" name="lastDivOnPage" style="position:absolute;bottom:0px;right:0px;"></div>
+    <div id='dashBoardMainDiv'></div>
+
+    <!-- Start: Report a bug -->
+    <div id="reportBug" title="Report a Bug" style="height:120px;display:none">
+        <div id="reportBugFormContent">
+            <form name="reportBugForm" method="post">
+            <table>
+                <tr>
+                    <td valign="top" align="left">Bug Description</td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <textarea name="0-101" id="0-101" rows="6" cols="70"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" valign="top"><input type="button" class="fly" value="Report Bug" onclick="sumbitReportBug()" style="margin-right: 15px; width: 100px;" /> </td>
+                </tr>
+            </table>
+            </form>
+        </div>
+        <div id="reportBugFormResult" align='center' style='font-weight:bold;margin-top:50px;'>
+        </div>
+    </div>
+    
+    <!-- End: Report a bug -->
+    
+    <!-- addOppty-->
+    <div id="addEntitytitlediv" title="" style="height:120px;display:none;border:0px solid red;">
+        <div id="addpopUp"></div>
+        <div id="listCaption" name="listCaption" style="font-weight:bold;margin:10px 0 0 5px;"></div>
+        <div id="listPopUp" style="display:none;margin-top:5px;"></div>
+    </div>
+    <!-- End:addOppty -->
+    <div id="quickAddPopupDiv"></div>
+</div>
+<input type="hidden" id="isReload" value="0"/>
+<!--  Chat confirmation div  -->
+<div id="confirmBox">
+	<div class="message"></div>
+	<span class="button yes">Yes</span>
+	<span class="button no">No</span>
+</div>
+
+<!-- end Chat confirmation div  -->
+</body>
+<script type="text/javascript">
+	if((screen.height<=480) || (screen.width<=960))
+	{
+		document.getElementById('orgLogo').style.display="none";
+		document.getElementById('orgLogoTD').style.width="2%";
+		document.getElementById('orgLogoDIV').style.width="2%";
+		document.getElementById('impelBeta').style.display="none";
+		document.getElementById('impelMsgs').style.display="none";
+		document.getElementById('impelReportBug').style.display="none";
+		document.getElementById('impelHelp').style.display="none";
+		}
+</script>
+    <!-- <script src="http://cdn.socket.io/stable/socket.io.js"></script> -->
+	 <script type="text/javascript" src="/atCRM/javascript/JSON/quickAddPopup.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/contextualMenus.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jsonList.js?rn=1"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/adhocList.js?rn=1"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/adh360View.js?rn=1"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/pageLevelFns.js?rn=1"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/addEdit.js?rn=1"></script> 
+	<script type="text/javascript" src="/atCRM/javascript/JSON/view.js"></script> 
+	<script type="text/javascript" src="/atCRM/javascript/JSON/search.js?rn=1" ></script> 
+	<script type="text/javascript" src="/atCRM/javascript/JSON/commonElementFunction.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/menu.js?rn=1"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/pickList.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/multiLvlPckList.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/quickAdd.js"></script>
+	<!-- <script type="text/javascript" src="/atCRM/javascript/JSON/treeView.js"></script> -->
+	<script type="text/javascript" src="/atCRM/javascript/JSON/dateFormat.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/utils.js?rn=1"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/json2_1.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/validations.js?rn=1"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/linkList.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/invoiceWizardAddEdit.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/filter.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/simpleJSONlist.js"></script>	
+	<script type="text/javascript" src="/atCRM/javascript/JSON/smartsuggestNew.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/dashBoard.js?r=2"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jQueryHistoryNew.js?rn=1" ></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/pointsOnMap.js"></script>
+   <script type="text/javascript" src="/atCRM/javascript/JSON/date-time-validation.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/report-a-bug.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/addEditTemplates.js"></script>
+	<comment>
+		<script type="text/javascript" src="/atCRM/javascript/jquery/jquery-ui-1.8.21.custom.min.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/jquery-1.7.2.min.js"></script>
+	</comment>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="/atCRM/javascript/JSON/jquery-migrate-1.2.1.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/cjquery.js"></script>
+
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/flexigrid.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.ui.droppable.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.ui.slider.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.effects.core.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.effects.slide.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.scrollabletab.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/descriptor.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/dateValidate.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/custom/advancedAdd/Activity.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/validate.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/ckeditor/ckeditor.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/runReportJ.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/jquery.dataTables.js"></script>
+	<script src="/atCRM/javascript/hc/js/highcharts.js"></script>
+	<script src="/atCRM/javascript/hc/js/modules/exporting.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/funnel.src.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/accounting.min.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/subnav.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/pivot.js"></script>
+	<!-- jquery_pivot must be loaded after pivot.js and jQuery -->
+	<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/jquery_pivot.js?r=2"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/jquery.dataTables.min.js"></script>
+	<!--  MUST appear AFTER all the above JS, it seems -->
+	<script type="text/javascript" src="/atCRM/javascript/JSON/k_pivot.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/ZeroClipboard.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/TableTools.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/ColReorderWithResize.js"></script>
+	<script src="/atCRM/javascript/JSON/jquery/jquery.hoverIntent.js?nv=1" type="text/javascript"></script>
+	<script type="text/javascript" src="/atCRM/javascript/jquery/FixedColumns.js"></script>
+	<script src="/atCRM/javascript/JSON/jquery/jquery.layout.js" type="text/javascript"></script>
+	<script src="/atCRM/javascript/changePageLayout.js" type="text/javascript"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.window.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/reminders.js"></script>
+	<comment><script src="/atCRM/javascript/changePageLayout.js"></script></comment>
+<!-- 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&key=AIzaSyAFeVSvJqCa9vaqGZWHCBHWQDf_s3_IXCM"></script>
+ -->	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false&key=AIzaSyAFeVSvJqCa9vaqGZWHCBHWQDf_s3_IXCM"></script>
+	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
+	<script src="/atCRM/javascript/jquery/tree.jquery.js"></script>
+	<script type="text/javascript" src="/atCRM/javascript/JSON/rept.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.10/socket.io.min.js"></script>
+<script>
+        var cti_provider="${homePage.user.cti_provider}";
+		var userType = "${homePage.user.UserType_id__deref.derefValue}";
+		if(userType == "Call Center") showChangeCampaign();
+		if(cti_provider == "knowlarity" || cti_provider == "ozonetel") 
+		{
+		  //$("head").append('<script type="text/javascript" src="http://api.knowlarity.com:8088/socket.io/socket.io.js"><\/script>');
+		}
+/* impel chat integration */
+var indexofdot= session_login_name.indexOf('.');
+var user_name_for_Chat = session_login_name.substring(0, indexofdot != -1 ? indexofdot : session_login_name.length);
+From_User = user_name_for_Chat.replace(/[^a-zA-Z0-9]/g,'_');
+ 
+$(function(){$("head").append('<script type="text/javascript" src="/atCRM/javascript/JSON/impelChat.js"><\/script>');});
+/* end impel chat integration */
+</script>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+    
+  
+  
+
+<head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+    <META NAME="Generator" CONTENT="ZeroCode version V42007.10.01 (Tomcat)">
+       <link rel="stylesheet" href="/atCRM/stylesheets/enhancedSample.css">
+    <title>
+      atCRM Home Page
+         
+           for ${banner.userDetails.LoginName}
+         
+    </title>
+</head>
+
+<body class=BannerBody>
+<table width="100%"  valign="top" class="bannerTable"
+  cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="60" align="right" valign="top">
+      <a href="http://www.zerocode.com" target="top" border="0">
+        <img  width="60" height="60"
+        src="/atCRM/images/ZeroCodeLogo.gif" border="0"
+        alt="ZeroCode site" >
+      </a>
+    </td>
+    <td class="ModHead" align="center" width="75%">
+      Welcome to atCRM
+    </td>
+    <td width="20%" align="right" class="banner">
+      
+        <table class="bannerTable">
+          <tr>
+            <td align="right" class="banner" >
+              ${banner.userDetails.LoginName}
+            </td>
+          </tr>
+          <tr>
+            <td align="right" class="banner">
+             <a href="${servlet_prefix}/logout.html" target="_top">Logout</a>
+            </td>
+          </tr>
+        </table>
+      
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

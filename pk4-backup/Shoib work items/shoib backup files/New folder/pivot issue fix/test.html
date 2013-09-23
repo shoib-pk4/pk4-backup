@@ -1,0 +1,117 @@
+<html>
+<body>
+
+<script type="text/javascript" src="jquery-latest.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+alert('mdsaw');
+	//this will append scripts to body dynamically
+ 	addHomepageScripts();
+
+ 	//alert(zcServletPrefix+"/custom/JSON/banner.html");
+
+//call webload on dom ready
+ //webload();
+ 
+ /* end of document ready */
+});
+
+ 
+
+function addHomepageScripts() {
+	//Note:- check if string type append is stable, otherwise use array instead
+
+	
+		
+
+//concatenate all the script tags in a single string and finally append it to body
+	var scripts = '';
+		 scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/quickAddPopup.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/contextualMenus.js"><\/script>';	
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jsonList.js?rn=1"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/adhocList.js?rn=1"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/adh360View.js?rn=1"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/pageLevelFns.js?rn=1"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/addEdit.js?rn=1"><\/script> ';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/view.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/search.js?rn=1" ><\/script> ';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/commonElementFunction.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/menu.js?rn=1"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/pickList.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/multiLvlPckList.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/quickAdd.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/dateFormat.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/utils.js?rn=1"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/json2_1.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/validations.js?rn=1"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/linkList.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/invoiceWizardAddEdit.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/filter.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/simpleJSONlist.js"><\/script>	';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/smartsuggestNew.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/dashBoard.js?r=2"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jQueryHistoryNew.js?rn=1" ><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/pointsOnMap.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/date-time-validation.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/report-a-bug.js"><\/script>';
+		scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/addEditTemplates.js"><\/script>';
+
+		// scripts += '<script src="/atCRM/javascript/JSON/jquery-migrate-1.2.1.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/cjquery_unmin.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery-ui.min.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/flexigrid.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.ui.droppable.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.ui.slider.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.effects.core.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.effects.slide.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.scrollabletab.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.ui.tabs.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/descriptor.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/dateValidate.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/custom/advancedAdd/Activity.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/validate.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/ckeditor/ckeditor.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/runReportJ.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/jquery.dataTables.js"><\/script>';
+		// scripts += '<script src="/atCRM/javascript/hc/js/highcharts.js"><\/script>';
+		// scripts += '<script src="/atCRM/javascript/hc/js/modules/exporting.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/funnel.src.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/accounting.min.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/subnav.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/pivot.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/jquery_pivot.js?r=2"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/dataTables.bootstrap.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/jquery.dataTables.min.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/k_pivot.js"><\/script>';		
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/ZeroClipboard.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/TableTools.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/ColReorderWithResize.js"><\/script>';
+		// scripts += '<script src="/atCRM/javascript/JSON/jquery/jquery.hoverIntent.js?nv=1" type="text/javascript"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/jquery/FixedColumns.js"><\/script>';
+		// scripts += '<script src="/atCRM/javascript/JSON/jquery/jquery.layout.js" type="text/javascript"><\/script>';
+		// scripts += '<script src="/atCRM/javascript/changePageLayout.js" type="text/javascript"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.window.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/reminders.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false&key=AIzaSyAFeVSvJqCa9vaqGZWHCBHWQDf_s3_IXCM"><\/script>';
+		// scripts += '<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"><\/script>';
+		// scripts += '<script src="/atCRM/javascript/jquery/tree.jquery.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="/atCRM/javascript/JSON/rept.js"><\/script>';
+		// scripts += '<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.10/socket.io.min.js"><\/script>';
+
+
+		//now append to body
+		try {
+			console.log(scripts);
+			$('body').append(scripts);
+		}
+		catch(e) {
+
+			alert('Unable to append scripts dynamically!!-->' + e);
+		}
+		
+
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pivot Demo</title>
+        <link rel="stylesheet" type="text/css" href="http://192.168.11.11/atCRM/stylesheets/pivot/pivot.css">
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="http://192.168.11.11/atCRM/javascript/JSON/jquery-latest.min.js"></script>
+        <script type="text/javascript" src="http://192.168.11.11/atCRM/javascript/JSON/jquery/jquery.1.10.3.ui.js"></script>
+        <script type="text/javascript" src="http://nicolaskruchten.github.io/pivottable/examples/pivot.js"></script>
+        <script type="text/javascript" src="http://192.168.11.11/atCRM/javascript/jquery/pivot/gchart_renderers.js"></script>
+    </head>
+    <style>
+        * {font-family: Verdana;}
+    </style>
+    <body>
+        <script type="text/javascript">
+           
+            $(function(){
+                var derivers = $.pivotUtilities.derivers;
+                var renderers = $.extend($.pivotUtilities.renderers, 
+                    $.pivotUtilities.gchart_renderers);
+
+                $.getJSON("mps.json", function(mps) {
+                    $("#output").pivotUI(mps, {
+                        renderers: renderers,
+                        derivedAttributes: {
+                            "Age Bin": derivers.bin("Age", 10),
+                            "Gender Imbalance": function(mp) {
+                                return mp["Gender"] == "Male" ? 1 : -1;
+                            }
+                        },
+                        cols: ["Age Bin"], rows: ["Gender"],
+                        rendererName: "Area Chart"
+                    });
+                });
+             });
+             google.load("visualization", "1", {packages:["corechart", "charteditor"]});
+        </script>
+
+        <div id="output" style="margin: 30px;"></div>
+        <div id="outputdf" style="margin: 30px;"></div>
+        <div id="outputgfds" style="margin: 30px;"></div>
+
+    </body>
+</html>

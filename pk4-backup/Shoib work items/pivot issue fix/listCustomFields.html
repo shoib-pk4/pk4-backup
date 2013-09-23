@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+<HEAD>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+    <meta name="generator" content="ZeroCode version V42007.10.01 (Tomcat)">
+	<meta http-equiv="pragma" content="no-cache"> 
+	<title>Custom Fields</title>
+	<!--<if listCustomFields.user.theme>
+	<assign theme=listCustomFields.user.theme__deref.derefValue>
+    <else>
+	<assign theme="green">
+    </if>-->
+   	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/${theme}/main.css">
+   	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/${theme}/quickAdd.css">
+   	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/${theme}/flexigrid.css" >
+   	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/${theme}/jquery.css">
+	<link rel="stylesheet" href="/atCRM/stylesheets/entityView.css">
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/jquery/flexigrid.css">
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/CustomFields.css">
+	<link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/jquery/jquery.impromptu.css">
+<!-- <if listCustomFields.user.theme>
+	<assign  theme=listCustomFields.user.theme__deref.derefValue>
+<else>
+	<assign  theme="green">
+</if>-->
+	<link rel="stylesheet" href="/atCRM/stylesheets/smartSuggest.css"/>	
+	<link rel="stylesheet" href="/atCRM/stylesheets/calendarCF.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/jquery/stylish-select.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/jquery/ui.all.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/jquery/ui.core.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/jquery/jquery.alerts.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/${theme}/jquery.tabs.css"/>
+	<link rel="stylesheet" href="/atCRM/stylesheets/JSON/${theme}/fly.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/general.css"/>
+
+	
+	<link type="text/css" href="/atCRM/stylesheets/JSON/jquery/jquery.ui.all.css" rel="stylesheet" />
+	
+<script src="/atCRM/javascript/JSON/commonElementFunction.js" type="text/javascript" ></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery-1.6.2.js" type="text/javascript" ></script>
+<script src="/atCRM/javascript/JSON/jquery.history.js" type="text/javascript" ></script>  
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.core.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.widget.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.mouse.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.sortable.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.draggable.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.position.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.dialog.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.button.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.resizable.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.ui.autocomplete.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.tabs.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.textareaCharacterCounter.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.alerts.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/jquery/jquery.hoverIntent.js" type="text/javascript"></script>
+
+<script src="/atCRM/javascript/JSON/CLOCK/coolclock.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/CLOCK/moreskins.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/JSON/CLOCK/excanvas.js" type="text/javascript"></script>
+<script src="/atCRM/javascript/descriptor.js"></script>
+<script src="/atCRM/javascript/dateValidate.js"></script>
+<script src="/atCRM/javascript/custom/advancedAdd/Activity.js"></script>
+<script src="/atCRM/javascript/tabIcons.js" type="text/javascript" ></script>
+<script src="/atCRM/javascript/JSON/smartsuggestNew.js" type="text/javascript" ></script>
+<script src="/atCRM/javascript/validate.js" type="text/javascript" ></script>	
+<script type="text/javascript" src="/atCRM/javascript/JSON/calendarCF.js"></script>
+<script type="text/javascript" src="/atCRM/javascript/JSON/jscal2.js"></script>
+<script type="text/javascript" src="/atCRM/javascript/JSON/en.js"></script>
+<script type="text/javascript" src="/atCRM/javascript/JSON/date-time-validation.js"></script>
+<script type="text/javascript" src="/atCRM/javascript/JSON/report-a-bug.js"></script>
+<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.ui.tabs.js"></script>
+<script type="text/javascript" src="/atCRM/javascript/JSON/CreateCustomFields.js"></script>
+<script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery-impromptu.3.3.js"></script>
+<script type="text/javascript">
+	var entity
+	var selectedId;
+	function initialize()
+	{  
+	  var selctEntity='1';
+	  listEntityNames("",selctEntity);
+	  var firstRowId=$('#tbl_listEntity').find('tr:first').attr('id');
+	  var entity=firstRowId;
+	  var entNameLinkId="anchor_"+entity;
+      var entityName=document.getElementById(entNameLinkId).innerHTML;
+	  //if it is firefox browser set margin for table
+	  var valBrwsr = navigator.userAgent.toLowerCase();  
+      if(valBrwsr.indexOf("firefox") > -1)
+       {
+         $("#tbl_mainList").css("margin-top","5px");
+       } 
+	   var iframeHeight=parent.document.getElementById('dyna_html').height;
+	   var frstDivHeight;
+	   var scndDivHt;
+	   if(valBrwsr.indexOf("chrome") > -1)
+       {
+         parent.document.getElementById('dyna_html').height=parseInt(iframeHeight)-12;
+		 iframeHeight=parseInt(iframeHeight);
+		 frstDivHeight=iframeHeight-94+"px";
+		 scndDivHt=iframeHeight-137+"px";
+       }
+	   else      //if(valBrwsr.indexOf("firefox") > -1)
+	   {
+	     parent.document.getElementById('dyna_html').height=parseInt(iframeHeight)-20;
+		 iframeHeight=parseInt(iframeHeight);
+		 frstDivHeight=iframeHeight-105+"px";
+		 scndDivHt=iframeHeight-148+"px";
+		// frstDivHeight=iframeHeight-85+"px";
+		// scndDivHt=iframeHeight-128+"px";
+	   }
+	  document.getElementById("div_lisEntity").style.height=frstDivHeight;
+	  document.getElementById("customFields").style.height=scndDivHt;
+      selectedId=entity;
+	  loadCustomFlds(entity,'0'); 
+	}
+	function changeColor(id)
+	{
+	   $("#"+id).addClass("onHoverTabThemeColor");
+	    $("#anchor_"+id).addClass("hovelinkColor");
+	}
+
+	function retainSameColor(id)
+	{
+		$("#"+id).removeClass("onHoverTabThemeColor");
+		$("#anchor_"+id).removeClass("hovelinkColor");
+	}
+
+	function removeButton()
+	{
+	 document.getElementById("btn_add_field").style.display="none";
+    }
+
+	function displayButton()
+	{
+	 document.getElementById("btn_add_field").style.display="block";
+    }
+    function NewList(id,apiname)
+	{
+	   document.getElementById("entt_api").value=apiname;
+	    if(selectedId)
+	   {
+        $("#td_"+selectedId).removeClass("selectedEntityTabColor");
+	    }
+        selectedId=id;
+	    loadCustomFlds(id);
+	}
+	$(document).ready(function() {
+		initialize();
+	});
+	</script>
+
+<style> 
+/*********************
+GLOBAL ATTRIBUTES
+*********************/
+div.top-left-corner, div.bottom-left-corner, div.top-right-corner, div.bottom-right-corner
+{position:absolute; width:20px; height:20px; background-color:white; overflow:hidden;}
+
+div.top-left-inside, div.bottom-left-inside, div.top-right-inside, div.bottom-right-inside {position:relative; font-size:150px; font-family:arial; color:#E2E2E2; line-height: 40px;}
+
+div.top-left-inside-gray, div.bottom-left-inside-gray, div.top-right-inside-gray, div.bottom-right-inside-gray {position:relative; font-size:150px; font-family:arial; color:#EFEFEF; line-height: 40px;}
+
+/*********************
+SPECIFIC ATTRIBUTES
+*********************/
+
+div.top-left-corner { top:0px; left:0px; }
+div.bottom-left-corner {bottom:0px; left:0px;}
+div.top-right-corner {top:0px; right:0px;}
+div.bottom-right-corner {bottom: 0px; right:0px;}
+
+div.top-left-inside {left:-12px;}
+div.bottom-left-inside {left:-10px; top:-15px;}
+div.top-right-inside {left:-23px;}
+div.bottom-right-inside {left:-24px; top:-15px;}
+
+div.top-left-inside-gray {left:-12px;}
+div.bottom-left-inside-gray {left:-10px; top:-15px;}
+div.top-right-inside-gray {left:-23px;}
+div.bottom-right-inside-gray {left:-24px; top:-15px;}
+
+ .linkCSS
+ {
+  text
+ }
+ .divStyle
+ {
+   overflow-x: hidden;
+   overflow-y: scroll;
+ }
+ .div_list
+ {
+   <!--background-color:#C2C2C2;-->
+   border:0px solid #C2C2C2;
+  <!-- border-radius:7px;-->
+  <!---moz-border-radius:5px;-->
+  <!---webkit-border-radius :7px;-->
+ }
+ .lbl_head
+    {
+       font-family: Tahoma,Verdana,Trebuchet MS;
+       font-size: 14px;
+       color: black;
+       font-weight: bold;
+    }
+.divContStyle
+{
+   font-size: 12px;
+   font-family: Tahoma,Verdana,Trebuchet MS;
+   font-weight: normal;
+}
+.deleteField
+{
+    border: thin solid gray;
+    border-radius: 5px 5px 5px 0;
+    cursor: pointer;
+    display: none;
+    margin-left: 53px;
+    margin-top: -10px;
+    padding: 1px 1px 1px 2px;
+    position: absolute;
+    width: 20px;
+    z-index: 1;
+	background-color:#F5F5F5;
+	background: rgba(245,245,245,0.9);
+
+}
+
+.divContStyle td:hover .deleteField
+{
+	display: block;
+}
+#dyna_html {
+	overflow-x:hidden;overflow-y:auto;background-color:#424242;
+}
+</style>
+</HEAD>
+<script src="/atCRM/javascript/JSON/listCustomFields.js"></script>
+<BODY  width="95%" style='overflow-x:hidden;overflow-y:auto;background-color:#424242'><!---->
+   <table border="0" style="width:100%;">
+	<tr>
+	<td class="main_header" style="width:40%;">Objects</td>
+	<td style="width:60%"><span id="deletingDiv" style="display:none;font-family:tahoma;font-size:15px;color:white;"><!--<img  src="/atCRM/images/LoadImg/loading123.gif" style="margin-left:15px;"/><br/>--><span style="margin-left:40px">Deleting...</span></span></td>
+	</tr>
+	<tr></tr>
+	<tr></tr>
+	</table>
+	<span class="listField_text" >
+			This page lists all the entities that support custom fields and the fields that are available for a particular entity. 
+			Click on the button "Add" to add a custom field.
+	</span>
+	
+	<span class="listField_text" style="float:right;margin-left:100px;">
+			<a style="position:relative;right:30px" href="javascript:customObj();" class="link_addStyle" title="Click to add new object"><b>Add new object</b></a>
+	</span>
+	<br>
+	<br>
+	
+   <!-- <input type="hidden" name="0-1101" id="0-1101" value="${listCustomFields.getEntityId}"/>
+    <input type="hidden" name="0-1201-1203" id="0-1201-1203" value="${listCustomFields.getEntityName.EntityName}"/>-->
+	<input type="hidden" id="api_val" name="api_val"/>
+	<input type="hidden" id="hidd_descr" name="hidd_descr"/>
+	<input type="hidden" id="hidd_cnt" name="hidd_cnt"/>
+	<input type="hidden" id="td_count" name="td_count"/>
+	<input type="hidden" id="entt_api" name="entt_api"/>
+	<div id="commonPopupDiv" class="themeBorderForTab" name="commonPopupDiv" title="" style="height:120px;display:none"></div>
+	<!--<div id="deletingDiv" title="Deleting" align="center" style="display:none;font-size:15px;color:white;font-family:tahoma;">
+	<img src="/atCRM/images/LoadImg/loading123.gif"/>
+    </div>-->
+	<table id="tbl_mainList" width="99.5%" cellpadding="0" cellspacing="0" align="center" style="border:0px solid #E2E2E2;margin:0px">
+		<tr style="margin:0px;">
+		<td width="20%" valign="top" id="dataTd" name="dataTd" style="border:0px solid #FFFFFF;margin:0px">
+           <div id="div_lisEntity" name="div_lisEntity" valign="top" class="divStyle">
+		 </div> 
+	</td>
+	<td width="80%" class="themeBorderForSelected" valign="top" height="100%" style="background-color:white">
+     <div id="div_list_fields" style="border:0px solid red" height="100%">
+	   <div id="div_title" width="100%" style="border:0px solid #C2C2C2" class="selectedEntityTabColor">
+	   <table width="100%">
+	   <tr><td width="50%">
+	   <div>&nbsp;&nbsp&nbsp<label id="lbl_title" align="left" class="lbl_head"></label>&nbsp;&nbsp<a id="a_EditObject" style="color:black;font-size:12px;font-family:tahoma;text-decoration:underline;"><img src="/atCRM/images/edit.gif"/></a></div></td>
+	   <td width="50%"><div align="right"><input id="btn_add_field" name="btn_add_field" type="button" style="position:relative;right:35px" title="Add new field">
+	   </div>
+	   <script>
+	   $( "#btn_add_field" ).button({
+			   label:'Add'
+			});
+	   </script>
+	   </td></tr>
+	   </table>
+	   </div>
+	<div id="customFields" name="customFields"  width="100%" style="overflow-x:hidden;overflow-y:scroll;"></div>
+		<!--<div id="load_Div" title="Loading" style="display:none;">-->
+		<img id="load_Div" style="display:none;position:relative;top:150px;left:300px" src="/atCRM/images/LoadImg/ajax-loader.gif"/>
+		<!--</div>-->
+   </div>			 
+  </td>
+  </tr>
+  </table>
+</BODY>
+</HTML>

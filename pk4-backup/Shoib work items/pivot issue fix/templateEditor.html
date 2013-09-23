@@ -1,0 +1,461 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <title> Template edotor </title>
+  <meta name="Generator" content="EditPlus">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/jquery/ui.all.css">
+  <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/templates.css">
+  <link rel="Stylesheet" type="text/css" href="/atCRM/javascript/jHtmlArea-0.7.5/style/jHtmlArea.css" />
+  <script type="text/javascript" src="/atCRM/javascript/JSON/commonElementFunction.js"></script>
+  <script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery.js"></script>
+  <script type="text/javascript" src="/atCRM/javascript/jquery/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/atCRM/javascript/jquery/jquery-ui-1.8.21.custom.min.js"></script>
+  <script src="/atCRM/javascript/JSON/jquery/jquery.ui.widget.js"></script>
+  <script src="/atCRM/javascript/JSON/jquery/jquery.ui.core.js"></script>
+  <script src="/atCRM/javascript/JSON/jquery/jquery.ui.tabs.js"></script>
+  <script src="/atCRM/javascript/JSON/jquery/jquery.ui.button.js"></script>
+  <script src="/atCRM/javascript/JSON/jquery/jquery.ui.draggable.js"></script>
+  <script type="text/javascript" src="/atCRM/javascript/JSON/templateEditor.js"></script>
+  <script type="text/javascript">
+  var posX;
+  var posY;
+	  $(function() {
+			$("#tabs").tabs({});
+		}); 
+	 $(function() {
+			$("#editorTab").tabs({});
+		});
+	/*  $(function() {
+        //define config object
+        var dragOpts = {
+            cursorAt: {
+            top: 0,
+            left: 0
+          } 
+        };
+
+        $(".leftLnkDiv").draggable(dragOpts);
+       });   */
+		var navBarID = "leftMenuDiv";
+		var bodyObject;
+		var navBarObject;
+
+		window.onload = function () {
+		var bodyObject = document.getElementsByTagName('body')[0];
+		var navBarObject = document.getElementById(navBarID);
+		navBarObject.style.position = "absolute";
+
+		window.onscroll = function () {
+		   var scrollPosition = document.body.scrollTop || document.documentElement.scrollTop;
+		    navBarObject.style.top = (scrollPosition+15) + "px";
+		}
+		}
+		$(document).ready(function() {
+		      /* $(function(){
+				$( "#editorDiv_sub" ).sortable({
+				    items:'div.editDivStyle', //the div which we want to make sortable            
+                    scroll:true,
+					start: function(e, ui ){
+						 ui.placeholder.height(ui.helper.outerHeight());
+					}
+				}).disableSelection();
+				});*/
+				$(".leftLnkDiv").draggable({
+					helper: function(event) {
+						return $('<span id="drag_span" style="color:white;"/>').text($(this).text());
+					  },
+					zIndex: 100,
+					grid: [ 20, 20 ],
+					drag: function( event, ui ) {
+                          //  console.log("ui-left->"+ui.helper.position().left +','+"ui-top->"+ ui.helper.position().top);
+					}
+				});
+				$("#editorDiv_sub").droppable({
+						accept: ".leftLnkDiv",
+						activeClass: "ui-state-hover",
+						hoverClass: "ui-state-active",
+						tolerance:"pointer",
+						over: function( event, ui ) {
+						   //document.getElementById("editorDiv_sub").setAttribute("onmouseOver","javascript:createDivOnOver();");
+						   //var topPos =ui.position.top;
+						   //var leftPos=ui.position.left;
+						   var x = event.pageX - $(this).offset().left;
+                           var y = event.pageY - $(this).offset().top;
+						   //console.log("x-"+x+"//ui-left->"+ui.helper.position().left +','+"y->"+y+"ui-top->"+ ui.helper.position().top); 
+						   $("#editorDiv_sub").mousemove(function(e){
+						      posX=e.pageX;
+							  posY=e.pageY;
+							  //console.log(e.pageX +', '+ e.pageY);  
+						   }); 
+						   //console.log(x,y);
+						   //var obj=document.elementFromPoint(leftPos,topPos);
+						   //obj.style.border="1px solid red";
+						},
+						out: function( event, ui ) {
+						  // var topPos =ui.position.top;
+						   //var leftPos=ui.position.left;
+						   //var obj=document.elementFromPoint(leftPos,topPos);
+						  // obj.style.border="none";
+						  //$("#editorDiv_sub").mousemove(function(e){
+							//  //console.log(e.pageX +', '+ e.pageY);  
+						  // }); 
+						},
+						activate: function(event, ui) {
+					      document.getElementById("editorDiv_sub").style.border="1px solid black";
+						},
+						deactivate: function(event, ui) {
+						    document.getElementById("editorDiv_sub").style.border="none";
+						},
+						drop: function( event, ui ) {
+						var topPos =ui.position.top;
+						var leftPos=ui.position.left;
+						var obj=document.elementFromPoint(leftPos,topPos);
+						var tagName;
+						if(obj.tagName) {
+						  tagName=obj.tagName;
+						  console.log(tagName);
+						}
+						//alert("TagName--"+obj.tagName);
+						var partNode=obj.parentNode;
+						var partNodeTagLower=obj.parentNode.tagName.toLowerCase();
+						//var parentNodeClass=partNode.className;
+						var parentNodeid=partNode.id;
+						var trNode;
+						if(tagName && tagName.toLowerCase() == "table" && obj.id =="customizeContentArea"){
+						 //alert("customizeContentArea");
+						}
+						else {
+						  try{
+							while(parentNodeid !="customizeContentArea")//partNodeTagLower !="table" && 
+							{
+							   trNodeParent=partNode.parentNode.parentNode;
+							   //alert("LoweCase-->"+partNode.tagName.toLowerCase()+"<--->id-->"+partNode.id);
+							   if(partNode && partNode.tagName.toLowerCase()=="tr" && trNodeParent.id == "customizeContentArea")
+							   {
+								 trNode=partNode;
+								 //alert("partNode-"+partNode+"//trNodeParent-"+trNodeParent.id);
+							   }
+							   partNode=partNode.parentNode;
+							   partNodeTagLower=partNode.tagName.toLowerCase();
+							   parentNodeid=partNode.id;
+							  // alert("partNodeTagLower-"+partNodeTagLower+"<--id-->"+parentNodeid+"trNode->"+trNodeParent.id);
+							}
+							}
+						catch(e){
+						   alert("Error");
+						}
+							//alert("partNodeTagLower-->"+partNodeTagLower);
+						}
+						//alert(partNodeTagLower+"<----->"+parentNodeid+"trNode-->"+trNode.tagName);
+						//obj.style.border="1px solid red";
+						var currentId = $(ui.draggable).attr('id');
+						switch(currentId)
+						{
+						     case "textBlock":
+							 $("<tr><td colspan='2'><div style='width:100%' class='editDivStyle'><p style='font-size:14px;font-family:tahoma;'>As a full-service management consulting firm, we partner with our clients to deliver solutions that help solve their most complicated needs. Our services are designed specifically to help small businesses, and at a small business price. Utilizing decades of industry experience and functional expertise, Management Consulting goes beyond the norm to develop new insights, drive results, and help grow your business.</p></div></td></tr>").insertAfter(trNode);
+							  setEditableBlocks();
+							 break;
+							 case "header":
+							  //alert("header dropped");
+							  $("<tr><td colspan='2'><div style='width:100%' class='editDivStyle'><span style='text-align:center;color:blue;font-size:16px;font-family:tahoma;'>Header</span></div></td></tr>").insertAfter(trNode);
+							  setEditableBlocks();
+							  break;
+							 case "title":
+							  //alert("title dropped");
+							  $("<tr><td colspan='2' class='title'><div class='editDivStyle' style='width:100%'><span style='text-align:center;font-size:16px;font-family:tahoma;color:blue;font-weight:bold;'>Title</span></div></td></tr>").insertAfter(trNode);
+							  setEditableBlocks();
+							  break;
+							 case "subtitle":
+							  $("<tr><td colspan='2'><div class='editDivStyle' style='width:100%'><div style='text-align:center;font-size:16px;font-family:tahoma;color:blue;font-weight:bold;'><span id='subTit_span1' style='display:block;'>Main Title</span><span id='subTit_span2' style='display:block;font-size:12px;color:black;'>Subtitle</span></div></div></td></tr>").insertAfter(trNode);
+							  setEditableBlocks();
+							  break;
+							 case "image":
+							  $("<tr><td colspan='2' class='image'><div class='editDivStyle' style='width:100%;text-align:center;'><img src='/atCRM/images/JSON/templateIcons/image_big_2.png' title='Click here to add image'/></div></td></tr>").insertAfter(trNode);
+							  setEditableBlocks();
+							  break;
+							 case "imageText":
+							  $("<tr><td colspan='2' class='imageText'><div style='width:100%'><table style='width:100%'><tr><td style='width:50%;text-align:center;'><div class='editDivStyle'><img src='/atCRM/images/JSON/templateIcons/image_big_2.png' title='Click here to add image'/></div></td><td id='td_text' style='width:50%;font-size:14px;font-style:tahoma;'><div class='editDivStyle'>Our goal is to help make your business as efficient and profitable as possible. We will work with you to help solve your problems.</div></td></tr></table></div></td></tr>").insertAfter(trNode);
+							  setEditableBlocks();
+							  break;
+							 case "textImage":
+							  $("<tr><td colspan='2' class='textImage'><div style='width:100%'><table style='width:100%'><tr><td id='td_text' style='width:50%;font-size:14px;font-style:tahoma;'><div class='editDivStyle'>Our goal is to help make your business as efficient and profitable as possible. We will work with you to help solve your problems.</div></td><td style='width:50%;text-align:center;'><div class='editDivStyle'><img src='/atCRM/images/JSON/templateIcons/image_big_2.png' title='Click here to add image'/></div></td></tr></table></div></td></tr>").insertAfter(trNode);
+							  setEditableBlocks();
+							  break;
+							 case "content_divider":
+							  $("<tr><td colspan='2' class='dividerStyle'><div class='editDivStyle' style='width:100%'><hr style='border:2px solid lightgrey;'></div></td></tr>").insertAfter(trNode);
+							  setEditableBlocks();
+							  break;
+						 }
+						}
+					});
+			   setEditableBlocks();
+            $("head").append("<link rel='stylesheet' type='text/css' href='/atCRM/stylesheets/JSON/jquery/jquery.window.css'>");
+	        $("head").append("<script type='text/javascript' src='/atCRM/javascript/JSON/jquery/jquery.window.js'><\/script>");
+			$("head").append("<link rel='stylesheet' type='text/css' href='/atCRM/stylesheets/JSON/jquery/jquery.lightbox-0.5.css'/>");
+	        $("head").append("<script type='text/javascript' src='/atCRM/javascript/JSON/jquery/jquery.lightbox-0.5.js'><\/script>");
+			//window.document.body.style.overflow="hidden";
+			parent.document.body.style.overflow="hidden";
+	  });
+	/* function showPosition(evt)
+	 {
+	   alert(evt.pageX + ' ' + evt.pageY);
+	 }*/
+ </script>
+ </head>
+ <body style="background-color:#F7F7F7;overflow-x:hidden;height:100%;"><!--style="background-color:#F7F7F7;"-->
+ <table style="width:100%;">
+ <tr>
+ <td style="width:25%"></td>
+ <td style="width:75%"></td>
+ </tr>
+ <tr>
+ <td style="vertical-align:top;width:25%">
+     <div id="leftMenuDiv" style="width:25%"><!--style="width:100%"-->
+     <div id="tabs">
+		  <ul style="height:40px;">
+			<li style="margin-left:3%;height:39px;width:46%;"><a href="#optionTab" id="datTab" class="tabStyle">Options</a></li><!--width:50%;-->
+			<li style="height:39px;width:46%"><a href="#fieldTab" id="setUpTab" class="tabStyle">Fields</a></li><!--width:45%;-->
+		  </ul>
+		  <div id="optionTab" name="optionTab" style="border:1px solid #ADADAD;height:100%;background-color:white;padding:0px;">
+		     <!-- <div class="leftLnkDiv"><a href="#" onclick="javascript:showTemplates();" class="leftMnuLinks">Templates</a></div> -->
+			 <div id="textBlock" class="leftLnkDiv"><img src="/atCRM/images/JSON/templateIcons/textBlock.png" style="padding-left:15%;"/><a href="#" class="leftMnuLinks">Text block</a></div>
+			 <!-- ondragstart="javascript:startEvent(this)" ondragend="javascript:dragEndEvent(event);" -->
+			 <div id="header" class="leftLnkDiv"><img src="/atCRM/images/JSON/templateIcons/header.png" style="padding-left:15%;"/><a href="#" class="leftMnuLinks">Header</a></div>
+			 <!-- class="ui-widget-content" ondragstart="javascript:startEvent(this)" ondragend="javascript:dragEndEvent(event);" -->
+			 <div id="title" class="leftLnkDiv"><img src="/atCRM/images/JSON/templateIcons/title.png" style="padding-left:15%;"/><a href="#" class="leftMnuLinks">Title</a></div>
+			  <!-- class="ui-widget-content" ondragstart="javascript:startEvent(this)" ondragend="javascript:dragEndEvent(this);" -->
+			 <div id="subtitle" class="leftLnkDiv"><img src="/atCRM/images/JSON/templateIcons/subTitle.png" style="padding-left:15%;"/><a href="#" class="leftMnuLinks">Subtitle</a></div>
+			 <!-- class="ui-widget-content" ondragstart="javascript:startEvent(this)" ondragend="javascript:dragEndEvent(this);" -->
+			 <div id="image" class="leftLnkDiv"><img src="/atCRM/images/JSON/templateIcons/imageBlock.png" style="padding-left:15%;"/><a href="#" class="leftMnuLinks">Image</a></div>
+			 <!-- class="ui-widget-content" ondragstart="javascript:startEvent(this)" ondragend="javascript:dragEndEvent(this);" -->
+			 <div id="textImage" class="leftLnkDiv"><img src="/atCRM/images/JSON/templateIcons/textImage.png" style="padding-left:15%;"/><a href="#" class="leftMnuLinks">Text & Image</a></div>
+			 <!-- class="ui-widget-content" ondragstart="javascript:startEvent(this)" ondragend="javascript:dragEndEvent(this);" -->
+			 <div id="imageText" class="leftLnkDiv"><img src="/atCRM/images/JSON/templateIcons/imageTextBlock.png" style="padding-left:15%;"/><a href="#" class="leftMnuLinks">Image & Text</a></div>
+			 <!-- class="ui-widget-content" ondragstart="javascript:startEvent(this)" ondragend="javascript:dragEndEvent(this);" -->
+			 <div id="content_divider" class="leftLnkDiv"><img src="/atCRM/images/JSON/templateIcons/divider.png" style="padding-left:15%;"/><a href="#" class="leftMnuLinks">Content Divider</a></div>
+		  </div>
+		  <div id="fieldTab" name="fieldTab" style="border:1px solid #ADADAD;height:100%;background-color:white;">
+		  </div>
+	 </div>
+	 </div>
+ </td>
+ <td style="vertical-align:top;width:75%">
+ <div id="rightEditorDiv"><!--ondrop="ShowResults()"-->
+     <div id="editorTab">
+		  <ul style="height:40px;width:100%;">
+		  <div style="padding-top:1%;width:10px;float:left;display:inline-block;"><a href="#" onclick="javascript:showTemplates();" class="template_lnk" title="Default templates">Templates</a></div><!---->
+		  <!-- <input id="btn_save" type="button" value="Save" style="float:right;margin-right:2%;height:32px;"> -->
+		  <script type="text/javascript">
+		  $("#btn_save").button();
+		  </script>
+		  </ul>
+		  <div id="editorDiv_main" name="editorDiv_main" style="border:1px solid #ADADAD;width:100%;background-color:white;padding:5px;"><!--overflow-y:scroll;-->
+		  <span><img id='loadData_Img' src='/atCRM/images/LoadImg/ajax-loader_validate.gif'/></span>
+		  <script type="text/javascript">
+			 var reqHt=parent.document.getElementById('htmlIframe').height;
+			 reqHt=parseInt(reqHt.replace("px",""));
+			 reqHt=(reqHt/2)+"px";
+			 var reWidth=parent.document.getElementById('htmlIframe').width;
+			 reWidth=parseInt(reWidth.replace("px",""));
+			 reWidth=(reWidth/2)+"px";
+			 var loadDataImg=document.getElementById("loadData_Img");
+			 loadDataImg.style.marginTop=reqHt;
+			// loadDataImg.style.marginLeft=reWidth;
+			loadDataImg.style.position="absolute";
+			loadDataImg.style.left=reWidth;
+			 /*  var loadDataImg=document.getElementById("loadData_Img");
+			    var mainDiv = document.getElementById("editorDiv_main");
+				var objWidth=mainDiv.offsetWidth;
+				var objHeight=mainDiv.offsetHeight;
+				objWidth=(objWidth/2)-10px;
+				objHeight=(objHeight/2)-10px;
+				$(loadDataImg).offset({top:topPos,left:objWidth});*/
+	   </script>
+	   <div style="height:30px;background-color:#F7F7F7;">&nbsp;</div>
+		  <div id="editorDiv_sub" style="height:100%;">
+		           <title>Invoice</title>	
+		<table width="100%" border="0" id="customizeContentArea" cellspacing="0" cellpadding="0" style="padding:60px 40px 40px 40px;">
+			<tbody><tr>
+				<td width="50%" valign="top" style="padding-bottom:6px;">
+					<div class="editDivStyle">
+					<img src="/atCRM/images/predefined_tmpltimages/NLTMPLTIMG03.gif"/>
+					</div>
+					<!--<p style="height:auto; width:auto;"></p>-->
+				</td>
+				<td valign="top" align="right" style="padding-bottom:16px">
+				<div class="editDivStyle">
+					<font size="2" face="Arial"><b>%CompanyName%</b></font><br>
+					<span style="line-height:14px;">
+                   	 <font size="1" face="Arial">
+                    	%CompanyStreetAddress1%<br>
+						%CompanyStreetAddress2%<br>
+						%CompanyCity%, %CompanyState% %CompanyPostalCode%<br>
+						%CompanyCountry%<br>
+                        %CompanyPhone%<br>
+                        </font>
+                    </span>
+				</div>
+				</td>
+			</tr>
+			<tr height="20" valign="top">
+				<td colspan="2">
+					<table width="100%" cellpadding="O" cellspacing="0">
+						<tbody><tr>
+							<td><hr size="3" color="black"></td>
+							<td width="65" align="center" style="padding: 0 15px; margin:0;"><font size="4" face="Arial" style="white-space:nowrap;"><b><i>INVOICE</i></b></font></td>
+							<td width="15%"><hr size="3" color="black"></td>
+						</tr>
+					</tbody></table>
+				</td>
+			</tr>
+			<tr>
+				<td valign="top" style="padding:16px 0px 0px 0px;">
+				<div class="editDivStyle">
+					<table width="60%" style="margin:20px 0px 0px 6px;&quot; " border="1" cellspacing="0" cellpadding="2" frame="border" rules="all" bordercolor="#000000">
+						<tbody><tr>
+							<td valign="bottom" bgcolor="#e8e8e8" style="border-bottom:1px solid #000"><font size="1" face="Arial">Bill To:</font></td>
+						</tr>
+						<tr>
+							<td nowrap="" height="98" valign="top" style="line-height:14px;">
+									<font size="2" face="Arial"><b>%CustomerName%</b></font><br>
+                                    <font size="1" face="Arial">
+									%CustomerBAddress%<br>
+									%CustomerBCity%, %CustomerBState%<br>
+									%CustomerBCountry%<br></font>
+							</td>
+						</tr>
+					</tbody></table>
+					</div>
+				</td>
+				<td valign="top" align="right" style="padding-top:16px;">
+				<div class="editDivStyle">
+					<table width="72%" align="right" style="margin-top:20px; margin-bottom:15px;&quot; " border="1" cellspacing="0" cellpadding="2" frame="border" rules="all" bordercolor="#000000">
+						<tbody><tr bgcolor="#c0c0c0">
+							<td valign="bottom" height="20" width="34%" style="border-bottom:1px solid #000; border-right:1px solid #000;"><font size="1" face="Arial">DATE</font></td>
+                            <td valign="bottom" width="33%" style="border-bottom:1px solid #000; border-right:1px solid #000;"><font size="1" face="Arial">INVOICE#</font></td>
+                            <td valign="bottom" width="33%" style="border-bottom:1px solid #000;"><font size="1" face="Arial">P.O.#</font></td>
+					  </tr>
+                        <tr>
+							<td valign="middle" height="27px" style="border-bottom:1px solid #000; border-right:1px solid #000;"><font size="1" face="Arial">%InvoiceDate%</font></td>
+                            <td valign="middle" height="27px" style="border-bottom:1px solid #000; border-right:1px solid #000;"><font size="1" face="Arial">%InvoiceNumber%</font></td>
+                            <td valign="middle" height="27px" style="border-bottom:1px solid #000;"><font size="1" face="Arial">%P.O.Number%</font></td>
+						</tr>
+                        <tr bgcolor="#c0c0c0">
+							<td valign="bottom" height="20" nowrap="" style="border-bottom:1px solid #000; border-right:1px solid #000;"><font size="1" face="Arial">Amount Due</font></td>
+                            <td valign="bottom" style="border-bottom:1px solid #000; border-right:1px solid #000;"><font size="1" face="Arial">TERMS</font></td>
+                            <td valign="bottom" style="border-bottom:1px solid #000;"><font size="1" face="Arial">DUE DATE</font></td>
+						</tr>
+                        <tr>
+							<td valign="middle" height="27px" style="border-right:1px solid #000;"><font size="1" face="Arial">%InvoiceBalance%</font></td>
+                            <td valign="middle" height="27px" style="border-right:1px solid #000;"><font size="1" face="Arial">%PaymentTerms%</font></td>
+                          <td valign="middle" height="27px"><font size="1" face="Arial">%DueDate%</font></td>
+					  </tr>
+					</tbody></table>
+					</div>
+				</td>
+			</tr>
+            <tr>
+				<td colspan="2">
+				<div class="editDivStyle">
+					<table width="100%" border="0" cellspacing="0" height="350" cellpadding="0" style="border:1px solid #000;">
+                    	<thead>
+							<tr bgcolor="#e8e8e8" height="20">
+								<td valign="bottom" style="width: 20%; border-right:1px solid #000; border-bottom:1px solid #000; padding:0px 0px 1px 3px;"><font size="1" face="Arial"><b>Item</b></font></td>
+								<td valign="bottom" style="width: 35%; border-right:1px solid #000; border-bottom:1px solid #000; padding:0px 0px 1px 3px;"><font size="1" face="Arial"><b>Description</b></font></td>
+								<td valign="bottom" style="width: 8%; border-right:1px solid #000; border-bottom:1px solid #000; padding:0px 3px 1px 0px;" align="right"><font size="1" face="Arial"><b>Qty</b></font></td>
+								<td valign="bottom" style="width: 11%; border-right:1px solid #000; border-bottom:1px solid #000; padding:0px 3px 1px 0px;" align="right"><font size="1" face="Arial"><b>Price</b></font></td>
+								<td nowrap="" valign="bottom" style="width: 11%; border-right:1px solid #000; border-bottom:1px solid #000; padding:0px 3px 1px 0px;" align="right"><font size="1" face="Arial"><b>Discount(%)</b></font></td>
+								<td valign="bottom" style="width: 23%; border-bottom:1px solid #000;  height: 10px; padding:0px 3px 1px 0px;" align="right"><font size="1" face="Arial"><b>
+	Amount</b></font></td>
+							</tr>
+                        </thead>
+						<tbody id="lineItem">
+							<tr height="18">
+								<td valign="top" style="border-right:1px solid #000; padding:4px 3px;"><font size="1" face="Arial">%ItemName%</font></td>
+								<td valign="top" style="border-right:1px solid #000; padding:4px 3px;"><font size="1" face="Arial">%ItemDescription%</font></td>
+								<td valign="top" style="border-right:1px solid #000; padding:4px 3px;" align="right"><font size="1" face="Arial">%ItemQty%</font></td>
+								<td valign="top" style="border-right:1px solid #000; padding:4px 3px;" align="right"><font size="1" face="Arial">%ItemRate%</font></td>
+								<td valign="top" style="border-right:1px solid #000; padding:4px 3px;" align="right"><font size="1" face="Arial">%ItemDiscount%</font></td>
+								<td valign="top" align="right" style="padding:4px 3px;"><font size="1" face="Arial">%ItemAmount%</font></td>
+							</tr>
+						</tbody>
+							<tbody><tr>
+								<td style="border-right:1px solid #000;"><font size="1" face="Arial">&nbsp;</font></td>
+								<td style="border-right:1px solid #000;"><font size="1" face="Arial">&nbsp;</font></td>
+								<td style="border-right:1px solid #000;"><font size="1" face="Arial">&nbsp;</font></td>
+								<td style="border-right:1px solid #000;"><font size="1" face="Arial">&nbsp;</font></td>
+								<td style="border-right:1px solid #000;"><font size="1" face="Arial">&nbsp;</font></td>
+								<td><font size="1" face="Arial">&nbsp;</font></td>
+							</tr>
+					</tbody></table>
+                  </div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding-top:16px;">
+						<tbody><tr><td valign="top" width="50%"><font size="1" face="Arial">%Notes%</font></td>
+						<td>
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tbody><tr>
+                                	<td width="120"><font size="1" face="Arial">&nbsp;</font></td>
+									<td align="right" style=" padding:4px;"><font size="1" face="Arial">Sub Total:</font></td>
+									<td align="right" width="33%" style="padding:4px 0px 4px 4px;"><font size="1" face="Arial">%InvoiceSubTotal%</font></td>
+								</tr>
+								</tbody><tbody id="taxItems">
+									<tr>
+                                    	<td><font size="1" face="Arial">&nbsp;</font></td>
+										<td align="right" style="padding:2px 4px 4px 4px;"><font size="1" face="Arial">%TaxName%</font></td>
+										<td align="right" style="padding:2px 0px 4px 4px;"><font size="1" face="Arial">%TaxValue%</font></td>
+									</tr>
+								</tbody>
+								<tbody><tr>
+                                	<td><font size="1" face="Arial">&nbsp;</font></td>
+									<td align="right" style="padding:6px 4px 4px 4px;border-top:1px solid black; "><font size="1" face="Arial"><b>Total:</b></font></td>
+									<td align="right" style="padding:6px 0px 4px 4px;border-top:1px solid black; "><font size="1" face="Arial">%InvoiceTotal%</font></td>
+								</tr>
+								<tr>
+                                	<td><font size="1" face="Arial">&nbsp;</font></td>
+									<td align="right" style="padding:6px 4px 4px 4px;"><font size="1" face="Arial">Late Fee:</font></td>
+									<td align="right" style="padding:6px 0px 4px 4px;"><font size="1" face="Arial">%LateFee%</font></td>
+								</tr>
+								<tr>
+                                	<td><font size="1" face="Arial">&nbsp;</font></td>
+									<td align="right" style=" padding:6px 4px 4px 4px;"><font size="1" face="Arial">Payment Made:</font></td>
+									<td align="right" style=" padding:6px 0px 4px 4px; color:red;"><font size="1" face="Arial">%PaymentMade%</font></td>
+								</tr>
+                                                                <tr>
+                                	<td><font size="1" face="Arial">&nbsp;</font></td>
+									<td align="right" style="border-bottom:1px solid black; padding:6px 4px 4px 4px;"><font size="1" face="Arial">Credits Applied:</font></td>
+									<td align="right" style="border-bottom:1px solid black; padding:6px 0px 6px 4px; color:red;"><font size="1" face="Arial">%CreditsApplied%</font></td>
+								</tr>
+								<tr>
+                                	<td><font size="1" face="Arial">&nbsp;</font></td>
+									<td align="right" style="border-bottom:1px solid black; padding:6px 4px 6px 4px;"><font size="1" face="Arial"><b>Balance Due:</b></font></td>
+									<td align="right" style="border-bottom:1px solid black; padding:6px 0px 6px 4px;"><font size="1" face="Arial"><b>%InvoiceBalance%</b></font></td>
+								</tr>
+							</tbody></table>
+						</td>
+					</tr></tbody></table>
+				</td>
+			</tr>
+            <tr>
+            	<td colspan="2" style="padding-top:20PX;">
+                	<font size="1" face="Arial"><div class="editDivStyle"><b>Terms &amp; Conditions</b><br>%TermsAndCondition%</div></font>
+				</td>
+            </tr>
+		</tbody></table>
+
+           </div>
+		  </div>
+	 </div>
+	 </div>
+ </td>
+ </tr>
+ </table>
+ <script type="text/javascript" src="/atCRM/javascript/jHtmlArea-0.7.5/scripts/jHtmlArea-0.7.5.js"></script>
+ </body>
+</html>

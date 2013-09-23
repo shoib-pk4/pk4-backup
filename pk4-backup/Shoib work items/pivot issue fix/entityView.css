@@ -1,0 +1,1469 @@
+.calendarTableClass
+{
+    BACKGROUND: #eeeeee;
+    FONT-FAMILY: verdana, tahoma;
+    FONT-SIZE: 9px;
+    FONT-WEIGHT: bold
+}
+.calendarTableCaptionClass
+{   
+    background-image: url('/atCRM/images/yearBg.gif');
+    border: 1px solid #B4B4B4;
+    FONT-FAMILY:tahoma;
+    FONT-SIZE: 7pt;
+
+}
+.arrowClass
+{
+    BACKGROUND: #cccccc
+}
+
+
+.listTableRow
+{
+    BACKGROUND-COLOR: #eeeeee;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt
+}
+
+.CellCont
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt
+}
+.ModHead
+{
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma,  Times New Roman;
+    FONT-SIZE: 12pt;
+    FONT-WEIGHT: bold;
+    TEXT-ALIGN: left;
+    font-style: italic
+}
+.TblCont
+{
+    BACKGROUND-COLOR: #9db5d1;
+    BORDER-BOTTOM: 0pt;
+    BORDER-LEFT: 0pt;
+    BORDER-RIGHT: 0pt;
+    BORDER-TOP: 0pt;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+    PADDING-RIGHT: 0pt;
+    TEXT-ALIGN: left
+}
+
+.TblContVertical
+{
+    BACKGROUND-COLOR: #EDF3F8;
+    BORDER-BOTTOM: 0pt;
+    BORDER-LEFT: 0pt;
+    BORDER-RIGHT: 0pt;
+    BORDER-TOP: 0pt;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+    PADDING-RIGHT: 0pt;
+    TEXT-ALIGN: left
+}
+.TblHeadVertical1
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+}
+.TblHead
+{
+    BACKGROUND-COLOR: #83ACCA;
+    COLOR: black;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: plain;
+    TEXT-ALIGN: center;
+	border-right: 1px solid white;
+	
+}
+
+.TblHeadforEnntcol
+{
+    BACKGROUND-COLOR: #EDEEF0;
+    COLOR: midnightblue;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold;
+    TEXT-ALIGN: center;
+	border-right: 1px solid white;
+}
+
+.TblHeadGray
+{
+    BACKGROUND-COLOR: #D3D3D3;
+    COLOR: black;
+    FONT-FAMILY:  Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: plain;
+    TEXT-ALIGN: center;
+	border-right: 1px solid white;
+}
+
+.TblHeadVertical
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold;
+}
+.PageBody
+{
+    /*BACKGROUND-COLOR: #D6E4E3;*/
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt
+}
+BODY
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+	margin:0px
+}
+.Treecellcontent
+{
+    BACKGROUND-COLOR: #fff0e9;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt
+}
+.TreeTblHead
+{
+    BACKGROUND-COLOR: #fff0e9;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+    TEXT-TRANSFORM: capitalize
+}
+
+.listTemplateTableClass
+{
+    BACKGROUND-COLOR: #fff0e9;
+    BORDER-BOTTOM-WIDTH: 1px;
+    BORDER-COLLAPSE: collapse;
+    BORDER-LEFT-WIDTH: 1px;
+    BORDER-RIGHT-WIDTH: 1px;
+    BORDER-TOP-WIDTH: 1px
+}
+
+.browseByTemplateTableClass
+{
+    BACKGROUND-COLOR: #fff0e9;
+    BORDER-BOTTOM-WIDTH: 1px;
+    BORDER-COLLAPSE: collapse;
+    BORDER-LEFT-WIDTH: 1px;
+    BORDER-RIGHT-WIDTH: 1px;
+    BORDER-TOP-WIDTH: 1px
+}
+
+.browseByTemplateTableRowClass
+{
+    BACKGROUND-COLOR: #eee0e9
+}
+
+.browseByLabelClass
+{
+    FONT-WEIGHT: bold
+}
+
+
+.LoginBody
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana
+    FONT-SIZE: 8pt
+}
+
+
+
+.BannerWelcomeCell
+{
+    COLOR: black;
+    FONT-FAMILY: Verdana;
+    FONT-SIZE: 12pt;
+    FONT_WEIGHT: bold
+}
+
+
+.MenuFrameBody
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana
+    FONT-SIZE: 8pt;
+}
+
+
+
+.MenuFrameMenuItem
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+}
+.listGrayRow
+{
+    BACKGROUND-COLOR: #F8F8FF;
+    COLOR: black;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt;
+	
+}
+
+
+.listWhiteRow
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt;
+	
+}
+
+
+.ZeroCodeList
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    font-size: 1.1em;
+}
+
+.ZeroCodeMatrix
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+}
+
+
+
+.ZeroCodeMatrixLabel
+{
+    COLOR: black;
+    FONT-FAMILY:  Verdana, Tahoma;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+}
+
+
+.ZeroCodeMatrixCell
+{
+    BACKGROUND-COLOR: white;
+    BORDER-BOTTOM: 0pt;
+    BORDER-LEFT: 0pt;
+    BORDER-RIGHT: 0pt;
+    BORDER-TOP: 0pt;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+    PADDING-RIGHT: 0pt;
+}
+
+
+
+
+
+.buttonClass
+{
+    BACKGROUND-COLOR: #aacccc;
+    BORDER-BOTTOM: 2pt outset;
+    BORDER-LEFT: 2pt outset;
+    BORDER-RIGHT: 2pt outset;
+    BORDER-TOP: 2pt outset;
+    CURSOR: hand;
+    FONT-SIZE: 8pt
+}
+
+
+.RibbonCellCont
+{
+    BACKGROUND-COLOR: #faebd7;
+    COLOR: black;
+}
+
+.nonNullableItemLabel
+{
+    COLOR: #CC6633;
+}
+.nonNullableItemLabel1
+{
+    COLOR: black;
+	FONT-WEIGHT: normal;
+	FONT-FAMILY: Verdana;
+    FONT-SIZE: 10pt;
+}
+
+
+.ClickLinkPage
+{
+    FONT-FAMILY: Verdana;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+    COLOR:red
+    
+}
+.LinkPage
+{
+    FONT-FAMILY: Verdana;
+    FONT-SIZE: 9px;
+    FONT-WEIGHT: normal;
+    COLOR:blue
+}
+
+.indentCell
+{
+    BACKGROUND-COLOR: white;
+}
+
+
+.pagingRibbonBox {
+    font-size: 7pt;
+    font-family: Tahoma, Verdana;
+    text-align: right;
+}
+
+
+.pagingRibbonGoButton {
+    font-size: 7pt;
+    font-family: Tahoma, Verdana;
+}
+
+.smallFontElement {
+  FONT-FAMILY: Tahoma;
+  FONT-SIZE: 8pt;
+  border: 1px inset #7D7D7D;
+  cursor:pointer;
+}
+
+
+
+
+.inputFieldClass {
+    /* For Mozilla and other CSS-compliant browsers: */
+    background-color: white;
+
+    /* For IE: */
+    background-color: expression((this!=document.activeElement) ? "white" : "#F2F0FF");
+
+    border: 1px solid #dddddd;
+    font-size: 8pt;
+    font-family: Tahoma;
+	vertical-align: top;
+	
+}
+.inputFieldClass4CallCentPage{
+    /* For Mozilla and other CSS-compliant browsers: */
+    background-color: white;
+
+    /* For IE: */
+    background-color: expression((this!=document.activeElement) ? "white" : "#F2F0FF");
+
+    border: 1px solid #dddddd;
+    font-size: 8pt;
+    font-family: Tahoma;
+	width: 135px;
+}
+
+
+.inputFieldClass:focus {
+    background-color: #F2F0FF;
+    font-size: 8pt;
+    font-family: Tahoma;
+    border: 1px solid #dddddd;
+}
+
+.inputFieldClassGray {
+    background: #dddddd;
+    border: 1px solid gray;
+    font-size: 8pt;
+    font-family: Tahoma, Verdana;
+}
+
+.inputFieldClassGrayTxt {
+     background-color: #F7FAFF;
+    border: 1px solid #dddddd;
+    font-size: 8pt;
+    font-family: Tahoma, Verdana;
+	color:gray;
+}
+
+.inputFieldClassReadonly {
+    background-color: #F7F7F7;
+    border: 1px solid #B9B9B9;
+    font-size: 8pt;
+    font-family: Tahoma, Verdana;
+	color:#494949;
+}
+
+
+.invalidInputFieldClass {
+    background-color: #ffccee;
+    border: 1px dotted #CC6633;
+    font-size: 8pt;
+    font-family: Tahoma;
+}
+
+
+div#zc__errorDiv {
+    color: red;background:#F2F0FF;border:1px solid #D8D2FF;padding:5px;display:none;width:50%;font-size:10px;text-align:left;margin:5px 0px 10px 0px;
+	font-family: Tahoma, Verdana;
+}
+
+#zc__errorDiv h5{
+    color: red;background:#F2F0FF;width:750px;font-size:10px;text-align:left;font-family: Tahoma, Verdana;
+}
+
+#zc__errorDiv ul
+{
+	font-size:10px;
+	font-family: Tahoma, Verdana;
+	text-align:left;
+	margin:5px 0px 0px 20px;
+}
+
+#zc__errorDiv li {
+	padding:2px;
+	background:transparent;
+	border:0px;
+	list-style-type:square;
+	width:100%;
+	vertical-align:middle;
+	margin:0px;
+	font-size:10px;
+	font-family: Tahoma, Verdana;
+}
+
+.errorDiv
+{
+ color: red;background:#F2F0FF;border:1px solid #D8D2FF;padding:2px;display:none;width:50%;font-size:10px;text-align:left;margin:5px 0px 10px 0px;
+	font-family: Tahoma, Verdana;
+}
+
+.errorDivLi
+{
+	padding:2px;
+	background:transparent;
+	border:0px;
+	list-style-type:square;
+	width:100%;
+	vertical-align:middle;
+	margin:0px;
+	font-size:10px;
+	font-family: Tahoma, Verdana;
+}
+
+div.PageCaption {
+    font-size: 17px;
+    font-weight: bold;
+    font-family: Tahoma;
+    padding-bottom: 8px;
+}
+
+
+.SubHeading {
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Tahoma;
+    padding-top: 8px;
+	color: black;
+}
+
+.subHeadingGray {
+    font-size: 14px;
+    font-weight: normal;
+    font-family: Tahoma, Verdana;
+    padding-top: 8px;
+	color:#515151;
+}
+
+.headingClassSelected
+{
+font-size: 11px;
+font-weight: bold;
+margin-left: 0px;
+padding: 2px;
+cursor: pointer;
+color: #000000;
+width:330px;
+background-image:url(/atCRM/images/bg.gif);
+background-position:bottom;
+height:15px;
+}
+
+.SubHeadingForTabs {
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Tahoma, Verdana;
+    padding:5px;
+}
+
+.NonListNodeTable {
+     padding: 0px;
+    width: 95%;
+    /* table-layout: fixed; */
+    margin-bottom: 5px;
+    /* border: 1px solid #666; */
+}
+
+.NonListNodeTable tr {
+    background-color: white;
+}
+
+
+.default {
+    font-size: 12px;
+    font-family: Tahoma;
+    font-weight: normal;
+	color: black;
+}
+
+.defaultColored {
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+    font-weight: normal;
+	color: black;
+	background:white;
+}
+
+.ItemLabelColored {
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+	background-color:lightYellow;
+	color: black;
+	padding-left:5px;
+}
+
+.defaultBordered {
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+    font-weight: normal;
+	color: black;
+	line-height:5px;
+	height:5px;
+	border-top:1px solid gray;
+	vertical-align:bottom;
+}
+
+.NonNullableLabel {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Tahoma, Verdana;
+    color: #CC6633;
+	background-color:lightYellow;
+	padding-left:5px;
+}
+
+
+.defaultNonNullable {
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+    font-weight: normal;
+	color: #CC6633;
+}
+.defaultSmall
+{
+    font-family: Tahoma, Verdana;
+    font-size: 10pt;
+}
+
+.defaultSmallGray
+{
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+    font-weight: normal;
+    color:#9D9D9D;
+}
+
+
+.ListNodeTable
+{
+    width: 95%;
+    font-size: 12px;
+    font-family: Tahoma;
+    margin-bottom: 10px;
+    /* border: 1px solid #666; */
+}
+.calenderSelectedDateColumsStyle
+{
+background-image: url('/atCRM/images/selbg1.gif'); 
+border: 1px solid #88D810; 
+}
+.calenderblsnkStyle
+{
+background-color:white;
+}
+
+.ListNodeTableReports
+{
+    margin-bottom: 10px;
+	border-collapse: collapse;
+	font-size: 11px;
+    font-family: Tahoma, Verdana;
+    margin-bottom: 10px;
+	width:100%;
+}
+
+
+.ItemLabel {
+    font-size: 12px;
+    font-family: Tahoma;
+	background-color:#FDFEDA;
+	color: black;
+	vertical-align: top;
+}
+
+
+.NonNullableItemLabel {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Tahoma;
+    color: #CC6633;
+	background-color:#FDFEDA;
+
+}
+
+.WhiteItemLabel {
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+	background:white;
+}
+
+.transItemLabel {
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+}
+
+.WhiteNonNullableItemLabel {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Tahoma, Verdana;
+    color: #CC6633;
+	background:white;
+}
+
+.FooterTable {
+    margin-top: 10px;
+}
+
+
+
+.topPaneHighlightBarLeft {
+
+	border-top: 1px outset #F7F1DF;
+	border-bottom: 1px outset #F7F1DF;
+	background-color: #F7F1DF;
+	font-weight: normal;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt;
+}
+
+
+
+.topPaneHighlightBarMiddle {
+	border-top: 1px outset #F7F1DF;
+	border-bottom: 1px outset #F7F1DF;
+    background-color: ghostWhite;
+	font-weight: bold;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt;
+}
+
+.topPaneHighlightBarRight {
+    background-color: #F7F1DF;
+	border-top: 1px outset #F7F1DF;
+	border-bottom: 1px outset #F7F1DF;
+	font-weight: bold;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt;
+}
+
+div.paneContainer {
+    padding: 2px;
+    margin-bottom: 15px;
+}
+
+
+#menuTabs {
+    margin: 0;
+    width: 90%;
+}
+
+.menuTabContainer {
+    margin: 0;
+    padding: 0;
+	color: black;
+}
+
+
+
+.tabClass {
+    padding: 0px;
+	width:115px;
+    cursor: pointer;
+    cursor: hand;
+    font-size: 11px;
+    font-family: Tahoma;
+    color: black;
+    border-bottom: 2px solid #83ACCA;
+	background-image: url('/atCRM/images/newImgGreen.gif');
+	/*  border-top: 2px outset #C5C5C5;
+    border-left: 2px outset #C5C5C5;
+    border-right: 2px outset #C5C5C5; 
+	border-right: 1px solid #EBF3D6;
+	border-left: 1px solid #EBF3D6;
+	border-top: 1px solid #EBF3D6;*/
+}
+    
+.selectedTabClass {
+    padding: 0px;
+	width:120px;
+    cursor: pointer;
+    cursor: hand;
+    font-size: 11px;
+    font-family: Tahoma;
+	border-bottom: 2px solid #83ACCA;
+	background-image: url('/atCRM/images/newImgBlue1.gif');
+}
+
+.noTabClass {
+    border-bottom: 2px solid #83ACCA;
+}
+
+div#SubHeading__1801 {
+    background-color: #666666;
+    color: white;
+    width: 100%;
+}
+
+.SubHeading1 {
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Tahoma;
+    padding-top: 0px;
+}
+
+.NonListNodeTable2 {
+    width: 99%;
+    /* table-layout: fixed; */
+    margin-bottom: 0px;
+    /* border: 1px solid #666; */
+}
+div.paneContainer1 {
+    padding: 1px;
+    margin-bottom: 0px;
+}
+
+.ListNodeTable1
+{
+    width: 100%;
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+    margin-bottom: 10px;
+    /* border: 1px solid #666; */
+}
+
+.ListNodeTable4
+{
+    width: 100%;
+    font-size: 13px;
+    font-family: Tahoma, Verdana;
+    margin-bottom: 10px;
+    /* border: 1px solid #666; */
+}
+
+.Pageheader
+{
+    COLOR: black;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 15pt;
+    FONT-WEIGHT: normal;
+    TEXT-ALIGN: left;    
+}
+.cssWAMstandardButton1
+{
+	cursor: hand;
+	font-size: 8pt;
+	background-color: #F4F4F4;
+	font-family: Tahoma;
+	width: 50px;
+}
+
+   
+
+
+.topRibbonDescription {
+    font-family: Tahoma;
+    font-size: 8pt;
+}
+
+
+
+.tabClass1 {
+    padding-top: 0px;
+    border-top: 0px;
+    border-top: 1px solid #83ACCA;
+    border-left: 1px solid #83ACCA;
+    border-right: 1px solid #83ACCA;
+    cursor: pointer;
+    cursor: hand;
+    font-size: 8px;
+    font-weight: bold;
+    font-family: Tahoma;    
+    color: white;
+    background-color: white;
+}
+
+.selectedTabClass1 {
+    padding-top: 0px;
+    background-color: #EDF3F8;
+    border-top: 1px solid #83ACCA;
+    border-left: 1px solid #83ACCA;
+    border-right: 1px solid #83ACCA;
+	border-bottom: 0px;
+    cursor: pointer;
+    cursor: hand;
+    font-size: 8px;
+    font-weight: bold;
+    font-family: Tahoma;
+}
+
+.noTabClass1 {
+    border-bottom: 1px solid #83ACCA;
+}
+
+.quickAddTabImage {
+    border: 2px;
+}
+
+.quickAddTabImageSelected {
+    border-left: 2px outset #ccc;
+    border-right: 2px inset #ccc;
+    
+}
+
+
+img.toolbarButton {
+    border: 0px 2px 0px 2px;
+    cursor: pointer;
+    cursor: hand;
+}
+
+
+img.toolbarButton:hover {
+    border-left: 2px outset #aaaaaa;
+    border-right: 2px intset #aaaaaa;
+    cursor: pointer;
+    cursor: hand;
+}
+
+
+a {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    cursor: hand;
+}
+
+a:visited {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    cursor: hand;
+}
+
+
+.labelWithHelp {
+    cursor: help;
+    text-decoration: none;
+    border-bottom: 1px dotted black;
+}
+    
+
+.announceNoResults {
+    padding: 10px;
+    font-weight: bold;
+    font-size: 12px;
+	font-family: Tahoma;
+    text-align: center;
+	background: white;
+	color:#6A3500;
+}
+
+.ListNodeTable3
+{
+    width: 100%;
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+    margin-bottom: 0px;
+    /* border: 1px solid #666; */
+}
+
+.focus
+{
+	FONT-FAMILY: Tahoma;
+	FONT-SIZE: 8pt;
+	color: gray;
+	border: 2px inset;
+  /*border-bottom: #ffdead solid 2px;
+	border-right: #ffdead solid 2px;
+	border-left: #c07300 solid 2px;
+	border-top:  #c07300 solid 2px;*/
+}
+
+.GrayBackground {
+     background-color: #CCDEFF;
+   }
+
+
+.whiteBackground {
+    background-color: #FFFFFF;
+   }
+
+.inputsearch 
+{
+  FONT-FAMILY: Tahoma;
+  FONT-SIZE: 8pt;
+  background: white url('/atCRM/images/magglass.png') no-repeat 3px 3px;
+  padding-left: 17px ;
+  color: gray;
+  border: 1px solid #7F9DB9;
+}
+
+.unFocusMe
+{
+  border: 1px solid white;
+}
+
+.focusMe
+{
+  border: 1px dotted #7D7D7D;
+}
+
+.tabIconNormalViewClass
+{
+	font-size: 11px;
+	FONT-FAMILY: Tahoma;
+	color: blue;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-align:center;
+	text-decoration:underline;
+}
+.tabIconOnOverViewClass
+{
+	font-size: 11px;
+	FONT-FAMILY: Tahoma;
+	color: #FFFF00;	
+	background-color: #990000;
+	padding-left: 5px;
+	padding-right: 5px;
+	cursor: pointer;
+    cursor: hand;
+	text-align:center;
+}
+
+.calendarTableClass {
+    BACKGROUND: #83ACCA;
+    FONT-FAMILY: ${fontFamilyList};
+    FONT-SIZE: 9px;
+    FONT-WEIGHT: bold;
+}
+
+
+.calendarTableCaptionClass {
+background-image: url('/atCRM/images/yearBg.gif');
+font-size: 7pt; 
+font-family: Tahoma;
+border: 1px solid #B4B4B4;
+}
+
+.calendarCellClass {
+
+background-image: url('/atCRM/images/dateBg.gif'); 
+border: 1px solid #CFCFCF;
+
+font-weight:bold; 
+cursor:hand; 
+
+      
+    
+}
+
+.calendarTable {
+    background-color: black;
+}
+
+.calendarTableRow {
+    background-color: white;
+}
+
+.calendarTitleRow {
+    background-color: #dddddd;
+}
+
+
+.monthHeaderClass {
+    font-size: 9px;
+    font-weight: bolder;
+}
+
+.thisMonthCell {
+    font-size: 9px;
+    background-color: #ffffff;
+}
+
+.otherMonthCell {
+    background-color: #eeeeee;
+}
+
+.todayCell {
+    background-color: #ffff99;
+}
+
+.weekdayLabel {
+    font-size: 9px;
+    background-color: #dddddd;
+}
+
+.dotClass {
+	border-right:dotted 1px lightgrey;
+}
+
+.inputsearch1 {
+  FONT-FAMILY:  Verdana, Tahoma;
+  FONT-SIZE: 8pt;
+  border: 1px inset #7D7D7D;
+  background: white url('/atCRM/images/magglass.png') no-repeat 3px 3px;
+  padding-left: 17px ;
+  color: gray;
+  }
+.quickAddMandatory {
+color: #CC6633;
+ font-size: 8pt;
+ font-weight:normal;
+ width:140px;
+ height:18px;
+}
+.quickAddNonMandatory{
+color: gray;
+ font-size: 8pt;
+ font-weight:normal;
+ width:140px;
+ height:18px;
+}
+
+.quickAddMandatorySelect {
+color: #CC6633;
+ font-size: 8pt;
+ font-weight:normal;
+ height:18px;
+}
+
+.quickAddNonMandatorySelect {
+color: #CC6633;
+ font-size: 8pt;
+ font-weight:normal;
+ height:18px;
+ width:140px;
+}
+
+.quickAddMandatoryClear {
+color:black;
+ font-size: 8pt;
+ font-weight:normal;
+ width:140px;
+ height:18px;
+}
+.QuickAddinputFieldClass {
+    /* For Mozilla and other CSS-compliant browsers: */
+
+
+    /* For IE: */
+    /*background-color: expression((this!=document.activeElement) ? "#F7FAFF" : "#DAD2FF");*/
+
+   
+    font-size: 8pt;
+    font-family: Tahoma, Verdana, Arial;
+	width:94px;
+ height:18px;
+}
+.inputFieldClassSelect {
+    /* For Mozilla and other CSS-compliant browsers: */
+
+
+    /* For IE: */
+    /*background-color: expression((this!=document.activeElement) ? "#F7FAFF" : "#DAD2FF");*/
+
+   
+    font-size: 8pt;
+    font-family: Tahoma, Verdana, Arial;
+ height:18px;
+}
+
+
+.headingFont
+{
+	font-family: Tahoma; 
+	font-weight: normal; 
+	font-size: 16px;
+}
+
+.TblHeadNew
+{
+    BACKGROUND-COLOR: #666666;
+    COLOR: white;
+    FONT-FAMILY: Arial, Verdana, Tahoma;
+    FONT-SIZE: 12px;
+    FONT-WEIGHT: plain;
+    TEXT-ALIGN: left;
+}
+
+
+.defaultBig {
+    font-size: 13px;
+    font-family: Tahoma, Verdana, Arial;
+    font-weight: normal;
+}
+
+.defaultGray {
+    font-size: 11px;
+    font-family: Tahoma;
+    font-weight: bold;
+	color:#666666;
+}
+
+
+
+.blueButton {
+
+  border-style: solid;
+  border-top-width: 1px;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+  border-top-color: #D9DFEA;
+  border-left-color: #D9DFEA;
+  border-bottom-color: #0e1f5b;
+  border-right-color: #0e1f5b;
+  background-color: #4982AB;
+  color: white;
+  font-size: 12px;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif; 
+  cursor:pointer;
+  }
+
+.LISTFONTTEXT{
+  color:#FFFFFF; 
+  font-size: 13px;
+  font-family:arial;
+  }
+
+.AlfaNumericSearch{
+  color:#83ACCA; 
+  font-size: 11px; 
+  font-family:arial; 
+  }
+
+.Heading{
+  color:#477DA5;
+  font-size: 11px;
+  font-family:arial;
+}
+
+table.pop_dialog_table {
+border-collapse:collapse;
+margin:auto;
+table-layout:fixed;
+width:465px;
+}
+
+table.pop_dialog_table_templates {
+border-collapse:collapse;
+margin:auto;
+table-layout:fixed;
+width:500px;
+}
+
+table.pop_dialog_table_print {
+border-collapse:collapse;
+margin:auto;
+table-layout:fixed;
+width:900px;
+}
+
+td.pop_topleft {
+background-image:url('/atCRM/images/top_left.png') ;
+}
+
+td.pop_topright {
+background-image:url('/atCRM/images/top_right.png') ;
+}
+
+td.pop_bottomleft {
+background-image:url('/atCRM/images/bottom_left.png') ;
+}
+
+td.pop_bottomright {
+background-image:url('/atCRM/images/bottom_right.png') ;
+}
+
+td.pop_border {
+background-image:url('/atCRM/images/border.png') ;
+}
+
+td.pop_border {
+background-image:url('/atCRM/images/border.png') ;
+}
+
+td.pop_topleft, td.pop_topright, td.pop_bottomleft, td.pop_bottomright {
+height:10px;
+overflow:hidden;
+padding:0px ;
+width:10px ;
+}
+
+td.pop_content {
+background-color:white;
+padding:0px;
+}
+
+td.pop_content h2 {
+background:#6D84B4 none repeat scroll 0%;
+border:1px solid #3B5998;
+color:white;
+font-size:14px;
+font-weight:bold;
+margin:0px;
+}
+
+td.pop_content h2 span {
+display:block;
+padding:4px 10px 5px;
+}
+
+td.pop_content .dialog_content {
+background:#FFFFFF none repeat scroll 0%;
+border-color:#555555;
+border-style:solid;
+border-width:0px 1px 1px;
+}
+
+td.pop_content .dialog_body {
+border-bottom:1px solid #CCCCCC;
+padding:10px;
+}
+
+td.pop_content .dialog_buttons {
+background:#F2F2F2 none repeat scroll 0%;
+padding:8px;
+text-align:right;
+}
+
+.listTransRow
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt;
+	TEXT-ALIGN: center;
+}
+
+.listShadedRow
+{
+    BACKGROUND-COLOR: GhostWhite;
+    COLOR: black;
+    FONT-FAMILY: Tahoma;
+    FONT-SIZE: 8pt;
+	TEXT-ALIGN: center;
+}
+
+table.pop_blue_dialog_table {
+border-collapse:collapse;
+margin:auto;
+table-layout:fixed;
+width:465px;
+}
+
+td.pop_blue_topleft {
+background-image:url('/atCRM/images/blue_top_left.png') ;
+}
+
+td.pop_blue_topright {
+background-image:url('/atCRM/images/blue_top_right.png') ;
+}
+
+td.pop_blue_bottomleft {
+background-image:url('/atCRM/images/blue_bottom_left.png') ;
+}
+
+td.pop_blue_bottomright {
+background-image:url('/atCRM/images/blue_bottom_right.png') ;
+}
+
+td.pop_blue_border {
+background-image:url('/atCRM/images/blue_border.png') ;
+}
+
+td.pop_blue_border {
+background-image:url('/atCRM/images/blue_border.png') ;
+}
+
+td.pop_blue_topleft, td.pop_blue_topright, td.pop_blue_bottomleft, td.pop_blue_bottomright {
+height:10px;
+overflow:hidden;
+padding:0px ;
+width:10px ;
+}
+
+td.pop_blue_content {
+background-color:white;
+padding:0px;
+}
+
+.listGrayRow1
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+}
+
+
+.listWhiteRow1
+{
+    BACKGROUND-COLOR: #F8F8F8;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Tahoma;
+    FONT-SIZE: 8pt;
+}
+
+
+.ItemLabelValueLeaf {
+    font-size: 12px;
+    font-family: Tahoma, Verdana;
+	background-color:#C8C8C8;
+	border-bottom:1px solid white;
+	color: black;
+}
+
+.reminderDiv {
+border:1px solid black;
+background-color:#D2E3FF;
+z-index:100;
+font-size:11px;
+bottom:0px;
+right:0px;
+float:right;
+margin-bottom:2px;
+margin-right:2px;
+position:absolute;
+display:none;
+}
+
+.OptionalItemLabel {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Tahoma, Verdana;
+    color: #008080;
+	background:white;
+}
+
+legend
+{
+	color:#0046D5;
+	font-size: 12px;
+    font-weight: bold;
+    font-family: Tahoma, Verdana;
+}
+
+.legendClass
+{
+	color:#0046D5;
+	font-size: 12px;
+    font-weight: bold;
+    font-family: Tahoma, Verdana;
+}
+.PageSummary{
+	font-size: 12px;
+    font-weight: normal;
+    font-family: Tahoma, Verdana;
+    padding: 1px;
+	color:#515151;
+}
+
+.taxHeader
+{
+text-align:left;
+font-size: 11px;
+font-family: Tahoma, Verdana;
+}
+
+.taxPerc
+{
+text-align:right;
+font-size: 11px;
+font-family: Tahoma, Verdana;
+}
+
+.taxHeader1
+{
+text-align:right;
+font-size: 11px;
+font-family: Tahoma, Verdana;
+font-weight:bold;
+}
+.errorLi
+{
+	padding:2px;
+	background:transparent;
+	border:0px solid red;
+	list-style-type:square;
+	width:100%;
+	vertical-align:middle;
+	margin:0px;
+}
+
+div.dragIndicator {
+    width: 150px;
+    height: 35px;
+    text-align: center;
+    font-size: 105%;
+    font-weight: bold;
+    padding-top: 14px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    background-color: #C2DEF8;
+    border: 1px outset #7DBAF0;
+    filter: alpha (opacity=70);
+    -moz-opacity: 0.70;
+}
+
+.listCaptionRibbon {
+    width: 99%;
+    background-color: white;
+}
+
+#changeSendingToLink {
+    color: blue;
+    text-decoration: underline;
+}

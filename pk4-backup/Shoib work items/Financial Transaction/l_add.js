@@ -628,7 +628,7 @@ function retValidDateTime(milisec) {
 	var s = d.getSeconds(); //get sec
 	var mili = d.getMilliseconds(); //get mili sec
 
-	return day + '-' + mnt + '-' + yyyy + '- ' + h + ':' + m + ':' + s + ':' + mili;
+	return yyyy + '-' + mnt + '-' + day + ' ' + h + ':' + m + ':' + s + '.' + mili;
 }
 
 //return date or date time

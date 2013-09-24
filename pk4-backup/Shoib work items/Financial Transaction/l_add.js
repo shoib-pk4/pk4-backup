@@ -43,7 +43,7 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		var tbl = $('<table class="listAndAddTbl" id="listAndAddTbl"></table>');
 
 		var thead = $('<thead></thead>');
-		var htr   = $('<tr></tr>'), th, n, typ, nid, cth;
+		var htr   = $('<tr></tr>'), th, n, typ, nid, cth,dataType;
 
 		cth = $('<th>Checkbox</th>'); 
 		htr.append(cth); //this col will contain checkboxes
@@ -54,8 +54,13 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		$.each(hdrs, function(k,v) {
 			n   = v.colmnDesc; 
 			nid = v.nodeId;
-			th = $('<th></th>');
+			dataType = v.dataType;
 
+			th = $('<th></th>');
+			if(dataType == 'Decimal' || dataType == 'Integer')
+				th.css('text-align', 'right');
+			else
+				th.css('text-align', 'left');	
 
 			if(v.action) {
 				submitIndex.push(k); //add the index
@@ -75,11 +80,11 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		//thead to table
 		tbl.append(thead);
 		
-		var tbody = $('<tbody></tbody>'), btr, btd, bpk, rdata, cVal, dataLen, remainingLen, inpTypes;
+		var tbody = $('<tbody></tbody>'), btr, btd, bpk, rdata, cVal, dataLen, remainingLen, inpTypes, plces;
 
 		//draw body 
 		var clas = 'odd';
-		var tbodyData = doc.RowData;
+		var tbodyData = doc.RowData, dataType;
 		$.each(tbodyData, function(k, v) {
 			
 			//each row
@@ -96,17 +101,42 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 			} else {
 				btr.addClass('even');
 				clas = 'odd';
-			}
-				
+			}				
 			
-			//draw stored columns here
+			//draw table body here
 			rdata  = v.data;			
 			$.each(rdata, function(k1, v1) {
 				
 				btd = $('<td></td>');
 				if($.inArray(k1, submitIndex) == -1) { //this means its only view
 					cVal = v1.colTxt;
-					btd.text(cVal);
+					//get datetype from hdrs, using k1 as index
+					dataType = hdrs[k1]['dataType'];
+					
+					if(dataType == 'Decimal' || dataType == 'Integer')
+						btd.css('text-align', 'right');
+					else
+						btd.css('text-align', 'left');
+
+					if((dataType == 'Date' || dataType == 'DateTime') && cVal.length > 0)  {
+						cVal = retDateOrDateTime(cVal, dataType);
+					} 
+
+					if(dataType == 'Decimal') {
+
+						if(hdrs[k1]['afterDecimal']) {
+							plces = hdrs[k1]['afterDecimal'];						
+							cVal = lAddLimitDecimal(cVal, plces);	
+						} else {
+							cVal = lAddLimitDecimal(cVal, 2);	
+						}
+						
+					}
+
+					//add value to td
+					btd.text(cVal);	
+					
+					
 
 				} else { //this means data to submit
 					btd.addClass('lAddFldsToSubmitCol');
@@ -258,10 +288,14 @@ function lAddDrawTypeOfUserInput(td, hdrs, rowData)  {
 
 			case 'Label': 
 				var lblVal;
-				if(dval !=  '') 
+				if(dval !=  '') {
+					//obviously javascript for dval
 					lblVal = eval(dval);
-				 else
+					lblVal = retValidDateTime(lblVal);
+				}	
+				 else {
 				 	lblVal = rowData['colTxt'];
+				} 	
 
 				td.append('<input class="lAddParamsElem" type="hidden" name="'+nodeId+'" value="'+lblVal+'" nodeid="'+nodeId+'" />');
 				 break;	
@@ -380,7 +414,6 @@ function lAdddrawParamsConditions(paramsData, intoDiv) {
 	
 }
 
-var lAddMonths = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
 
 function lAddInitializeCalendar(lAddCalendarIndx) {
 
@@ -437,9 +470,9 @@ function lAddvalidateDateTime(h, m) {
 	
 	if(validationFunc != '') {
 		var reqFunc = eval('(' + validationFunc + ')');
-		var res = reqFunc(d);				
-		if(res == 'Cannot accept a post-dated cheque') {	
-			alert(res);		
+		var res = reqFunc(d);			
+		if(res === false) {	
+			alert('Post date cannot be accepted');		
 			$('#'+lAddCurrentdateId).val('');
 		}
 	}
@@ -583,6 +616,59 @@ function postLAddList(postData, udmUrl) {
 	);
 }
 
+//this will return date dd-mm-yyyy hh:mm:ss
+//param miliseconds
+function retValidDateTime(milisec) {
+	var d = new Date(milisec);
+	var day  = d.getUTCDay(); //get day;
+	var mnt   = d.getUTCMonth() + 1; //get month + 1 because its starts with 0-11 
+	var yyyy = d.getUTCFullYear(); //get year;
+	var h = d.getHours(); //get hour
+	var m = d.getMinutes(); //get min
+	var s = d.getSeconds(); //get sec
+	var mili = d.getMilliseconds(); //get mili sec
+
+	return day + '-' + mnt + '-' + yyyy + '- ' + h + ':' + m + ':' + s + ':' + mili;
+}
+
+//return date or date time
+var lAddMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function retDateOrDateTime(dt, typ) {
+	var d = ['','','','','','']; //init
+	var t = ['','','']; //init
+
+	var dt = dt.split(' ');	
+	if(dt.length > 1) {
+		dts = dt[0];
+		ts = dt[1];
+
+		d = dts.split('-');
+		t = ts.split(':');
+	}
+
+	if(typ === 'Date') {				
+		var dtObj = new Date(d[0], d[1]-1, d[2], 0, 0, 0); //d contains time in miliseconds
+		return  dtObj.getUTCDay() + '/'  + lAddMonths[dtObj.getUTCMonth()] + '/' + dtObj.getUTCFullYear();
+
+	} else {		
+		var dtObj = new Date(d[0], d[1]-1, d[2], t[0], t[1], t[2]); //d contains time in miliseconds
+		// var str = dtObj.getUTCDay() + '/'  + lAddMonths[dtObj.getUTCMonth()] + '/' + dtObj.getUTCFullYear();		
+		// if(dtObj.getHours() 
+		
+		return  dtObj.toLocaleString();
+
+	}
+}
+
+//limit decimal value
+function lAddLimitDecimal(val, plces) {
+	if(val.indexOf('.') !== -1) {
+		return parseFloat(val).toFixed(plces);
+	} else {
+		return val;
+	}
+}
+
 
 $(document).ready(function() {
 
@@ -686,6 +772,7 @@ $(document).ready(function() {
 		 var twoDeci = Math.round(deci * 100) / 100;
 		 t.val(twoDeci);
 	});
-	
+
+
 	/* end of document ready */
 });

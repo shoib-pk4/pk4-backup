@@ -604,8 +604,15 @@ $(document).ready(function() {
 			postData[nid] = val;
 		});
 
-		//post data to udm
-		postLAddList(postData, url);
+		//post only if, there is anything to post
+		if(postData.length > 0 ) {
+			//post data to udm zcServletPrefix is global defined in homepage.html
+			postLAddList(postData, zcServletPrefix+'/'+url);	
+		} else {
+			alert('No rows selected to post !');
+		}
+
+		
 
 	});
 

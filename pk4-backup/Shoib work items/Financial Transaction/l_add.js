@@ -5,7 +5,7 @@ var lAddCurrentdateId = ''; //global date variable
 var listAddOTable; //global var for list add data table
 var hdrs; //this is global contains datatable headers
 
-function exec_l_add(doc, intoDiv) {
+function exec_l_add(doc, intoDiv, mainUrl) {
 
 		console.log('l add');
 		//** write code to destroy previos datatable and to parse new one
@@ -18,8 +18,6 @@ function exec_l_add(doc, intoDiv) {
 				
 		var submitUrl = doc.SubmitUrl;
 		
-		console.log('list add function..');
-
 		var styles = '<style type="text/css"> #listAddTblContainer {width:1200px;} .listAndAddTbl {width:100%;border-collapse: collapse;border:none;text-align:center;}';
 			styles += '.lAddParamsLbl {max-width: 190px;font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;}.DynarchCalendar-topCont {top:25% !important; left: 40% !important; position: fixed !important;} .lAddFrmBtns {float:right;} .lAddFrmBtns:hover, #lAddListSubmit:hover {background-color:#014464 !important;color:white;} #lAddtblDivListData {margin:10px auto;overflow:hidden; width:100%;height:auto;} .lAddDateClass {width: 80px;} ';
 			styles += '.multiSelectBox {position:absolute;width:170px;background-color:white;} #lAddMPLParmsCont .lAddSinglePickList , #lAddSPLParmsCont .lAddSinglePickList {width: 170px;} #lAddMPLParmsCont {width: 200px;height:30px;} #lAddSPLParmsCont {width: 200px;height:30px;} #lAddMPLDtCont {width: 125px;height:30px;} #lAddSPLDtCont {width: 125px;height:30px;}  #lAddDCont {width: 125px;height:30px;} #lAddDTCont {width: 215px;} #paramsTbl, #lAddtblDivParams, #lAddSlideUpDwnCont {width:100%;} #paramsTbl .odd {background-color: #E2E4FF;} #paramsTbl tr {background-color: rgb(253, 245, 245);vertical-align: top;} #lAddtblDivParams {margin: 13px auto;}  .listAndAddTbl .odd {background-color: #E2E4FF;} .listAndAddTbl .even {background-color: white;} #lAddListSubmit, #lAddListSubmit_wait {float:right;} .lAddDrpDwn, .lAddSinglePickList {width:100px;} .lAddParamsDesc {font-size: 12px;display: block; color:grey;}';
@@ -140,7 +138,7 @@ function exec_l_add(doc, intoDiv) {
 		d.append(tblDiv);
 
 		//add submition button
-		d.append('<input type="button" value="Submit" id="lAddListSubmit" class="blueButton" url="'+submitUrl+'" />');
+		d.append('<input type="button" value="Submit" id="lAddListSubmit" class="blueButton" url="'+submitUrl+'" reloadurl = "'+mainUrl+'"/>');
 
 		//add div to dom
 		intoDiv.append(d);
@@ -225,7 +223,6 @@ function lAddDrawTypeOfUserInput(td, hdrs, rowData)  {
 			case 'Drop-down': 
 				sel = $('<select class="lAddDrpDwn lAddParamsElem"></select>');
 				sel.attr('nodeid',nodeId);				
-				console.log('drp down');
 				var pkId = hdrs.picklist_id ;
 				if(pkId != '') {
 					//getting select elements from ajax
@@ -557,6 +554,25 @@ function postLAddList(postData, udmUrl) {
 			success: function(data)	{
 				alert('Submited successfully !');				
 				$('#lAddListSubmit_wait').val('Submit').attr('id', 'lAddListSubmit');
+				//reload the page
+				var reloadUrl = $('#lAddListSubmit').attr('reloadurl');
+				$.get(reloadUrl, function(data) {
+					doc = JSON.parse(data,function (key,value)
+					{
+						var type;
+						if (value && typeof value === 'object') 
+							{
+								type = value.type;
+								if (typeof type === 'string' && typeof window[type] === 'function') 
+								{
+									return new (window[type])(value);
+								}
+							}
+							return value;
+					}); 
+					exec_l_add(doc, $('#detailDataDiv'), mainUrl); //trigger back same function
+				});
+				
 			},
 			error: function(resoponse) {
 				alert('Failed to submit');
@@ -587,25 +603,37 @@ $(document).ready(function() {
 	$('body').on('click', '#lAddListSubmit', function() {
 		
 		//post the data
-		var postData = {}, t, nid, ele, val, indx, dtval, url; //object
+		var postData = {}, t, nid, ele, val, indx, dtval, url, postErr = false; //object
 		url = $(this).attr('url');
 		$('.lAddRowSelected .lAddFldsToSubmitCol').each(function() {
 			t   = $(this);
 			indx = t.parent().index();	//this gets the row index w.r.t table #needed for replacing x in node id		
 			ele = t.find('.lAddParamsElem'); 
 			// console.log(ele.attr('nodeid'));
-			nid = ele.attr('nodeid').replace('x', indx);
-			val = ele.val();
-			if(ele.hasClass('itsDateTime')) {
-				val += 	' ' + t.find('.lAddTime').val();
-			} else if(ele.attr('type') == 'checkbox') {
-				val = (ele.is(':checked'))?1:0;
+			nid = ele.attr('nodeid');
+			if(typeof nid !== 'undefined') {
+				nid = nid.replace('x', indx);
+				val = ele.val();
+				if(ele.hasClass('itsDateTime')) {
+					val += 	' ' + t.find('.lAddTime').val();
+				} else if(ele.attr('type') == 'checkbox') {
+					val = (ele.is(':checked'))?1:0;
+				}
+				postData[nid] = val;
+			} else {
+				alert('For some variable node id is undefined. Check all columns of table');
+				postErr = true;
 			}
-			postData[nid] = val;
+
 		});
 
+		if(postErr == true) { 
+			alert('Submition failed. Invalid variables found.');
+			return false;
+		}
+
 		//post only if, there is anything to post
-		if(postData.length > 0 ) {
+		if(Object.keys(postData).length > 0 ) {
 			//post data to udm zcServletPrefix is global defined in homepage.html
 			postLAddList(postData, zcServletPrefix+'/'+url);	
 		} else {

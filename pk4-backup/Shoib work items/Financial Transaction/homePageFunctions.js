@@ -519,6 +519,7 @@
 	      var reqHt  = parseInt(mainHeight)/2;
 	    $("#loader_Img").offset({top:reqHt,left:reqWidth});
 	      currentRecIdsJSON =JSON.parse('{"acct_id":"","cont_id":"","state_id":"","brch_id":"","prod_id":"","prod_qty":"","rep_id":""}');
+		  console.log("test console-"+currentRecIdsJSON["brch_id"]);
 	} 
 
 	function updateSession()
@@ -677,83 +678,83 @@
 			htmlFile=splitUri[uriSplitLastIndex];
 		}
 
-	alert('new page');
-	console.log('new page')
-	console.log(uri);
-	if($("#dyna_html").html() !="") 
-		$("#dyna_html").html("<h4>Please wait!!</h4>");
+	// alert('new page');
+	// console.log('new page')
+	// console.log(uri);
+	// if($("#dyna_html").html() !="") 
+	// 	$("#dyna_html").html("<h4>Please wait!!</h4>");
 
-	 //load data 
-	 $.get(uri, function(htmlStr) { 
-	 	var filename = uri.split('/').pop();
-	 	var htmlPage = getParsedHtmlPage(htmlStr, filename); //parse html page
-		console.log('final page=');
-		console.log(htmlPage);
-		$("#dyna_html").html(htmlPage); //append page to dom
-	 });
+	//  //load data 
+	//  $.get(uri, function(htmlStr) { 
+	//  	var filename = uri.split('/').pop();
+	//  	var htmlPage = getParsedHtmlPage(htmlStr, filename); //parse html page
+	// 	console.log('final page=');
+	// 	console.log(htmlPage);
+	// 	$("#dyna_html").html(htmlPage); //append page to dom
+	//  });
 	 
 
-		// if( htmlFile.indexOf("runReportJ1.html") != -1 || htmlFile.indexOf("editReport.html") != -1)//|| htmlFile.indexOf("changePageLayout.html") != -1
-		// { 
-	 //        // prompt("runReport---",$("#dyna_html").html());
-		// 	// if($("#dyna_html").html() !="") {alert("Not empty");$("#dyna_html").html("");}
-		// 	 var $div = $("#dyna_html");
-		// 	 var $parentElem = $div.parent();
-		// 	/* var position=$div.offset();
-		// 	 var topPos=position.top;
-		// 	 var windowHeight=$(window).height();
-		// 	 var height=(parseInt(windowHeight)-parseInt(topPos))+"px";
-		// 	 $($div).css({"overflow-y":"scroll","height":height});*/
-		// 	 // $div.detach();
-	 //         $div.load(uri);
-	 //         $parentElem.append($div);
+		if( htmlFile.indexOf("runReportJ1.html") != -1 || htmlFile.indexOf("editReport.html") != -1)//|| htmlFile.indexOf("changePageLayout.html") != -1
+		{ 
+	        // prompt("runReport---",$("#dyna_html").html());
+			// if($("#dyna_html").html() !="") {alert("Not empty");$("#dyna_html").html("");}
+			 var $div = $("#dyna_html");
+			 var $parentElem = $div.parent();
+			/* var position=$div.offset();
+			 var topPos=position.top;
+			 var windowHeight=$(window).height();
+			 var height=(parseInt(windowHeight)-parseInt(topPos))+"px";
+			 $($div).css({"overflow-y":"scroll","height":height});*/
+			 // $div.detach();
+	         $div.load(uri);
+	         $parentElem.append($div);
 
-	 //         alert('came to dyna html parent!');
-		// }
-		// else{
+	         alert('came to dyna html parent!');
+		}
+		else{
 
 
-		// 	  if(document.getElementById('htmlIframe'))
-		// 	    {  
-		// 	        if($("#dyna_html").html() !="") 
-		// 	        	$("#dyna_html").html("");
+			  if(document.getElementById('htmlIframe'))
+			    {  
+			        if($("#dyna_html").html() !="") 
+			        	$("#dyna_html").html("");
 
-		// 	      //prompt("If-InnerHTML-",$("#dyna_html").html());
-		// 	      //document.getElementById("dyna_html").innerHTML="";
-		// 	      document.getElementById('htmlIframe').src=uri;
-		// 	      document.getElementById('htmlIframe').style.display='block';
-		// 	      console.log(uri);
-		// 	      //alert('adding to existing iframe');
-		// 	    }
-		// 	else
-		// 	{   
-		// 	   // prompt("Else-InnerHTML-",$("#dyna_html").html());
-		// 	   if($("#dyna_html").html() !="") 
-		// 	   	 $("#dyna_html").html("");
+			      //prompt("If-InnerHTML-",$("#dyna_html").html());
+			      //document.getElementById("dyna_html").innerHTML="";
+			      document.getElementById('htmlIframe').src=uri;
+			      document.getElementById('htmlIframe').style.display='block';
+			      console.log(uri);
+			      //alert('adding to existing iframe');
+			    }
+			else
+			{   
+			   // prompt("Else-InnerHTML-",$("#dyna_html").html());
+			   if($("#dyna_html").html() !="") 
+			   	 $("#dyna_html").html("");
 
-		// 	   //document.getElementById("dyna_html").innerHTML="";
-		// 		htmlIframe=document.createElement("iframe");
-		// 		htmlIframe.align="left";
-		// 		htmlIframe.width="100%";
-		// 		htmlIframe.border="0";
-		// 		htmlIframe.frameBorder="0";
-		// 		htmlIframe.scrollBars="no";	
-		// 		htmlIframe.id="htmlIframe"; 
-		// 		dataDiv.appendChild(htmlIframe);
-		// 		htmlIframe.src=uri;
-		// 		var screenWidth = getScreenSize('width');
-		// 		htmlIframe.width=(screenWidth-10)+"px";
-		// 		var screenHeight = getScreenSize('height');
-		// 		var xyCoordinates = findPos('lastDivOnPage')[1];
-		// 		var bannerHeight = findPos('commonFnDiv')[1]+10;
-		// 		htmlIframe.height = screenHeight-((screenHeight*13)/100)+"px";
+			   //document.getElementById("dyna_html").innerHTML="";
+				htmlIframe=document.createElement("iframe");
+				htmlIframe.align="left";
+				htmlIframe.width="100%";
+				htmlIframe.border="0";
+				htmlIframe.frameBorder="0";
+				htmlIframe.scrollBars="no";	
+				htmlIframe.id="htmlIframe"; 
+				dataDiv.appendChild(htmlIframe);
+				htmlIframe.src=uri;
+				var screenWidth = getScreenSize('width');
+				htmlIframe.width=(screenWidth-10)+"px";
+				var screenHeight = getScreenSize('height');
+				var xyCoordinates = findPos('lastDivOnPage')[1];
+				var bannerHeight = findPos('commonFnDiv')[1]+10;
+				htmlIframe.height = screenHeight-((screenHeight*13)/100)+"px";
 				 
-		// 		 // console.log(uri);
-		// 		 // alert('creating new iframe');
-		// 	}
-		// }
+				 // console.log(uri);
+				 // alert('creating new iframe');
+			}
+		}
 		
-	 //    $("#dyna_html") .load(uri);  
+	    $("#dyna_html") .load(uri);  
 		closeLoadingDiv();
 	}
 
@@ -1086,7 +1087,7 @@
 							var into_div = $('#detailDataDiv');
 							entityDiv = document.getElementById('detailDataDiv');
 							closeLoadingDiv();
-							exec_l_add(doc, into_div);
+							exec_l_add(doc, into_div, mainUrl);
 							break;
 										
 				}

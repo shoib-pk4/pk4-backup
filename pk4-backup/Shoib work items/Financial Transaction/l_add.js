@@ -7,13 +7,14 @@ var hdrs; //this is global contains datatable headers
 
 function exec_l_add(doc, intoDiv) {
 
+		console.log('l add');
 		//** write code to destroy previos datatable and to parse new one
 
 		//check if data table already initialized, then remove if so
-		// if(listAddOTable != null) {
-		// 	listAddOTable.fnDestroy();
-		// 	$('#listAddTblContainer').remove();
-		// }
+		if(listAddOTable != null) {
+			listAddOTable.fnDestroy();
+			$('#listAddTblContainer').remove();
+		}
 				
 		var submitUrl = doc.SubmitUrl;
 		
@@ -21,7 +22,7 @@ function exec_l_add(doc, intoDiv) {
 
 		var styles = '<style type="text/css"> #listAddTblContainer {width:1200px;} .listAndAddTbl {width:100%;border-collapse: collapse;border:none;text-align:center;}';
 			styles += '.lAddParamsLbl {max-width: 190px;font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;}.DynarchCalendar-topCont {top:25% !important; left: 40% !important; position: fixed !important;} .lAddFrmBtns {float:right;} .lAddFrmBtns:hover, #lAddListSubmit:hover {background-color:#014464 !important;color:white;} #lAddtblDivListData {margin:10px auto;overflow:hidden; width:100%;height:auto;} .lAddDateClass {width: 80px;} ';
-			styles += '.multiSelectBox {position:absolute;width:170px;background-color:white;} #lAddMPLParmsCont .lAddSinglePickList , #lAddSPLParmsCont .lAddSinglePickList {width: 170px;} #lAddMPLParmsCont {width: 200px;height:30px;} #lAddSPLParmsCont {width: 200px;height:30px;} #lAddMPLDtCont {width: 125px;height:30px;} #lAddSPLDtCont {width: 125px;height:30px;}  #lAddDCont {width: 125px;height:30px;} #lAddDTCont {width: 215px;} #paramsTbl, #lAddtblDivParams, #lAddSlideUpDwnCont {width:100%;} #paramsTbl .odd {background-color: #E2E4FF;} #paramsTbl tr {background-color: rgb(253, 245, 245);vertical-align: top;} #lAddtblDivParams {margin: 13px auto;}  .listAndAddTbl .odd {background-color: #E2E4FF;} .listAndAddTbl .even {background-color: white;} #lAddListSubmit {float:right;} .lAddDrpDwn, .lAddSinglePickList {width:100px;} .lAddParamsDesc {font-size: 12px;display: block; color:grey;}';
+			styles += '.multiSelectBox {position:absolute;width:170px;background-color:white;} #lAddMPLParmsCont .lAddSinglePickList , #lAddSPLParmsCont .lAddSinglePickList {width: 170px;} #lAddMPLParmsCont {width: 200px;height:30px;} #lAddSPLParmsCont {width: 200px;height:30px;} #lAddMPLDtCont {width: 125px;height:30px;} #lAddSPLDtCont {width: 125px;height:30px;}  #lAddDCont {width: 125px;height:30px;} #lAddDTCont {width: 215px;} #paramsTbl, #lAddtblDivParams, #lAddSlideUpDwnCont {width:100%;} #paramsTbl .odd {background-color: #E2E4FF;} #paramsTbl tr {background-color: rgb(253, 245, 245);vertical-align: top;} #lAddtblDivParams {margin: 13px auto;}  .listAndAddTbl .odd {background-color: #E2E4FF;} .listAndAddTbl .even {background-color: white;} #lAddListSubmit, #lAddListSubmit_wait {float:right;} .lAddDrpDwn, .lAddSinglePickList {width:100px;} .lAddParamsDesc {font-size: 12px;display: block; color:grey;}';
 			styles += '.lAddRowSelected td {background-color: rgb(246, 247, 159) !important;} .dataTables_scrollHeadInner {float:left;} #listAndAddTbl_length select, #listAndAddTbl_filter input {display:inline;} .multiSelectBox {visibility:hidden;} .lAddMPLTd:hover .multiSelectBox {visibility:visible;} ';
 			styles += '.submitColsCont  {position:relative;display:block;} .lAddDisableUserInpts {position:absolute;top:0;right:0;left:0;bottom:0;background-color:rgba(0,0,0,0);} ';
 			styles += '.listAndAddTbl td {padding: 5px 0 !important;} .listAndAddTbl th, .listAndAddTbl td { width: 100px !important;min-width: 100px !important;max-width: 100px !important; } .dataTables_scrollBody { padding:0 0 22px 0; }';
@@ -546,13 +547,22 @@ function lAddDrawCbx(td, nodeId) {
 
 //this will post data to udm
 function postLAddList(postData, udmUrl) {
+	$('#lAddListSubmit').val('Wait...').attr('id', 'lAddListSubmit_wait');
+
 	$.ajax(
 		{
 			type: 'POST',
 			data: postData,
 			url: udmUrl,
-			success: function(data)	{},
-			error: function(resoponse) {},
+			success: function(data)	{
+				alert('Submited successfully !');				
+				$('#lAddListSubmit_wait').val('Submit').attr('id', 'lAddListSubmit');
+			},
+			error: function(resoponse) {
+				alert('Failed to submit');
+				console.log(resoponse);
+				$('#lAddListSubmit_wait').val('Submit').attr('id', 'lAddListSubmit');	
+			},
 		}
 	);
 }
@@ -615,18 +625,20 @@ $(document).ready(function() {
 		alert('Selection is disabled. Enable by checking checkbox!!');
 	});
 
+	//it inclucdes valid integer asci codes
+	var integerAscii = [8,9,37,38,39,40,46,48,49,50,51,52,53,54,55,56,57,96,97,98,99,100,101,102,103,104,105];
 	//limit integer only
 	$('body').on('keydown', '.lAddIntegerOnly', function(e) {
 		 var ac = e.which;    
-	    if((( ac >= 48 && ac<= 57) || (ac >= 96 && ac <= 105) || (ac >= 37 && ac <= 40)) || (ac == 8) || (ac == 46)) 
+	    if($.inArray(ac, integerAscii) != -1) 
 	        return true;
 	    else
 	        return false;
 	});
 
 	$('body').on('keydown', '.lAddlimitDecimal', function(e) {
-		 var ac = e.which;    
-	    if((( ac >= 48 && ac<= 57) || (ac >= 96 && ac <= 105) || (ac >= 37 && ac <= 40)) || (ac == 8) || (ac == 46) || (ac == 190) || (ac == 110)) 
+		 var ac = e.which;    					//this below for decimal
+	    if($.inArray(ac, integerAscii) != -1 || (ac == 190) || (ac == 110)) 
 	        return true;
 	    else
 	        return false;

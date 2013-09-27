@@ -1,0 +1,442 @@
+  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+  <html>
+  <head>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      <meta name="generator" content="zeroCode version v42007.10.01 (tomcat)">
+    <meta name="Author" content="Vinutha Iyengar">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta name="viewport" content="height=device-height, user-scalable=no" />
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width" />
+  <if homePage.user.theme>
+    <assign  theme=homePage.user.theme__deref.derefValue>
+  <else>
+    <assign  theme="green">
+  </if>
+
+  <switch theme>
+    <case "green">
+      <assign jQTheme="Jquery_Green">
+    <break>
+    <case "SilverBlue">
+    <case "blueGreen">
+    <case "boldBlue">
+      <assign jQTheme="Jquery_Blue">
+    <break>
+    <case "purple">
+      <assign jQTheme="Jquery_Purple">  
+    <break>
+  </switch>
+
+    <link rel="shortcut icon" href="/favicon.ico"/>
+      <link rel="shortcut icon" href="/atCRM/images/impelWebsite_images/favicon.ico" type="image/x-icon">
+
+    
+  <comment>  bootstrap.min.css causes the borders on the cells in the list line. Needs fixing.  NM 19 Sep 2012  </comment>
+
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/jquery/jquery.alerts.css"/>    
+    <link rel="stylesheet" href="/atCRM/stylesheets/style_h/ui.core.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/style_h/ui.tabs.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/style_h/ui.theme.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/jquery.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/pivot/subnav.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/pivot/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/pivot/pivot.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/TableTools.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/TableTools_JUI.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/style_h/jquery-ui-1.8.21.custom.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/jquery/jquery.impromptu.css">
+    <link rel="stylesheet" href="/atCRM/stylesheets/eDash.css"/>
+    <!-- <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/jquery.css"/> -->
+    <link rel="stylesheet" href="/atCRM/stylesheets/smartSuggest.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/main.css?rn=4"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/quickAdd.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/flexigrid.css?rn=4"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/jquery/stylish-select.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/fly.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/Jquery_Green/jquery.ui.all.css"/>
+      <link rel="stylesheet" href="/atCRM/stylesheets/JSON/general.css?rn=3"/>
+      <link rel="stylesheet" href="/atCRM/stylesheets/JSON/common.css?rn=2"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/jquery/jquery.window.css">
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/JSON/k_pivot.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/nodeJSFiles/multychat/cssForChat/style.css"/>
+    <!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /> -->
+
+  <style>
+  .ui-dialog .ui-dialog-titlebar-close .ui-icon {
+    margin: -8px 0px 0px -8px !important;
+  }
+  .typeBasedButton a li {
+  /*   background: #2f55c9;
+     background: -webkit-gradient(linear, left top, left bottom, from(#46adfc), to(#2f55c9));
+     background: -webkit-linear-gradient(top, #46adfc, #2f55c9);
+     background: -moz-linear-gradient(top, #46adfc, #2f55c9);
+     background: -ms-linear-gradient(top, #46adfc, #2f55c9);
+     background: -o-linear-gradient(top, #46adfc, #2f55c9);*/
+     padding: 12px 12px;
+     -webkit-border-radius: 0px;
+     -moz-border-radius: 0px;
+     border-radius: 0px;
+     -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+     -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+     box-shadow: rgba(0,0,0,1) 0 1px 0;
+     text-shadow: rgba(0,0,0,.4) 0 1px 0;
+     color: #000000;
+     font-size: 12px;
+     font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif;
+     text-decoration: none;
+     vertical-align: middle;
+     width: 80%;
+     float: left;
+     border-bottom: 1px solid #DFDFDF;
+     display:block;
+     }
+  .typeBasedButton:hover {
+     border-top-color: #357828;
+     background: #357828;
+     color: #cccccc;
+     }
+  .typeBasedButton:active {
+     border-top-color: #2152a6;
+     background: #2152a6;
+     }
+    #loader_Img{display: none;z-index: 9999;position: fixed;}
+
+    #firstLevelRow {
+      height: 30px;
+      background: #325da7;
+      background: -moz-linear-gradient(top,#4e78c2,#325da7);
+      background: -webkit-linear-gradient(top,#4e78c2,#325da7);
+      background: -webkit-gradient(linear,left top,left bottom,color-stop(0,#4e78c2),color-stop(1,#325da7));
+      background: linear-gradient(top,#4e78c2,#325da7);
+    }
+
+    
+  </style>
+
+  <!-- added by venkatesh dp for impelchat -->
+  <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/impelChat.css"/>
+
+    <title>Impel</title>
+      <style>
+    body{ font-size: 12px;font-family:Tahoma,Verdana,Helvetica,sans-serif;}
+    #pageLoad        
+    {
+      color: white;
+      text-align: center;
+      position: absolute;
+      top: 35%;
+      left: 0px;
+      width: 100%;
+      height: 1px;
+      overflow: visible;
+      visibility: visible;
+    }
+     
+    #pageLoadbox    
+    {
+      font-family:Tahoma,Verdana,Helvetica,sans-serif;
+      margin-left: -125px;
+      position: absolute;
+      top: -85px;
+      left: 50%;
+      width: 250px;
+      height: 100px;
+      visibility: visible;
+    }
+      #buttonDiv a:hover {color: #FF0000;}
+    </style>
+  </head>
+
+  <script>
+  if (top != window) {
+      top.location.href = window.location.href;
+  }
+
+  var src = navigator.appName.indexOf ("Microsoft") >= 0 ? "calendar" : "calendar-moz";
+  document.write ('<script src="/atCRM/javascript/' + src + '.js"></scr' + 'ipt>');
+  var date_format="dd/MM/yyyy";
+  var isIE = document.all ? true : false;
+  var zcServletPrefix = "${servlet_prefix}";
+  var lastShownDiv;
+  var mainUrl;
+  var gridAddress;
+  var pageWidth;
+  var pageWidth1;
+  var entityDiv;
+  var mnuItmId;
+  var subMnuItmId;
+  var dropMnuIndex;
+  var session_login = "${homePage.user.User_Id}";
+  var session_login_name = "${homePage.user.LoginName}";
+  var clean_login = session_login_name.replace(/[^\w\s]/gi, '');
+
+  var milisec=0;
+  var seconds=10; 
+  var G_jsonresponse_Contact;
+  var G_jsonresponse_Account;
+  var G_jsonresponse_Opportunity;
+  var G_quickAddResponse_Contact;
+  var G_Contact_data;
+  var G_Account_data;
+  var G_Opportunity_data;
+  var G_from_layout=false;
+  var G_EntityName;
+  var G_allIdsForMassStatus;
+  var G_userName = "${homePage.getUserName.Contact__deref.derefValue}";
+  var stzo = "${homePage.serverTImeZone}";  //server time-zone offset; 
+  if ("${homePage.getUserTimeZoneOffset}")
+    var utzo  = "${homePage.getUserTimeZoneOffset}";
+  else
+    var utzo  = "${homePage.getOrgTimeZoneOffset}";
+     //user time-zone offset; 
+  var timeDiffInMin = utzo * 60;
+  var srvrtimeDiffInMin = stzo * 60;
+  var timeZoneOffset = -new Date().getTimezoneOffset();
+  var type_based_layouts_supported_flag = "${homePage.checkFlagValue}"; 
+  var G_curr_view_obj;
+  var G_curr_view_id;
+  var G_curr_view_name;
+  var detailDataTdWidth;
+  var xhr_request="";
+
+  var utzToShow = "<font size='1pt'>"+'(GMT '+utzo.replace('.',':')+')'+"</font>";
+
+  callAsync=true;
+
+  var flg_firstLoad = true;  //Flag used to check page loaded for first time or not. 
+  var flg_pageLoad=true;
+
+
+  var emailProcessor=0;  //flag used for email downloading
+  var emailClientRefresh=0; //flag used for email client to refresh the right panel 
+  var mailFolderInbox = "${homePage.getMailFolder.user_email_folder_id}";  //this will have folder id for inbox
+  var rp = "${homePage.getSiteRoot.value}";
+  var un = "${homePage.user.LoginName}";
+  var templateType;
+  var flagsJSON;
+  var currentRecIdsJSON;
+  var g_curr_obj = "";
+  var callJSON;
+
+  /* some globals defined by shoib md */
+  var home_org_pis = "${homePage.orgDetails.pop_imap_server}"; 
+  var home_org_pip = "${homePage.orgDetails.pop_imap_port}";
+  var home_org_ssl_enb = "${homePage.orgDetails.ssl_enabled}";
+  var home_org_client_mail_prot = "${homePage.orgDetails.client_mail_protocol}";
+  var home_user_mail_login_name = "${homePage.user.MailLogin_Name}";
+  var home_user_mail_pwd = "${homePage.user.MailPassword}";
+  var home_org_org_id = "${homePage.orgDetails.OrgName_Id}";
+  var home_getLicExpDate = "${homePage.getLicExpDate}";
+  var home_getTodaysDate = "${homePage.getTodaysDate}";
+  var cti_provider="${homePage.user.cti_provider}";
+  var userType = "${homePage.user.UserType_id__deref.derefValue}";
+  var home_user_pbx_ext = "${homePage.user.pbx_extension}";
+  var home_getuserflag = "${homePage.getUserFlag.flag_value}";
+  var home_getFlagValIfNoUserId = "${homePage.getflagValueIfNoUsrId.flag_value}";
+  var homePage = "${homePage.user.hint_question}";
+  var homepage_org_flag_id = "${homePage.getOrgFlagToHideLinks.org_flag_id}";
+
+
+  </script>
+
+  <script type="text/javascript" src="/atCRM/javascript/JSON/jquery-latest.min.js"></script>
+  <script type="text/javascript" src="/atCRM/javascript/JSON/LAB.min.js"></script>
+  <script type="text/javascript" src="/atCRM/javascript/JSON/homepage.js"></script>
+  <script type="text/javascript" src="http://api.knowlarity.com:8088/socket.io/socket.io.js"></script>
+  <body id="home_main" class="PageBody" style="overflow:auto">
+  <div id="pageLoad">
+      <div class="pageLoadbox">
+        <p style="font-size:11px; color:#666; font-family:Georgia, 'Times New Roman', Times, serif;">Loading, please wait...</p>
+        <img src="${servlet_prefix}/images/loadingbar.gif" width="128" height="15">
+      </div>
+  </div>
+  <span><img id='loader_Img' src='/atCRM/images/LoadImg/ajax-loader_validate.gif'/></span>
+  <div id="pageContent" style="display:none;">
+      <div id='smartSuggestDiv' style='display:none;position: absolute;z-index: 2147483647;'></div>
+    <div id='smartDialog' ></div>          
+      <div id='divForError' class='ui-state-error ui-corner-all' style='display:none;position: absolute;z-index: 2147483647;' ></div>
+      <div id='multiSelectSugg' name='multiSelectSugg' style='display:none;position: absolute;z-index: 2147483647;'></div>
+      <div id='smartFill' name='smartFill' class='sf_suggestion' style='display:none;position: absolute;z-index: 2147483647;'></div>
+      <div id='mappedSmartFill' name='mappedSmartFill' class='sf_suggestion' style='display:none;position: absolute;z-index: 2147483647;'></div>
+    <div id='smartSuggestFill' name='smartSuggestFill' class='sf_suggestion' style='display:none;position: absolute;z-index: 2147483647;'></div>
+      <div id='mappedSmartFillWiz' name='mappedSmartFillWiz' class='sf_suggestion' style='display:none;position: absolute;z-index: 2147483647;'></div>
+      <div id="autosuggestUsers" name="autosuggestUsers" class="autosuggest" style="z-index:999999"></div>
+      <div id="mainContentDiv" style="width:334px; border:0px solid #6699cc;margin:0px;">
+      </div>
+    <div id="eodpopup" title="EOD Alert" style="display:none;min-height:380px;">   
+          <iframe name="eodalertpopup" id="eodalertpopup" valign="top" frameborder="0" width="100%" height="380px" src=""></iframe>    
+          <div id="msg" style="display:none;text-align:center;vertical-align:middle;font-weight:bold; margin-top:30px;"></div> 
+      </div>
+      <table width="100%" cellpadding=0 cellspacing=0 align="center" valign="top" border="0" >
+          <tr >
+      
+              <td scrolling="no" class='bckgrnd_plane' align="left">
+              <input type=hidden name=but_tree value="Tree" onClick="loadScreenTreeView();"  >
+              <!-- <a href="javascript:multiAddOpp()" >+Opp</a> -->
+                  <table cellspacing="0" cellpadding="0" border="0" width="100%" class='bannerCls'>
+                      <tr>
+                          <td colspan="3" style="padding-top:0px" >
+                              <table  cellspacing="0" cellpadding="0" name="menuTable" id="menuTable" width="100%" border="0" >
+                                  <tr id='topLevelRow'>
+                                      <td id="orgLogoTD" style="width:187px;" class='bckgrnd_plane' rowspan="1"  vAlign="middle"  >
+                                              <div style="width:88px;" id="orgLogoDIV">
+                                              <if homePage.getOrgLogo_Ent_Img.ENTT_IMG_ID><img src="${servlet_prefix}/custom/fileManager/fileContent.html?directoryOffset=${homePage.getDirectoryOffset.value}&filename=${homePage.getOrgLogo_Ent_Img.IMG_FILENAME}" id='orgLogo' name='orgLogo'><else><img src="${servlet_prefix}/images/impel_logo.png" id='orgLogo' name='orgLogo'></if></div>
+                                      </td>
+                                      <td class="headermenu" style="padding:5px;" class='bckgrnd_plane' id="headerMenuIts">  
+                                          <div id="userNameCell" class="headermenu" style="padding:5px;display:inline;"></div>
+                                          <div name="timerTD" id="timerTD" style="text-align:left;padding-right:5px;display:inline;"></div>
+                                          <div name="emaildwnload" id="emaildwnload" style="text-align:left;padding-right:2px;display:inline;"></div>
+                                          <div id="content" style="visibility:hidden;display:inline;"><img src="/atCRM/images/loading5.gif"></div>
+                                      </td>
+                                      <td align="right" class='bckgrnd_plane' style="padding-right:20px;">
+                                          <div class="headermenu" style="align:right;display:inline;">
+                                              <div class="headermenu" style="text-align:right;color:#ED7F21;display:inline;">
+                                              </div><!-- <span id="Experience"> <a href="javascript:experienceEdition();">Experience</a></span> -->
+                                              <span id="impelMsgs"><a id="Aise Hi" class="anchClass"  href="javascript:addChat();" ><div id="aisehi" style="display:inline;">Chat </div></a></span> |   <span id="impelMsgs"><a id="Aise Hi" class="anchClass"  href="javascript:getPageVal();" ><div id="aisehi" style="display:inline;">Aise he link </div></a></span> | <span id="impelMsgs"><a id="Message" class="anchClass"  href="javascript:setUpPageParameters('${servlet_prefix}/custom/Messages/listMsgsOfCateg.html');" ><div id="MessagesSpan" style="display:inline;">Messages </div></a></span> <if !homePage.getOrgFlagToHideLinks.org_flag_id><span id="impelReportBug">| <a href="javascript:reportABug();">Report a bug</a> | </span><else>| </if> <a id= "setUp" class="anchClass" href="javascript:setUpPageParameters('${servlet_prefix}/custom/adminNew/AdminSetUp.html');">My Profile</a> <span id="impelHelp"><if !homePage.getOrgFlagToHideLinks.org_flag_id>| <a id="help" class="anchClass" href="http://www.impelcrm.in/?q=wiki" target="_blank"> Help</a></span></if> | <a id="Logout"  class="anchClass" href="javascript:customLogout();">Logout</a><!--<a id="Logout"  class="anchClass" href="${servlet_prefix}/logout.html">Logout</a> -->
+                                          </div>                  
+                                      </td>
+                                  </tr>
+                                  <tr id='firstLevelRow'>
+                                      <td id="firstLevelMenu" class='bckgrnd_plane' colspan="3">  
+                                          <ul id="firstLevelMenu_ul" class="firstLevelMenu_ul" ></ul>
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td id="secondLevelMenu"  class="subMenu" colspan="3">
+                                      </td>
+                                  </tr>
+                              </table>
+                              <div id='thirdlevelmenu' style="position:absolute;z-index:500"></div>
+                          </td>
+                      </tr>
+                  </table>      
+              </td>
+          </tr>
+          <tr>
+              <td valign="top" class='dataPage' >
+                  <div id='div_mailAlert' name='div_mailAlert' class="cls_div_mailchk" onMouseOver="this.className='cls_div_mailchkIN'"  onMouseOut="this.className='cls_div_mailchk'"></div>
+          <div id="dyna_html" class="hidden"></div>
+          <div id="infoDiv" style="width:80%;display:none;background:black;margin-top:3px;font-family: tahoma,verdana; font-size: 12px; padding: 3px; font-weight: bold;position:absolute;text-align:center;z-index:10000;opacity:.6;border-radius:3px;color:white;"></div>
+                  <table cellpadding=0 cellspacing=0  valign="top" border="0" width="100%">
+                      <tr>
+                          <td style="width:0px;margin-left:-2px;display:none;" valign="top" id="td_left_pannel">
+                              <div  style="width:100%;border:0px solid red;width:0px;" align="center" id="commonFnDiv" name="commonFnDiv" valign="top">
+                                    <!--   <input type="hidden" id="pcrAcc_AccountId2txt" name="pcrAcc_AccountId2txt">
+                                      <input type="hidden" id="pcrAcc_AccountId2" name="pcrAcc_AccountId2">
+                                      <input type="hidden" id="textbx_contactct2txt" name="textbx_contactct2txt">
+                                      <input type="hidden" id="textbx_contactct2" name="textbx_contactct2">
+                                  <div id="accordianMainDiv" class="cls_MainAccordianDiv"></div> -->
+                              </div>
+                 </td>
+                  <td valign="top" id="templateTD" name="templateTD" >&nbsp;</td>
+                              <td  style="padding-left:5px" valign="top" align="left"  id='detailDataTd' name='detailDataTd' >
+                              <div id="loadingDiv" name="loadingDiv" style="width:100px;display:none;background:#f7f7f7;margin-top:3px;font-family: tahoma,verdana; font-size: 12px; padding: 3px; font-weight: bold;position:absolute;text-align:center;z-index:9999;">Loading...</div>
+                              <div id="commonErrorDiv" name="commonErrorDiv" style="width:450px;display:none;background:#f7f7f7;color:red;margin-top:3px;font-family: tahoma,verdana; font-size: 11px;font-weight:bold; padding: 3px; border:1px solid #000f00;position:absolute;text-align:center;"></div>
+                              <div style='position:relative;z-index:0;width:99%' align='center' id='detailDataDiv' name='detailDataDiv' valign='top' width="100%" ></div>   
+                          </td>      
+                      </tr>       
+                  </table>
+              </td>
+          </tr>
+      </table>
+      <!-- hidden field for view Sales automation page -->
+      <input type="hidden" id="globleOpp" name="globleOpp"/>
+      <input type="hidden" id="serverName" name="serverName" value="${homePage.serverName}"/>
+      <input type="hidden" id="stillWorking" name="stillWorking" value="${homePage.serverName}"/>
+      <input type="hidden" id="0-1601" name="0-1601" value="${homePage.getRememberMe}"/>
+    <input type="hidden" id="remindData" name="remindData"/>
+      <input type="hidden" id="setIndexRemind" name="setIndexRemind"/>
+      <input type="hidden" size="70" id="menu-log"/>
+    <input type="hidden" id="input_layout"/>
+      <div id="commonPopupDiv" name="commonPopupDiv" title="commonPopupDiv" style="height:120px;display:none"></div>
+      <div id="viewMappedRecordPopUp" name="viewMappedRecordPopUp" title="View Details" style="height:120px;display:none"></div>
+      <div id="reminderPopupDiv" name="reminderPopupDiv" title="reminderPopupDiv" style="height:120px;display:none"></div>
+      <div id="commonPickListDiv" name="commonPickListDiv" title="commonPopupDiv" style="height:120px;display:none"></div>
+      <div id="templateSelector" name="templateSelector" title="Select template to send SMS" style="display:none"></div>
+      <div id="nonJsoncommonPopupDiv" title="commonPopupDiv" style="height:120px;display:none"></div>
+      <div id="commonErrPopupDiv" name="commonErrPopupDiv" class="commonErrPopupDiv"></div>
+    <div id="callingImg" name="callingImg" style="display:none;z-index:1000;position:absolute;background:url('/atCRM/images/phone_ringing.gif') no-repeat center;left:50%;bottom:50%;height:70px;width:100px;background-size:40%;">&nbsp;</div>
+      <div id="stageValue" name="stageValue" class=""></div>
+      <div class="commonHoverDiv" id="commonHoverDiv" name="commonHoverDiv"></div>
+    <div id="modelOverlayDiv" class="black_overlay"></div>
+    <div id="lightBoxDiv" class="white_content" onkeyup='var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==27)hideImgLightBx();'></div>
+      <div id="lastDivOnPage" name="lastDivOnPage" style="position:absolute;bottom:0px;right:0px;"></div>
+      <div id='dashBoardMainDiv'></div>
+
+      <!-- Start: Report a bug -->
+      <div id="reportBug" title="Report a Bug" style="height:120px;display:none">
+          <div id="reportBugFormContent">
+              <form name="reportBugForm" method="post">
+              <table>
+                  <tr>
+                      <td valign="top" align="left">Bug Description</td>
+                  </tr>
+                  <tr>
+                      <td align="center">
+                          <textarea name="0-101" id="0-101" rows="6" cols="70"></textarea>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td align="right" valign="top"><input type="button" class="fly" value="Report Bug" onclick="sumbitReportBug()" style="margin-right: 15px; width: 100px;" /> </td>
+                  </tr>
+              </table>
+              </form>
+          </div>
+          <div id="reportBugFormResult" align='center' style='font-weight:bold;margin-top:50px;'>
+          </div>
+      </div>
+      
+      <!-- End: Report a bug -->
+      
+      <!-- addOppty-->
+      <div id="addEntitytitlediv" title="" style="height:120px;display:none;border:0px solid red;">
+          <div id="addpopUp"></div>
+          <div id="listCaption" name="listCaption" style="font-weight:bold;margin:10px 0 0 5px;"></div>
+          <div id="listPopUp" style="display:none;margin-top:5px;"></div>
+      </div>
+      <!-- End:addOppty -->
+      <div id="quickAddPopupDiv"></div>
+  </div>
+  <input type="hidden" id="isReload" value="0"/>
+  <!--  Chat confirmation div  -->
+  <div id="confirmBox">
+    <div class="message"></div>
+    <span class="button yes">Yes</span>
+    <span class="button no">No</span>
+  </div>
+
+
+  <script type="text/javascript">
+    if((screen.height<=480) || (screen.width<=960))
+    {
+        $('#orgLogo, #impelBeta, #impelMsgs, #impelReportBug, #impelHelp').css('display','none');
+        $('#orgLogoTD, #orgLogoDIV').css('width', '2%');
+      }
+  </script>
+  
+      
+  <script type='text/javascript'>
+          
+      // if(userType == "Call Center") showChangeCampaign();
+      // if(cti_provider == "knowlarity" || cti_provider == "ozonetel") 
+      // {
+        //$("head").append('<script type="text/javascript" src="http://api.knowlarity.com:8088/socket.io/socket.io.js"><\/script>');
+      // }
+  /* impel chat integration */
+ //alert(session_login_name);
+  // From_User = session_login_name;
+	// $(function(){	
+	// 	$('head').append("<script src='\/atCRM/nodeJSFiles/multychat/impelChat_client.js'><\/script>");
+	// });
+  
+  /* end impel chat integration */
+
+  </script>
+  
+  <!-- end Chat confirmation div  -->
+  
+  </body>
+
+
+   
+  </html>

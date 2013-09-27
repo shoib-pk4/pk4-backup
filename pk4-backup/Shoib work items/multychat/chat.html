@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="/cssForChat/style.css">
+<link href="/cssForChat/perfect-scrollbar.css" rel="stylesheet">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> -->
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var From_User='ichat@impel.in'+Math.floor(Math.random(10)*100);
+	$(function(){	
+		$('head').append("<script src='\/impelChat_client.js'><\/script>");
+	});
+</script>
+
+</head>
+<body>
+<input type='button'  id='btnToChat' value='chat'  onclick='addChat()'>
+<!--  Following code is to display a compatibilyty message in IE-->
+<!--[if IE]>
+<div style='position:fixed;z-index:10000;top:250px;left:0px;width:100%;background:hotpink;color:black;font-weight:bold;font-size:20px;text-align:center;'>IE may show/give unexpected/inappropriate results.<br/>Please use Google Chrome or Mozilla Firefox.</div>
+<![endif]-->
+</body>
+</html>

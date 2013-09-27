@@ -83,7 +83,7 @@ function addHomepageScripts() {
   	// .script("http://nicolaskruchten.github.io/pivottable/examples/pivot.js")
   	.script("/atCRM/javascript/jquery/pivot/jquery_pivot.js?r=2")
   	.script("/atCRM/javascript/jquery/pivot/dataTables.bootstrap.js")
-  	.script("/atCRM/javascript/jquery/pivot/jquery.dataTables.min.js")
+  	//.script("/atCRM/javascript/jquery/pivot/jquery.dataTables.min.js")
   	
   	.script(jsPath + "rept.js")
     .script(jsPath + "l2.js")

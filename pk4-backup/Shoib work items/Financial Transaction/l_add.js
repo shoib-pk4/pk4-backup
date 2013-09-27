@@ -4,10 +4,11 @@ var lAddPicklistIndx  = 1; //global picklist index
 var lAddCurrentdateId = ''; //global date variable
 var listAddOTable; //global var for list add data table
 var hdrs; //this is global contains datatable headers
+var paymentModeArr = [];
 
 function exec_l_add(doc, intoDiv, mainUrl) {
 
-		console.log('l add');
+		console.log('l add page parsing...');
 		//** write code to destroy previos datatable and to parse new one
 
 		//check if data table already initialized, then remove if so
@@ -34,8 +35,7 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		d.append(styles);
 
 		//draw paramerters section
-		if(doc.Parameters) {
-			console.log('parameters!!');
+		if(doc.Parameters) {			
 			var params    = doc.Parameters;
 			lAdddrawParamsConditions(params, d);
 		}
@@ -196,6 +196,8 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		          "bScrollCollapse": true
 			}
 		);
+
+		$('#detailDataDiv #l_add_loading').remove();
 		//new FixedHeader( listAddOTable ); //this will make table header fixed. #shoib this has bug if headers is wider
 
 	/* end of exec_l_add function */
@@ -254,32 +256,26 @@ function lAddDrawTypeOfUserInput(td, hdrs, rowData)  {
 				sel = $('<select class="lAddDrpDwn lAddParamsElem"></select>');
 				sel.attr('nodeid',nodeId);				
 				var pkId = hdrs.picklist_id ;
-				if(pkId != '') {
+				
+				if(pkId != '' && paymentModeArr.length == 0) {
+					console.log('genericPicklist');
 					//getting select elements from ajax
-					var path = '/atCRM/custom/JSON/smartSuggest/genericPicklist.htm?pckListId='+pkId; 
-					$.ajax(
-						{
-							url: path,
-							type: 'GET',
-							async: false,
-							success: function(data){
-								var data = JSON.parse(data);
-								if(data['PickListItems']['listData']) {
-									var optsArr = data['PickListItems']['listData'];
-									$.each(optsArr, function(k,v) {
-										var opts = v['columnData'].split('~)');
-										if(opts.length > 0) {
-											sel.append('<option value="'+opts[0]+'">'+opts[1]+'</option>');
-										}
-									});
-								}
-							},
-							error: function(resp) {
-								console.log('Failed to load Drop-down for '+ pkId);
-								console.log(resp);
-							},
+					var opts =  getValuesForPaymentMode(pkId);
+					$.each(opts, function(k,v) {
+						var opts = v['columnData'].split('~)');
+						if(opts.length > 0) {
+							sel.append('<option value="'+opts[0]+'">'+opts[1]+'</option>');
 						}
-					);
+					});
+
+				} else if(pkId != '') {
+					//paymentModeArr this global arra
+					$.each(paymentModeArr, function(k,v) {
+						var opts = v['columnData'].split('~)');
+						if(opts.length > 0) {
+							sel.append('<option value="'+opts[0]+'">'+opts[1]+'</option>');
+						}
+					});
 				}
 
 				sel.val(rowData['colTxt']);
@@ -667,6 +663,31 @@ function lAddLimitDecimal(val, plces) {
 	} else {
 		return val;
 	}
+}
+
+//this gets the payment mode types
+function getValuesForPaymentMode(pkId) {
+	//getting select elements from ajax
+	var path = '/atCRM/custom/JSON/smartSuggest/genericPicklist.htm?pckListId='+pkId; 
+	$.ajax(
+		{
+			url: path,
+			type: 'GET',
+			async: false,
+			success: function(data){				
+				var data = JSON.parse(data);
+				if(data['PickListItems']['listData']) {
+					paymentModeArr = data['PickListItems']['listData'];									
+				}
+			},
+			error: function(resp) {
+				console.log('Failed to load Drop-down for '+ pkId);
+				console.log(resp);
+			},
+		}
+	);
+
+	return paymentModeArr;
 }
 
 

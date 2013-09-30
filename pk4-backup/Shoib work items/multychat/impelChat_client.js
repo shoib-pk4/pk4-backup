@@ -1,8 +1,8 @@
-var To_User = '';
+var To_User   = '';
 var usernames = [];
 var actvUsers = [];
-var actvWidMe = []; // users list  currently chatting with.
-var obj = {}; //  creating object of active user.
+var actvWidMe = [];  // users list  currently chatting with.
+var obj = {};       //  creating object of active user.
 var iChatConnected = false;
 var impelChatSckt = io.connect('http://192.168.11.11:60051');
 var ifChrm = window.webkitNotifications ? true : false;

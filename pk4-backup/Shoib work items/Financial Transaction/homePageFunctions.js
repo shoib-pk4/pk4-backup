@@ -535,6 +535,13 @@
 
 	function setUpPageParameters(uri,objId,fromMnu,subItmId,reloadFlag,listPopup,dropIndex,isCancel,recId)
 	{
+		console.log('set up page paramaters..');
+		//#shoib, empty the detaildata div, before showing anything in to it
+		var dd = $('#detailDataDiv');
+		if(dd.children().length > 0 ) {
+			dd.children().remove();			
+		}
+
 	    L_frm_lz=false;
 	    try{
 	        L_frm_value=window.location.hash;
@@ -636,20 +643,20 @@
 	    shoib: hide and show can u report div .
 	    string match, rAn.htm and wfw_rule_l2.htm if found show otherwise hide
 	  	*/
-		  if(uri.match(/rAn.htm/g)) 
-		    $('#reptCanU').css('display', 'block');
-		  else
-		    $('#reptCanU').css('display', 'none');
+		 //  if(uri.match(/rAn.htm/g)) 
+		 //    $('#reptCanU').css('display', 'block');
+		 //  else
+		 //    $('#reptCanU').css('display', 'none');
 
-		  if(uri.match(/wfw_rule_l2.htm/g)) 
-		    $('#l2_container').css('display', 'block');
-		  else
-		    $('#l2_container').css('display', 'none');
+		 //  if(uri.match(/wfw_rule_l2.htm/g)) 
+		 //    $('#l2_container').css('display', 'block');
+		 //  else
+		 //    $('#l2_container').css('display', 'none');
 
-		 if(uri.match(/l_add_json.htm/g)) 
-		    $('#listAddTblContainer').css('display', 'block');
-		  else
-		    $('#listAddTblContainer').css('display', 'none');   
+		 // if(uri.match(/l_add_json.htm/g)) 
+		 //    $('#listAddTblContainer').css('display', 'block');
+		 //  else
+		 //    $('#listAddTblContainer').css('display', 'none');   
 
 
 	}
@@ -845,6 +852,8 @@
 
 	function retrieveJSONdata(uri,objId,fromMnu,add2History,reloadFlag,listPopup)
 	{  
+
+
 		//console.log(uri,objId,fromMnu,add2History,reloadFlag,listPopup);
 		//var parURI=uri.search("custom/JSON/system/getParentMnuItmId.htm");
 		//if(parURI<0&&xhr_request)xhr_request.abort();
@@ -1085,17 +1094,16 @@
 				case "l_add": 
 							// hidePannel(true);
 							var into_div = $('#detailDataDiv');
-							entityDiv = document.getElementById('detailDataDiv');
+							entityDiv = document.getElementById('detailDataDiv');							
 							closeLoadingDiv();					
-							setTimeout(function() {
-								//hide first level children of detail data div
-								into_div.children('div').css('display', 'none');
-								//add progress bar here
-								into_div.prepend('<div id="l_add_loading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
-							}, 0);
-							setTimeout(function() {
-								exec_l_add(doc, into_div, mainUrl);	
-							}, 10);
+							// setTimeout(function() {
+							// 	//add progress bar here
+							// 	into_div.prepend('<div id="l_add_loading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+							// }, 0);
+							// setTimeout(function() {
+							// 	exec_l_add(doc, into_div, mainUrl);	
+							// }, 100);
+							exec_l_add(doc, into_div, mainUrl);	
 							
 							break;
 										

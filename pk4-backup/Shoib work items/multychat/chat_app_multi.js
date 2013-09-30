@@ -222,9 +222,6 @@ io.sockets.on('connection',function(socket){
 
 		});
 	
-	
-
-
 
 	//Chat Events
 	 socket.on('MessageFromImpeltouch', function (recipientName) {

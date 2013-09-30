@@ -8,7 +8,7 @@ var paymentModeArr = [];
 
 function exec_l_add(doc, intoDiv, mainUrl) {
 
-		console.log('l add page parsing...');
+		// console.log('l add page parsing...');
 		//** write code to destroy previos datatable and to parse new one
 
 		//check if data table already initialized, then remove if so
@@ -197,7 +197,7 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 			}
 		);
 
-		$('#detailDataDiv #l_add_loading').remove();
+		// $('#detailDataDiv #l_add_loading').remove();
 		//new FixedHeader( listAddOTable ); //this will make table header fixed. #shoib this has bug if headers is wider
 
 	/* end of exec_l_add function */

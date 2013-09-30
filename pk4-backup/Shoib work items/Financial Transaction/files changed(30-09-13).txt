@@ -1,2 +1,1 @@
-Files changed
-homePageFunctions.js, l_add.js
+homePageFunctions.js, l_add.js, homepage.js

@@ -37,8 +37,7 @@ function validateFormFldsForFinance () {
 //post data
 function submitFinanceAddEditForm(formSubmitPostFun,isAddNew)
 {
-	console.log('form submit');
-
+	
 	document.getElementById('addEditErrorDiv').style.display="none";
 
 	//prepare post fields

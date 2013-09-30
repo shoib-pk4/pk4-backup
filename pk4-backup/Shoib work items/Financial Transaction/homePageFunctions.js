@@ -536,10 +536,10 @@
 	function setUpPageParameters(uri,objId,fromMnu,subItmId,reloadFlag,listPopup,dropIndex,isCancel,recId)
 	{
 		console.log('set up page paramaters..');
-		//#shoib, empty the detaildata div, before showing anything in to it
+		//#shoib 
 		var dd = $('#detailDataDiv');
-		if(dd.children().length > 0 ) {
-			dd.children().remove();			
+		if(dd.length > 0 ) {
+			$('#reptCanU, #l2_container, #listAddTblContainer').remove();			
 		}
 
 	    L_frm_lz=false;

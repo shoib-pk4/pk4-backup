@@ -14,7 +14,7 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		//check if data table already initialized, then remove if so
 		if(listAddOTable != null) {
 			listAddOTable.fnDestroy();
-			//$('#listAddTblContainer').remove();
+			$('#listAddTblContainer').remove();
 		}
 
 		//add code for showing loading here..
@@ -466,7 +466,7 @@ function lAddvalidateDateTime(h, m) {
 		}
 	});
 	
-	if(validationFunc != '') {
+	if(validationFunc != '' && validationFunc !== undefined) {
 		var reqFunc = eval('(' + validationFunc + ')');
 		var res = reqFunc(d);			
 		if(res === false) {	

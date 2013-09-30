@@ -322,7 +322,6 @@ function addMoreRows(data)
 //This is to build the entire page with field items and labels.
 function buildFields(data,popupDiv,formName)
 {
-
 	var mainTD=document.getElementById(mnuItmId+"-MainTd");
 	var numFieldsWritten=0;
 	var firstFldName=fieldItems[0].dataColumn[0];
@@ -338,7 +337,6 @@ function buildFields(data,popupDiv,formName)
 		fieldTable.style.width="100%";
 		fieldTable.cellPadding="3";
 		var fieldTblBdy=CreateBody(fieldTable,"","");
-		console.log(udmName + '-' + mnuItmId + '-' + priKey);
 	}
 	for(var x=0; x<fieldItems.length; x++)
 	{
@@ -447,7 +445,6 @@ function buildFields(data,popupDiv,formName)
 				fieldTable.style.width="100%";
 				fieldTable.cellPadding="3";
 				fieldTblBdy=CreateBody(fieldTable,"","");				
-				
 			}
 			else if((fieldName.split('n~)').length)==2)
 			{
@@ -488,7 +485,6 @@ function buildFields(data,popupDiv,formName)
 			}
 			else if((fieldName.split('L~)').length)==2)
 			{
-
 				var desc=fieldName.split('~)')[1];				
 				numFieldsWritten=0;				
 				var sectionDivMain=CreateDIV(mainTD);
@@ -530,15 +526,10 @@ function builtListFields(data)
 	if(ListPanelHeaders)
 	{
 	if(ListPanelHeaders&&ListPanelHeaders.length>0)
-	{	
-		//adding prefs name as class
-		if(doc.PrefsName && doc.PrefsName=='finTransMAdd')
-			lstTable=CreateTable(mainTD,"sectionDiv "+doc.PrefsName+"_tbl","","","0","1");
-		else
-			lstTable=CreateTable(mainTD,"sectionDiv","","","0","3");
-
+	{		
+		lstTable=CreateTable(mainTD,"sectionDiv","","","0","3");
 		lstTable.style.width="100%";
-		// lstTable.cellPadding="3";
+		lstTable.cellPadding="3";
 		//lstTable.style.marginTop="15px";
 		var listTblHd = CreateThead(lstTable); 
 		listTblBdy = CreateBody(lstTable,'','listItemsTableBody'); 

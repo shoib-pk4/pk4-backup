@@ -14,8 +14,10 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		//check if data table already initialized, then remove if so
 		if(listAddOTable != null) {
 			listAddOTable.fnDestroy();
-			$('#listAddTblContainer').remove();
+			//$('#listAddTblContainer').remove();
 		}
+
+		//add code for showing loading here..
 				
 		var submitUrl = doc.SubmitUrl;
 		

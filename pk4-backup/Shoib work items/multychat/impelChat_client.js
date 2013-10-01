@@ -652,7 +652,6 @@ function fetchUserOptionFromDb() {
     
     return trackUserNames;
 }
-
 fetchUserOptionFromDb(); //init recent users and track id
 
 function recorderInviteUser(toUser) {

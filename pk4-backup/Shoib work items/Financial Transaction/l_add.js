@@ -21,12 +21,12 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 				
 		var submitUrl = doc.SubmitUrl;
 		
-		var styles = '<style type="text/css"> #listAddTblContainer {width:1200px;} .listAndAddTbl {width:100%;border-collapse: collapse;border:none;text-align:center;}';
-			styles += '.lAddParamsLbl {max-width: 190px;font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;}.DynarchCalendar-topCont {top:25% !important; left: 40% !important; position: fixed !important;} .lAddFrmBtns {float:right;} .lAddFrmBtns:hover, #lAddListSubmit:hover {background-color:#014464 !important;color:white;} #lAddtblDivListData {margin:10px auto;overflow:hidden; width:100%;height:auto;} .lAddDateClass {width: 80px;} ';
+		var styles = '<style type="text/css"> #listAddTblContainer {width:1200px;} .listAndAddTbl {width:100% !important;border-collapse: collapse;border:none;text-align:center;}';
+			styles += '.lAddParamsLbl {max-width: 190px;font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;}.DynarchCalendar-topCont {top:25% !important; left: 40% !important; position: fixed !important;} .lAddFrmBtns {float:right;} .lAddFrmBtns:hover, #lAddListSubmit:hover {background-color:#014464 !important;color:white;} #lAddtblDivListData {margin:25px auto; width:100%;height:auto;} .lAddDateClass {width: 80px;} ';
 			styles += '.multiSelectBox {position:absolute;width:170px;background-color:white;} #lAddMPLParmsCont .lAddSinglePickList , #lAddSPLParmsCont .lAddSinglePickList {width: 170px;} #lAddMPLParmsCont {width: 200px;height:30px;} #lAddSPLParmsCont {width: 200px;height:30px;} #lAddMPLDtCont {width: 125px;height:30px;} #lAddSPLDtCont {width: 125px;height:30px;}  #lAddDCont {width: 125px;height:30px;} #lAddDTCont {width: 215px;} #paramsTbl, #lAddtblDivParams, #lAddSlideUpDwnCont {width:100%;} #paramsTbl .odd {background-color: #E2E4FF;} #paramsTbl tr {background-color: rgb(253, 245, 245);vertical-align: top;} #lAddtblDivParams {margin: 13px auto;}  .listAndAddTbl .odd {background-color: #E2E4FF;} .listAndAddTbl .even {background-color: white;} #lAddListSubmit, #lAddListSubmit_wait {float:right;} .lAddDrpDwn, .lAddSinglePickList {width:100px;} .lAddParamsDesc {font-size: 12px;display: block; color:grey;}';
-			styles += '.lAddRowSelected td {background-color: rgb(246, 247, 159) !important;} .dataTables_scrollHeadInner {float:left;} #listAndAddTbl_length select, #listAndAddTbl_filter input {display:inline;} .multiSelectBox {visibility:hidden;} .lAddMPLTd:hover .multiSelectBox {visibility:visible;} ';
+			styles += '.lAddRowSelected td, .lAddRowSelected {background-color: rgb(246, 247, 159) !important;} .lAddRowSelected {border-bottom: solid 1px #E9E6E6 !important;} .dataTables_scrollHeadInner {float:left;} #listAndAddTbl_length select, #listAndAddTbl_filter input {display:inline;} .multiSelectBox {visibility:hidden;} .lAddMPLTd:hover .multiSelectBox {visibility:visible;} ';
 			styles += '.submitColsCont  {position:relative;display:block;} .lAddDisableUserInpts {position:absolute;top:0;right:0;left:0;bottom:0;background-color:rgba(0,0,0,0);} ';
-			styles += '.listAndAddTbl td {padding: 5px 0 !important;} .listAndAddTbl th, .listAndAddTbl td { width: 100px !important;min-width: 100px !important;max-width: 100px !important; } .dataTables_scrollBody { padding:0 0 22px 0; }';
+			styles += '.dataTables_scrollBody { padding:0 0 22px 0; } #lAddtblDivListData .sf_suggestion { position:fixed !important; } .listAndAddTbl  tr { border:solid 1px transparent;} ';
 			styles += '</style>';
 
 		
@@ -51,38 +51,64 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		htr.append(cth); //this col will contain checkboxes
 
 		//make headers
-		hdrs        = doc.ColumnHeaders;
-		var submitIndex = [];
+		hdrs     = doc.ColumnHeaders;
+		tempHdrs = lAddPrepareTmpHdrs(hdrs);
+		console.log(tempHdrs);
+		var colsMapping = {}, key_name;
+		
+		var submitIndex = []; 
 		$.each(hdrs, function(k,v) {
-			n   = v.colmnDesc; 
+			n   = v.colmnDesc.trim(); 
 			nid = v.nodeId;
 			dataType = v.dataType;
-
+			
 			th = $('<th></th>');
 			if(dataType == 'Decimal' || dataType == 'Integer')
 				th.css('text-align', 'right');
 			else
 				th.css('text-align', 'left');	
 
-			if(v.action) {
-				submitIndex.push(k); //add the index
+			if(v.action) {		
+				submitIndex.push(k); //add the index,		
 				if(v.hidden == 1) 
 					th.css('display', 'none');	
+				
 			}	
 			
 			
 			th.attr('id', nid);
-			th.text(n);
-
-			htr.append(th); //add th to header row
+			
+			if(v.hidden !== undefined) {
+				if(v.hidden != 1 && (n in tempHdrs)) {
+					key_name = tempHdrs[n].split('##');
+					th.html(n + ' -<br />' + key_name[0]);
+					htr.append(th); //add th to header row
+					colsMapping[k] = key_name[1];
+				} else if(v.hidden == 1){
+					th.text(n);
+					htr.append(th); //add th to header row
+				}
+			} else if(k != 1 && (n in tempHdrs)) {
+				key_name = tempHdrs[n].split('##');
+				th.html(n + ' -<br />' + key_name[0]);
+				htr.append(th); //add th to header row
+				colsMapping[k] = key_name[1];
+			} else if(k == 1) {
+				th.text(n);
+				htr.append(th); //add th to header row
+			}
+			
+			
 		});
 
+		console.log(colsMapping);
+		
 		//now add complete tr to thead
 		thead.append(htr);
 		//thead to table
 		tbl.append(thead);
 		
-		var tbody = $('<tbody></tbody>'), btr, btd, bpk, rdata, cVal, dataLen, remainingLen, inpTypes, plces;
+		var tbody = $('<tbody></tbody>'), btr,txtType, btd, hdrObjForColMap, bpk, rdata, cVal, dataLen, remainingLen, inpTypes, plces, keyMap, hdrsObj, tmpDiv, nodeid;
 
 		//draw body 
 		var clas = 'odd';
@@ -106,54 +132,151 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 			}				
 			
 			//draw table body here
-			rdata  = v.data;			
+			rdata  = v.data;									
 			$.each(rdata, function(k1, v1) {
-				
-				btd = $('<td></td>');
-				if($.inArray(k1, submitIndex) == -1) { //this means its only view
-					cVal = v1.colTxt;
-					//get datetype from hdrs, using k1 as index
-					dataType = hdrs[k1]['dataType'];
-					
-					if(dataType == 'Decimal' || dataType == 'Integer')
-						btd.css('text-align', 'right');
-					else
-						btd.css('text-align', 'left');
 
-					if((dataType == 'Date' || dataType == 'DateTime') && cVal.length > 0)  {
-						cVal = retDateOrDateTime(cVal, dataType);
+				if(k1 > 0) {
+					btd = $('<td></td>');					
+					hdrsObj = hdrs[k1];
+
+					if(k1 == 1) { //here it is assume 1th index will be name field
+						btd.text(v1.colTxt);
+						btr.append(btd); 
 					} 
-
-					if(dataType == 'Decimal') {
-
-						if(hdrs[k1]['afterDecimal']) {
-							plces = hdrs[k1]['afterDecimal'];						
-							cVal = lAddLimitDecimal(cVal, plces);	
-						} else {
-							cVal = lAddLimitDecimal(cVal, 2);	
-						}
-						
-					}
-
-					//add value to td
-					btd.text(cVal);	
-					
-					
-
-				} else { //this means data to submit
-					btd.addClass('lAddFldsToSubmitCol');
-					var tmpDiv = $('<div class="submitColsCont"></div>');
-					var hdrsTemp =  hdrs[k1];
-					//for labels we need to hide cols
-					if(hdrsTemp.dataType == 'Label')
+					else if(hdrsObj['action'] !== undefined && hdrsObj['hidden'] == 1) {
 						btd.css('display', 'none');
+						btd.addClass('lAddFldsToSubmitCol');
+						// var hdrObj = hdrs[k1];
+						tmpDiv = $('<div class="submitColsCont"></div>');
+						lAddDrawTypeOfUserInput(tmpDiv, hdrsObj, v1);
+						tmpDiv.append("<div class='lAddDisableUserInpts'></div>");							
+						btd.append(tmpDiv);
+						btr.append(btd); //add to tr,
+					} else {						
+						//now check for this index whethere any post params exist, if then show 
+						//user input in this col only
+						if(k1 in colsMapping) {
+							//means this col is to be submitted
+							btd.addClass('lAddFldsToSubmitCol');
+							//add the text first
+							cVal = v1['colTxt'];							
+							//then get the user input type from headers, using the the value of cols mapping
+							hdrObjForColMap = hdrs[colsMapping[k1]];
+							inpType = hdrObjForColMap['dataType'];
+							// var txtObj = hdrs[k1];
+							txtType = hdrsObj['dataType'];
+							
+							if(txtType == 'Decimal' || txtType == 'Integer')
+								btd.css('text-align', 'right');
+							else
+								btd.css('text-align', 'left');
 
-					lAddDrawTypeOfUserInput(tmpDiv, hdrsTemp, v1);
-					tmpDiv.append("<div class='lAddDisableUserInpts'></div>");
-					btd.append(tmpDiv);
+							if((txtType == 'Date' || txtType == 'DateTime') && cVal.length > 0)  {
+								cVal = retDateOrDateTime(cVal, txtType);
+							} 
+							if(txtType == 'Decimal') {
+								if(hdrs[k1]['afterDecimal']) {
+									plces = hdrs[k1]['afterDecimal'];						
+									cVal = lAddLimitDecimal(cVal, plces);	
+									} else {
+									cVal = lAddLimitDecimal(cVal, 2);	
+								}									
+							}
+
+							btd.append('<label>' + cVal + '</label>');
+
+							tmpDiv = $('<div class="submitColsCont"></div>');
+							lAddDrawTypeOfUserInput(tmpDiv, hdrObjForColMap, v1);
+							tmpDiv.append("<div class='lAddDisableUserInpts'></div>");							
+							btd.append(tmpDiv);
+							btr.append(btd); //add to tr,
+						}						
+					}
+				} else { //hide primary key
+					btd = $('<td class="lAddFldsToSubmitCol"></td>');	
+					btd.css('display', 'none');
+					hdrsObj = hdrs[k1];
+					nodeid = hdrsObj['nodeId'];
+					btd.html('<div class="submitColsCont"><input type="hidden" class="lAddParamsElem" nodeid="'+nodeid+'" value="'+v1.colTxt+'" /></div>');
+					btr.append(btd); 
 				}
 
-				btr.append(btd); //add to tr,
+				
+
+				// if(k1 > 0) {
+				// 	btd = $('<td></td>');
+				// 	cVal =  v1.colTxt;				
+				// 	dataType = hdrs[k1]['dataType'];
+
+				// 	if(k1 in colsMapping) {					
+				// 		btd.addClass('lAddFldsToSubmitCol');
+				// 		keyMap = colsMapping[k1];						
+				// 		btd.append('<label>'+cVal+'</label>'); 
+
+				// 		var tmpDiv = $('<div class="submitColsCont"></div>');
+				// 		var hdrsTemp =  hdrs[keyMap];
+				// 		//for labels we need to hide cols
+				// 		if(hdrsTemp.dataType == 'Label')
+				// 			btd.css('display', 'none');
+
+				// 		console.log(keyMap + '-' + k1);
+				// 		lAddDrawTypeOfUserInput(tmpDiv, hdrsTemp, v1);
+				// 		tmpDiv.append("<div class='lAddDisableUserInpts'></div>");
+				// 		btd.append(tmpDiv);
+				// 		btr.append(btd); //add to tr,
+				// 	} else { //if only text
+				// 		btd.text(cVal); 
+				// 		btr.append(btd); //add to tr,
+				// 	}
+
+					
+				// }
+				// btd = $('<td></td>');
+				// if($.inArray(k1, submitIndex) == -1) { //this means its only view
+				// 	cVal = v1.colTxt;
+				// 	//get datetype from hdrs, using k1 as index
+				// 	dataType = hdrs[k1]['dataType'];
+					
+				// 	if(dataType == 'Decimal' || dataType == 'Integer')
+				// 		btd.css('text-align', 'right');
+				// 	else
+				// 		btd.css('text-align', 'left');
+
+				// 	if((dataType == 'Date' || dataType == 'DateTime') && cVal.length > 0)  {
+				// 		cVal = retDateOrDateTime(cVal, dataType);
+				// 	} 
+
+				// 	if(dataType == 'Decimal') {
+
+				// 		if(hdrs[k1]['afterDecimal']) {
+				// 			plces = hdrs[k1]['afterDecimal'];						
+				// 			cVal = lAddLimitDecimal(cVal, plces);	
+				// 		} else {
+				// 			cVal = lAddLimitDecimal(cVal, 2);	
+				// 		}
+						
+				// 	}
+
+				// 	//add value to td
+				// 	btd.text(cVal);	
+					
+					
+
+				// } else { //this means data to submit
+				// 	btd.addClass('lAddFldsToSubmitCol');
+				// 	var tmpDiv = $('<div class="submitColsCont"></div>');
+				// 	var hdrsTemp =  hdrs[k1];
+				// 	//for labels we need to hide cols
+				// 	if(hdrsTemp.dataType == 'Label')
+				// 		btd.css('display', 'none');
+
+				// 	lAddDrawTypeOfUserInput(tmpDiv, hdrsTemp, v1);
+				// 	tmpDiv.append("<div class='lAddDisableUserInpts'></div>");
+				// 	btd.append(tmpDiv);
+				// }
+
+
+				// btr.append(btd); //add to tr,
 			});
 			
 			//finall add tr to tbody
@@ -193,7 +316,7 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		          'iDisplayLength': -1,
 		          "sScrollY": "600",
 		          "sScrollX": "1200",
-		          //"bStateSave": true,//saves the states, comment this if cookies are big
+		          "bStateSave": false,//saves the states, comment this if cookies are big
 		          // "sScrollXInner": "400%",
 		          "bScrollCollapse": true
 			}
@@ -212,26 +335,26 @@ function exec_l_add(doc, intoDiv, mainUrl) {
  */
 function lAddDrawTypeOfUserInput(td, hdrs, rowData)  {
 
-	var typ = hdrs.dataType, nodeId = hdrs.nodeId, picklistId, opts, sel,dval = hdrs.def_val;;	
+	var typ = hdrs.dataType, nodeId = hdrs.nodeId, picklistId, opts, sel,dval = hdrs.def_val, txt=hdrs.colmnDesc;	
 
 
 	switch(typ) {
 
 			case 'Picklist Single-select': 
 				picklistId = hdrs.picklist_id;			
-				lAddDrawSinglePickList(picklistId, td, nodeId, (picklistId+lAddPicklistIndx), 'lAddSPLDtCont');
+				lAddDrawSinglePickList(picklistId, td, nodeId, (picklistId+lAddPicklistIndx), 'lAddSPLDtCont', txt);
 				lAddPicklistIndx++; //for multiple picklist in a single page
 				break;
 
 			case 'Picklist Multi-select': 
 				picklistId = hdrs.picklist_id;
 				td.addClass('lAddMPLTd');
-				lAddDrawMultiPickList(picklistId, td, nodeId, nodeId, (picklistId+lAddPicklistIndx), 'lAddMPLDtCont');
+				lAddDrawMultiPickList(picklistId, td, nodeId, nodeId, (picklistId+lAddPicklistIndx), 'lAddMPLDtCont',txt);
 				lAddPicklistIndx++; //for multiple picklist in a single page
 				break;
 
 			case 'Date': 
-				lAddDrawDate(td, nodeId);
+				lAddDrawDate(td, nodeId, txt);
 				break;
 
 			case 'DateTime': 
@@ -243,24 +366,23 @@ function lAddDrawTypeOfUserInput(td, hdrs, rowData)  {
 				break;
 			
 			case 'Text': 
-				td.append('<input class="lAddParamsElem" type="text" name="'+nodeId+'" value="" style="width:100px;" nodeid="'+nodeId+'" />');
+				td.append('<input class="lAddParamsElem" type="text" title="'+txt+'" name="'+nodeId+'" value="" style="width:100px;" nodeid="'+nodeId+'" />');
 				break;	
 			
 			case 'Decimal': 
-				td.append('<input class="lAddParamsElem lAddlimitDecimal" type="text" name="'+nodeId+'" value="" style="width:100px;" nodeid="'+nodeId+'" />');
+				td.append('<input class="lAddParamsElem lAddlimitDecimal" title="'+txt+'" type="text" name="'+nodeId+'" value="" style="width:100px;" nodeid="'+nodeId+'" />');
 				break;	
 
 			case 'Integer':
-				  td.append('<input class="lAddParamsElem lAddIntegerOnly" type="text" name="'+nodeId+'" value="" style="width:100px;" nodeid="'+nodeId+'" />');
+				  td.append('<input class="lAddParamsElem lAddIntegerOnly" title="'+txt+'" type="text" name="'+nodeId+'" value="" style="width:100px;" nodeid="'+nodeId+'" />');
 				  break;	
 				
 			case 'Drop-down': 
-				sel = $('<select class="lAddDrpDwn lAddParamsElem"></select>');
+				sel = $('<select class="lAddDrpDwn lAddParamsElem" title="'+txt+'"></select>');
 				sel.attr('nodeid',nodeId);				
 				var pkId = hdrs.picklist_id ;
 				
-				if(pkId != '' && paymentModeArr.length == 0) {
-					console.log('genericPicklist');
+				if(pkId != '' && paymentModeArr.length == 0) {					
 					//getting select elements from ajax
 					var opts =  getValuesForPaymentMode(pkId);
 					$.each(opts, function(k,v) {
@@ -295,7 +417,7 @@ function lAddDrawTypeOfUserInput(td, hdrs, rowData)  {
 				 	lblVal = rowData['colTxt'];
 				} 	
 
-				td.append('<input class="lAddParamsElem" type="hidden" name="'+nodeId+'" value="'+lblVal+'" nodeid="'+nodeId+'" />');
+				td.append('<input class="lAddParamsElem" title="'+txt+'" type="hidden" name="'+nodeId+'" value="'+lblVal+'" nodeid="'+nodeId+'" />');
 				 break;	
 
 
@@ -340,7 +462,7 @@ function lAdddrawParamsConditions(paramsData, intoDiv) {
 				picklistId = (v['picklist']=='')?picklistId:v['picklist'];
 				p = '<p class="lAddParamsLbl">'+lbl+'<span class="lAddParamsDesc">'+desc+'</span></p>';
 				td.append(p);
-				lAddDrawSinglePickList(picklistId, td, '', (picklistId+lAddPicklistIndx), 'lAddSPLParmsCont');
+				lAddDrawSinglePickList(picklistId, td, '', (picklistId+lAddPicklistIndx), 'lAddSPLParmsCont', '');
 				lAddPicklistIndx++; //for multiple picklist in a single page
 				break;
 
@@ -348,7 +470,7 @@ function lAdddrawParamsConditions(paramsData, intoDiv) {
 				picklistId = (v['picklist']=='')?picklistId:v['picklist'];
 				p = '<p class="lAddParamsLbl">'+lbl+'<span class="lAddParamsDesc">'+desc+'</span></p>';	
 				td.append(p).addClass('lAddMPLTd');				
-				lAddDrawMultiPickList(picklistId, td, '', (picklistId+lAddPicklistIndx), 'lAddMPLParmsCont');
+				lAddDrawMultiPickList(picklistId, td, '', (picklistId+lAddPicklistIndx), 'lAddMPLParmsCont', '');
 				lAddPicklistIndx++; //for multiple picklist in a single page
 				break;
 
@@ -483,11 +605,11 @@ function lAddvalidateDateTime(h, m) {
 }
 
 
-function lAddDrawSinglePickList(pkId, td, nodeId, pkIdGlb, wid) {
+function lAddDrawSinglePickList(pkId, td, nodeId, pkIdGlb, wid, ttl) {
 	
 	//add picklist for single select
-	var pkList = '<div id="'+wid+'"><input type="hidden" class="lAddParamsElem" name="0-1-'+pkIdGlb+'-'+pkIdGlb+'" id="0-1-'+pkIdGlb+'-'+pkIdGlb+'" value="" nodeid="'+nodeId+'" >';
-		pkList += '<input class="lAddSinglePickList" type="text"  name="0-1-'+pkIdGlb+'-'+pkIdGlb+'txt" id="0-1-'+pkIdGlb+'-'+pkIdGlb+'txt" value="2 chars or **" onfocus="changeMultiTxt(this);" onblur="changeMultiTxt(this);" onkeyup="callAjax(\'smartSuggestDiv'+pkIdGlb+'\',this,event,\'/atCRM/custom/JSON/smartSuggest/genericPicklist.xml?pckListId='+pkId+'\',this.value,\'\',\'undefined\');"  autocomplete="off">';
+	var pkList = '<div id="'+wid+'"><input type="hidden" class="lAddParamsElem"  name="0-1-'+pkIdGlb+'-'+pkIdGlb+'" id="0-1-'+pkIdGlb+'-'+pkIdGlb+'" value="" nodeid="'+nodeId+'" >';
+		pkList += '<input class="lAddSinglePickList" type="text" title="'+ttl+'" name="0-1-'+pkIdGlb+'-'+pkIdGlb+'txt" id="0-1-'+pkIdGlb+'-'+pkIdGlb+'txt" value="2 chars or **" onfocus="changeMultiTxt(this);" onblur="changeMultiTxt(this);" onkeyup="callAjax(\'smartSuggestDiv'+pkIdGlb+'\',this,event,\'/atCRM/custom/JSON/smartSuggest/genericPicklist.xml?pckListId='+pkId+'\',this.value,\'\',\'undefined\');"  autocomplete="off">';
  		pkList += '<div id="smartSuggestDiv'+pkIdGlb+'"></div></div>';
  
  		//add pick list to td
@@ -495,11 +617,11 @@ function lAddDrawSinglePickList(pkId, td, nodeId, pkIdGlb, wid) {
 
 }
 
-function lAddDrawMultiPickList(pkId, td, nodeId, pkIdGlb, wid) {
+function lAddDrawMultiPickList(pkId, td, nodeId, pkIdGlb, wid, ttl) {
 	//add multiple pick list
 	 window["array_0_1_"+pkIdGlb+"_multi"] = []; //fix for multiple select box
-	 var multipleSel = '<div id="'+wid+'"><input class="lAddParamsElem" type="hidden" name="0-1-'+pkIdGlb+'" id="0-1-'+pkIdGlb+'" nodeid="'+nodeId+'" value=""><input type="hidden" name="0-1-'+pkIdGlb+'-multi" id="0-1-'+pkIdGlb+'-multi" value=""><input type="hidden" name="0-1-'+pkIdGlb+'-multi-max" id="0-1-'+pkIdGlb+'-multi-max" value="5"><input type="hidden" name="0-1-'+pkIdGlb+'-multi-fun" id="0-1-'+pkIdGlb+'-multi-fun" value="">';
-		 multipleSel += '<input type="text" name="0-1-'+pkIdGlb+'-multitxt" id="0-1-'+pkIdGlb+'-multitxt" class="ui-corner-all multiSelectTxt lAddSinglePickList" onkeyup="callAjax(\'multiSelectSugg\',this,event,\'/atCRM/custom/JSON/smartSuggest/genericPicklist.xml?pckListId='+pkId+'\',this.value,\'undefined\',\'undefined\');" onfocus="changeMultiTxt(this);" onblur="changeMultiTxt(this);" value="2 chars or **" autocomplete="off"/><div id="multiSelectSugg" name="multiSelectSugg" class="sf_suggestion" ></div>';
+	 var multipleSel = '<div id="'+wid+'"><input class="lAddParamsElem"  type="hidden" name="0-1-'+pkIdGlb+'" id="0-1-'+pkIdGlb+'" nodeid="'+nodeId+'" value=""><input type="hidden" name="0-1-'+pkIdGlb+'-multi" id="0-1-'+pkIdGlb+'-multi" value=""><input type="hidden" name="0-1-'+pkIdGlb+'-multi-max" id="0-1-'+pkIdGlb+'-multi-max" value="5"><input type="hidden" name="0-1-'+pkIdGlb+'-multi-fun" id="0-1-'+pkIdGlb+'-multi-fun" value="">';
+		 multipleSel += '<input type="text" title="'+ttl+'" name="0-1-'+pkIdGlb+'-multitxt" id="0-1-'+pkIdGlb+'-multitxt" class="ui-corner-all multiSelectTxt lAddSinglePickList" onkeyup="callAjax(\'multiSelectSugg\',this,event,\'/atCRM/custom/JSON/smartSuggest/genericPicklist.xml?pckListId='+pkId+'\',this.value,\'undefined\',\'undefined\');" onfocus="changeMultiTxt(this);" onblur="changeMultiTxt(this);" value="2 chars or **" autocomplete="off"/><div id="multiSelectSugg" name="multiSelectSugg" class="sf_suggestion" ></div>';
 		 multipleSel += '<div class="multiSelectBox" name="0-1-'+pkIdGlb+'-multi-multiSelDiv" id="0-1-'+pkIdGlb+'-multi-multiSelDiv"></div></div>'; 
 
 	//add to td now
@@ -632,6 +754,7 @@ function retValidDateTime(milisec) {
 //return date or date time
 var lAddMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function retDateOrDateTime(dt, typ) {
+
 	var d = ['','','','','','']; //init
 	var t = ['','','']; //init
 
@@ -646,7 +769,7 @@ function retDateOrDateTime(dt, typ) {
 
 	if(typ === 'Date') {				
 		var dtObj = new Date(d[0], d[1]-1, d[2], 0, 0, 0); //d contains time in miliseconds
-		return  dtObj.getUTCDay() + '/'  + lAddMonths[dtObj.getUTCMonth()] + '/' + dtObj.getUTCFullYear();
+		return  dtObj.getUTCDay() + '-'  + lAddMonths[dtObj.getUTCMonth()] + '-' + dtObj.getUTCFullYear();
 
 	} else {		
 		var dtObj = new Date(d[0], d[1]-1, d[2], t[0], t[1], t[2]); //d contains time in miliseconds
@@ -692,6 +815,37 @@ function getValuesForPaymentMode(pkId) {
 	return paymentModeArr;
 }
 
+//this is temp hdrs, 
+//it conversts many columns to few cols
+//and it store key of submission user inputs
+function lAddPrepareTmpHdrs(hdrsObj) {
+	var jsonNoSubm = {}, jsonSubm = {}, tempJson = {}, hiddenFlds={};
+	
+	var x=0,y=0;
+	$.each(hdrsObj, function(k,v) {		
+	  if(k > 1) {
+		if(v['action'] !== undefined){
+			if(v['hidden'] != '1') {
+				v['key'] = k;
+				jsonSubm[x] = v;
+				x++;
+			}			
+		} else {
+			jsonNoSubm[y] = v;
+			y++;
+		}
+	  }
+	});
+	
+	//loop no submision  json, adding submission name, to no submission key
+	$.each(jsonNoSubm, function(k, v) { 				
+		tempJson[v['colmnDesc'].trim()] = jsonSubm[k]['colmnDesc'].trim()+ '##' + jsonSubm[k]['key'];		
+	}); 
+
+	
+	return tempJson;
+}
+
 
 $(document).ready(function() {
 
@@ -714,7 +868,7 @@ $(document).ready(function() {
 		//post the data
 		var postData = {}, t, nid, ele, val, indx, dtval, url, postErr = false; //object
 		url = $(this).attr('url');
-		$('.lAddRowSelected .lAddFldsToSubmitCol').each(function() {
+		$('.lAddRowSelected .lAddFldsToSubmitCol .submitColsCont').each(function() {
 			t   = $(this);
 			indx = t.parent().index();	//this gets the row index w.r.t table #needed for replacing x in node id		
 			ele = t.find('.lAddParamsElem'); 

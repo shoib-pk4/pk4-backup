@@ -1096,14 +1096,13 @@
 							var into_div = $('#detailDataDiv');
 							entityDiv = document.getElementById('detailDataDiv');							
 							closeLoadingDiv();					
-							// setTimeout(function() {
-							// 	//add progress bar here
-							// 	into_div.prepend('<div id="l_add_loading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
-							// }, 0);
-							// setTimeout(function() {
-							// 	exec_l_add(doc, into_div, mainUrl);	
-							// }, 100);
-							exec_l_add(doc, into_div, mainUrl);	
+							setTimeout(function() {
+								//add progress bar here
+								into_div.prepend('<div id="l_add_loading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+							}, 0);
+							setTimeout(function() {
+								exec_l_add(doc, into_div, mainUrl);	
+							}, 10);							
 							
 							break;
 										

@@ -351,11 +351,11 @@
 	letter-spacing: 1px; 
 	background-color: white; 
 	cursor: pointer;
-	background: url('../images/chat_logout.png') no-repeat 98% center;
+	background: url('/atCRM/images/chat_logout.png') no-repeat 98% center;
 }
 
 .userContActv {
-	background: url('../images/chat_online.png') no-repeat 98% center;	
+	background: url('/atCRM/images/chat_online.png') no-repeat 98% center;	
 }
 
 .userCont span {

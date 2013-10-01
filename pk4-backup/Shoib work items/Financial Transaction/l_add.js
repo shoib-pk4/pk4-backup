@@ -1,3 +1,17 @@
+/* 
+	* How it works.
+		* For showing headers of table
+			* Json is obtained, taking submission value and no submission value in a separate array.
+			* Assuming both array should be same.
+			* then making key value pair for names and idex concatenate with ##.
+			* leaving out hidden values, just hiding at loop time, no need of recording
+			* separate arr is made for storing index key value pair, like 2:8, 2 is view index, 8 is submission col index
+		* For showing body of table
+			* Each row is looped, it checks index exists in array, if so value is extracted and shown with view text and
+			* submission type.
+			* If hidden show as it is.
+*/
+
 
 var lAddCalendarIndx  = 2; //becuase in rept.js date time has id with 0 and 1
 var lAddPicklistIndx  = 1; //global picklist index
@@ -16,6 +30,12 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 			listAddOTable.fnDestroy();
 			$('#listAddTblContainer').remove();
 		}
+
+		// //show loading icon first
+		// setTimeout(function() {
+		// 	//add progress bar here
+		// 	intoDiv.prepend('<div id="l_add_loading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+		// }, 0);
 
 		//add code for showing loading here..
 				
@@ -53,7 +73,7 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		//make headers
 		hdrs     = doc.ColumnHeaders;
 		tempHdrs = lAddPrepareTmpHdrs(hdrs);
-		console.log(tempHdrs);
+		
 		var colsMapping = {}, key_name;
 		
 		var submitIndex = []; 
@@ -101,8 +121,7 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 			
 		});
 
-		console.log(colsMapping);
-		
+				
 		//now add complete tr to thead
 		thead.append(htr);
 		//thead to table
@@ -322,8 +341,8 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 			}
 		);
 
-		// $('#detailDataDiv #l_add_loading').remove();
-		//new FixedHeader( listAddOTable ); //this will make table header fixed. #shoib this has bug if headers is wider
+		//remove loading at the end
+		$('#detailDataDiv #l_add_loading').remove();		
 
 	/* end of exec_l_add function */
 }

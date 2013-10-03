@@ -519,6 +519,7 @@
 	      var reqHt  = parseInt(mainHeight)/2;
 	    $("#loader_Img").offset({top:reqHt,left:reqWidth});
 	      currentRecIdsJSON =JSON.parse('{"acct_id":"","cont_id":"","state_id":"","brch_id":"","prod_id":"","prod_qty":"","rep_id":""}');
+		  console.log("test console-"+currentRecIdsJSON["brch_id"]);
 	} 
 
 	function updateSession()
@@ -534,6 +535,9 @@
 
 	function setUpPageParameters(uri,objId,fromMnu,subItmId,reloadFlag,listPopup,dropIndex,isCancel,recId)
 	{
+		console.log('set up page paramaters..');
+		
+
 	    L_frm_lz=false;
 	    try{
 	        L_frm_value=window.location.hash;
@@ -633,18 +637,31 @@
 
 	    /* 
 	    shoib: hide and show can u report div .
-	    string match, rAn.htm, if found show otherwise hide
+	    string match, rAn.htm and wfw_rule_l2.htm if found show otherwise hide
 	  	*/
-	  if(uri.match(/rAn.htm/g)) 
-	    $('#reptCanU').css('display', 'block');
-	  else
-	    $('#reptCanU').css('display', 'none');
+		 //  if(uri.match(/rAn.htm/g)) 
+		 //    $('#reptCanU').css('display', 'block');
+		 //  else
+		 //    $('#reptCanU').css('display', 'none');
+
+		 //  if(uri.match(/wfw_rule_l2.htm/g)) 
+		 //    $('#l2_container').css('display', 'block');
+		 //  else
+		 //    $('#l2_container').css('display', 'none');
+
+		 // if(uri.match(/l_add_json.htm/g)) 
+		 //    $('#listAddTblContainer').css('display', 'block');
+		 //  else
+		 //    $('#listAddTblContainer').css('display', 'none');   
+
+
 	}
 
 
 
 	function showHtmlIframe(uri,objId)
 	{
+
 		if(document.getElementById(entityDiv))
 		{
 			document.getElementById(entityDiv).style.display="none";
@@ -664,82 +681,83 @@
 			htmlFile=splitUri[uriSplitLastIndex];
 		}
 
-	alert('new page');
-	console.log(uri);
-	if($("#dyna_html").html() !="") 
-		$("#dyna_html").html("<h4>Please wait!!</h4>");
+	// alert('new page');
+	// console.log('new page')
+	// console.log(uri);
+	// if($("#dyna_html").html() !="") 
+	// 	$("#dyna_html").html("<h4>Please wait!!</h4>");
 
-	 //load data 
-	 $.get(uri, function(htmlStr) { 
-	 	var filename = uri.split('/').pop();
-	 	var htmlPage = getParsedHtmlPage(htmlStr, filename); //parse html page
-		console.log('final page=');
-		console.log(htmlPage);
-		$("#dyna_html").html(htmlPage); //append page to dom
-	 });
+	//  //load data 
+	//  $.get(uri, function(htmlStr) { 
+	//  	var filename = uri.split('/').pop();
+	//  	var htmlPage = getParsedHtmlPage(htmlStr, filename); //parse html page
+	// 	console.log('final page=');
+	// 	console.log(htmlPage);
+	// 	$("#dyna_html").html(htmlPage); //append page to dom
+	//  });
 	 
 
-		// if( htmlFile.indexOf("runReportJ1.html") != -1 || htmlFile.indexOf("editReport.html") != -1)//|| htmlFile.indexOf("changePageLayout.html") != -1
-		// { 
-	 //        // prompt("runReport---",$("#dyna_html").html());
-		// 	// if($("#dyna_html").html() !="") {alert("Not empty");$("#dyna_html").html("");}
-		// 	 var $div = $("#dyna_html");
-		// 	 var $parentElem = $div.parent();
-		// 	/* var position=$div.offset();
-		// 	 var topPos=position.top;
-		// 	 var windowHeight=$(window).height();
-		// 	 var height=(parseInt(windowHeight)-parseInt(topPos))+"px";
-		// 	 $($div).css({"overflow-y":"scroll","height":height});*/
-		// 	 // $div.detach();
-	 //         $div.load(uri);
-	 //         $parentElem.append($div);
+		if( htmlFile.indexOf("runReportJ1.html") != -1 || htmlFile.indexOf("editReport.html") != -1)//|| htmlFile.indexOf("changePageLayout.html") != -1
+		{ 
+	        // prompt("runReport---",$("#dyna_html").html());
+			// if($("#dyna_html").html() !="") {alert("Not empty");$("#dyna_html").html("");}
+			 var $div = $("#dyna_html");
+			 var $parentElem = $div.parent();
+			/* var position=$div.offset();
+			 var topPos=position.top;
+			 var windowHeight=$(window).height();
+			 var height=(parseInt(windowHeight)-parseInt(topPos))+"px";
+			 $($div).css({"overflow-y":"scroll","height":height});*/
+			 // $div.detach();
+	         $div.load(uri);
+	         $parentElem.append($div);
 
-	 //         alert('came to dyna html parent!');
-		// }
-		// else{
+	         alert('came to dyna html parent!');
+		}
+		else{
 
 
-		// 	  if(document.getElementById('htmlIframe'))
-		// 	    {  
-		// 	        if($("#dyna_html").html() !="") 
-		// 	        	$("#dyna_html").html("");
+			  if(document.getElementById('htmlIframe'))
+			    {  
+			        if($("#dyna_html").html() !="") 
+			        	$("#dyna_html").html("");
 
-		// 	      //prompt("If-InnerHTML-",$("#dyna_html").html());
-		// 	      //document.getElementById("dyna_html").innerHTML="";
-		// 	      document.getElementById('htmlIframe').src=uri;
-		// 	      document.getElementById('htmlIframe').style.display='block';
-		// 	      console.log(uri);
-		// 	      alert('adding to existing iframe');
-		// 	    }
-		// 	else
-		// 	{   
-		// 	   // prompt("Else-InnerHTML-",$("#dyna_html").html());
-		// 	   if($("#dyna_html").html() !="") 
-		// 	   	 $("#dyna_html").html("");
+			      //prompt("If-InnerHTML-",$("#dyna_html").html());
+			      //document.getElementById("dyna_html").innerHTML="";
+			      document.getElementById('htmlIframe').src=uri;
+			      document.getElementById('htmlIframe').style.display='block';
+			      console.log(uri);
+			      //alert('adding to existing iframe');
+			    }
+			else
+			{   
+			   // prompt("Else-InnerHTML-",$("#dyna_html").html());
+			   if($("#dyna_html").html() !="") 
+			   	 $("#dyna_html").html("");
 
-		// 	   //document.getElementById("dyna_html").innerHTML="";
-		// 		htmlIframe=document.createElement("iframe");
-		// 		htmlIframe.align="left";
-		// 		htmlIframe.width="100%";
-		// 		htmlIframe.border="0";
-		// 		htmlIframe.frameBorder="0";
-		// 		htmlIframe.scrollBars="no";	
-		// 		htmlIframe.id="htmlIframe"; 
-		// 		dataDiv.appendChild(htmlIframe);
-		// 		htmlIframe.src=uri;
-		// 		var screenWidth = getScreenSize('width');
-		// 		htmlIframe.width=(screenWidth-10)+"px";
-		// 		var screenHeight = getScreenSize('height');
-		// 		var xyCoordinates = findPos('lastDivOnPage')[1];
-		// 		var bannerHeight = findPos('commonFnDiv')[1]+10;
-		// 		htmlIframe.height = screenHeight-((screenHeight*13)/100)+"px";
+			   //document.getElementById("dyna_html").innerHTML="";
+				htmlIframe=document.createElement("iframe");
+				htmlIframe.align="left";
+				htmlIframe.width="100%";
+				htmlIframe.border="0";
+				htmlIframe.frameBorder="0";
+				htmlIframe.scrollBars="no";	
+				htmlIframe.id="htmlIframe"; 
+				dataDiv.appendChild(htmlIframe);
+				htmlIframe.src=uri;
+				var screenWidth = getScreenSize('width');
+				htmlIframe.width=(screenWidth-10)+"px";
+				var screenHeight = getScreenSize('height');
+				var xyCoordinates = findPos('lastDivOnPage')[1];
+				var bannerHeight = findPos('commonFnDiv')[1]+10;
+				htmlIframe.height = screenHeight-((screenHeight*13)/100)+"px";
 				 
-		// 		 // console.log(uri);
-		// 		 // alert('creating new iframe');
-		// 	}
-		// }
+				 // console.log(uri);
+				 // alert('creating new iframe');
+			}
+		}
 		
-	 //    $("#dyna_html") .load(uri);  
+	    $("#dyna_html") .load(uri);  
 		closeLoadingDiv();
 	}
 
@@ -830,6 +848,8 @@
 
 	function retrieveJSONdata(uri,objId,fromMnu,add2History,reloadFlag,listPopup)
 	{  
+
+
 		//console.log(uri,objId,fromMnu,add2History,reloadFlag,listPopup);
 		//var parURI=uri.search("custom/JSON/system/getParentMnuItmId.htm");
 		//if(parURI<0&&xhr_request)xhr_request.abort();
@@ -995,6 +1015,13 @@
 				 document.title=document.getElementById(objId+'-pageTitle').value +' - Impel';
 
 				jsonPageType=doc.PageType;
+
+				//#shoib 
+				var dd = $('#detailDataDiv');
+				if(dd.length > 0 ) {
+					$('#reptCanU, #l2_container, #listAddTblContainer').remove();			
+				}
+
 				switch(jsonPageType)
 				{
 				case "List":
@@ -1047,16 +1074,53 @@
 				case "dTbl":
 							hideLeftPannel(true);
 							writeDTbl(dTblHdr, dTblData);
+							break;
 				case "htm":
 							hideLeftPannel(true);
 							var mainDataDiv = document.getElementById(entityDiv);
 							$(mainDataDiv).html(doc.content);
+							break;
 				case "rept":
 							hideLeftPannel(true);
 							var into_div = document.getElementById('detailDataDiv');
 							entityDiv = into_div;
 							closeLoadingDiv();
-							exec_rept(doc,into_div);
+							$.get('/atCRM/javascript/JSON/test.json', function(data) {
+								doc = JSON.parse(data);
+								exec_rept(doc,into_div);
+							});
+							setTimeout(function() {
+								//add progress bar here
+								into_div.prepend('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+							}, 0);
+							setTimeout(function() {
+								exec_rept(doc,into_div);
+							}, 10);	
+							// exec_rept(doc,into_div);
+							
+							break;
+				case "l2": 
+							// hidePannel(true);
+							var into_div = document.getElementById('detailDataDiv');
+							entityDiv = into_div;
+							closeLoadingDiv();
+							exec_l2(doc, into_div);
+							break;
+				case "l_add": 
+							// hidePannel(true);
+							var into_div = $('#detailDataDiv');
+							entityDiv = document.getElementById('detailDataDiv');							
+							closeLoadingDiv();					
+							setTimeout(function() {
+								//add progress bar here
+								into_div.prepend('<div id="l_add_loading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+							}, 0);
+							setTimeout(function() {
+								exec_l_add(doc, into_div, mainUrl, false);	
+							}, 10);							
+							
+							break;
+										
 				}
 			}
 		},
@@ -1568,18 +1632,32 @@
 	 function getParsedHtmlPage(htmlStr, filename) {
 	 		//this will get the contents of body excluding body txt: shoib
 			var bodyTag = htmlStr.match(/<body.*?[>]/i); 
-			if(bodyTag) {
+			var styles = '';
+			if(bodyTag) {				
 				var str = bodyTag[0].replace(/</, '').replace(/>/,'').trim();
 				if(str.length > 0) {
-					alert('Body contains attributes which is not included in dom, change the logic: ' + str);
+					//alert('Body contains attributes which is not included in dom, change the logic: ' + str);
 					recordInfo(filename, 'Body includes attributes.');
 				}
+
+				//get styles from body tag
+				var bodyStr = bodyTag.toString();
+				var sty = bodyStr.indexOf('style=');
+				if(sty != -1) {
+					var quote = bodyStr.substr(sty+6, 1); // ' or "
+					var e = bodyStr.indexOf(quote, sty+7); //find end of style quotes
+					styles = '<style type="text/css"> #dyna_html { ' + bodyStr.substr(sty+7, e-(sty+7)) + ';' + ' } </style>';
+				}
+
 			}
+			
+
 		 	var tempCont = $('<div></div>'); //used to convert html str to html nodes
 		 		tempCont.append(htmlStr); //here str added
 		 	var html = tempCont.children(); //here take as html nodes
 		 	var htmlNodesContainer = $('<div class="newHtmlFileDiv"></div>'); //temporary storage element
-
+		 	//add style of body if found in body tag
+		 	htmlNodesContainer.prepend(styles);
 
 		 	$.each(html, function(k,v) {
 		 			var nn = v['nodeName'].toLowerCase(); //node name like link, script etc

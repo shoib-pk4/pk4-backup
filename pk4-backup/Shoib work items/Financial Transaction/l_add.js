@@ -20,7 +20,7 @@ var listAddOTable; //global var for list add data table
 var hdrs; //this is global contains datatable headers
 var paymentModeArr = [];
 
-function exec_l_add(doc, intoDiv, mainUrl) {
+function exec_l_add(doc, intoDiv, mainUrl, reload) {
 
 		// console.log('l add page parsing...');
 		//** write code to destroy previos datatable and to parse new one
@@ -28,39 +28,37 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		//check if data table already initialized, then remove if so
 		if(listAddOTable != null) {
 			listAddOTable.fnDestroy();
-			$('#listAddTblContainer').remove();
 		}
 
-		// //show loading icon first
-		// setTimeout(function() {
-		// 	//add progress bar here
-		// 	intoDiv.prepend('<div id="l_add_loading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
-		// }, 0);
-
-		//add code for showing loading here..
-				
+					
 		var submitUrl = doc.SubmitUrl;
 		
-		var styles = '<style type="text/css"> #listAddTblContainer {width:1200px;} .listAndAddTbl {width:100% !important;border-collapse: collapse;border:none;text-align:center;}';
-			styles += '.lAddParamsLbl {max-width: 190px;font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;}.DynarchCalendar-topCont {top:25% !important; left: 40% !important; position: fixed !important;} .lAddFrmBtns {float:right;} .lAddFrmBtns:hover, #lAddListSubmit:hover {background-color:#014464 !important;color:white;} #lAddtblDivListData {margin:25px auto; width:100%;height:auto;} .lAddDateClass {width: 80px;} ';
-			styles += '.multiSelectBox {position:absolute;width:170px;background-color:white;} #lAddMPLParmsCont .lAddSinglePickList , #lAddSPLParmsCont .lAddSinglePickList {width: 170px;} #lAddMPLParmsCont {width: 200px;height:30px;} #lAddSPLParmsCont {width: 200px;height:30px;} #lAddMPLDtCont {width: 125px;height:30px;} #lAddSPLDtCont {width: 125px;height:30px;}  #lAddDCont {width: 125px;height:30px;} #lAddDTCont {width: 215px;} #paramsTbl, #lAddtblDivParams, #lAddSlideUpDwnCont {width:100%;} #paramsTbl .odd {background-color: #E2E4FF;} #paramsTbl tr {background-color: rgb(253, 245, 245);vertical-align: top;} #lAddtblDivParams {margin: 13px auto;}  .listAndAddTbl .odd {background-color: #E2E4FF;} .listAndAddTbl .even {background-color: white;} #lAddListSubmit, #lAddListSubmit_wait {float:right;} .lAddDrpDwn, .lAddSinglePickList {width:100px;} .lAddParamsDesc {font-size: 12px;display: block; color:grey;}';
-			styles += '.lAddRowSelected td, .lAddRowSelected {background-color: rgb(246, 247, 159) !important;} .lAddRowSelected {border-bottom: solid 1px #E9E6E6 !important;} .dataTables_scrollHeadInner {float:left;} #listAndAddTbl_length select, #listAndAddTbl_filter input {display:inline;} .multiSelectBox {visibility:hidden;} .lAddMPLTd:hover .multiSelectBox {visibility:visible;} ';
-			styles += '.submitColsCont  {position:relative;display:block;} .lAddDisableUserInpts {position:absolute;top:0;right:0;left:0;bottom:0;background-color:rgba(0,0,0,0);} ';
-			styles += '.dataTables_scrollBody { padding:0 0 22px 0; } #lAddtblDivListData .sf_suggestion { position:fixed !important; } .listAndAddTbl  tr { border:solid 1px transparent;} ';
-			styles += '</style>';
 
-		
-		//in this div only everythings is and these is finally add to into_div 
-		var d = $('<div id="listAddTblContainer"></div>');
+		if(reload == false) {
+			var styles = '<style type="text/css"> #listAddTblContainer {width:1200px;} .listAndAddTbl {width:100% !important;border-collapse: collapse;border:none;text-align:center;}';
+				styles += '.lAddParamsLbl {max-width: 190px;font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;}.DynarchCalendar-topCont {top:25% !important; left: 40% !important; position: fixed !important;} .lAddFrmBtns {float:right;} .lAddFrmBtns:hover, #lAddListSubmit:hover {background-color:#014464 !important;color:white;} #lAddtblDivListData {margin:25px auto; width:100%;height:auto;} .lAddDateClass {width: 80px;} ';
+				styles += '.multiSelectBox {position:absolute;width:170px;background-color:white;} #lAddMPLParmsCont .lAddSinglePickList , #lAddSPLParmsCont .lAddSinglePickList {width: 170px;} #lAddMPLParmsCont {width: 200px;height:30px;} #lAddSPLParmsCont {width: 200px;height:30px;} #lAddMPLDtCont {width: 125px;height:30px;} #lAddSPLDtCont {width: 125px;height:30px;}  #lAddDCont {width: 125px;height:30px;} #lAddDTCont {width: 215px;} #lAddParamsTbl, #lAddtblDivParams, #lAddSlideUpDwnCont {width:100%;} #lAddParamsTbl .odd {background-color: #E2E4FF;} #lAddParamsTbl tr {background-color: rgb(253, 245, 245);vertical-align: top;} #lAddtblDivParams {margin: 13px auto;}  .listAndAddTbl .odd {background-color: #E2E4FF;} .listAndAddTbl .even {background-color: white;} #lAddListSubmit, #lAddListSubmit_wait {float:right;} .lAddDrpDwn, .lAddSinglePickList {width:100px;} .lAddParamsDesc {font-size: 12px;display: block; color:grey;}';
+				styles += '.lAddRowSelected td, .lAddRowSelected {background-color: rgb(246, 247, 159) !important;} .lAddRowSelected {border-bottom: solid 1px #E9E6E6 !important;} .dataTables_scrollHeadInner {float:left;} #listAndAddTbl_length select, #listAndAddTbl_filter input {display:inline;} .multiSelectBox {visibility:hidden;} .lAddMPLTd:hover .multiSelectBox {visibility:visible;} ';
+				styles += '.submitColsCont  {position:relative;display:block;} .lAddDisableUserInpts {position:absolute;top:0;right:0;left:0;bottom:0;background-color:rgba(0,0,0,0);} ';
+				styles += '.dataTables_scrollBody { padding:0 0 22px 0; } #lAddtblDivListData .sf_suggestion { position:fixed !important; } .listAndAddTbl  tr { border:solid 1px transparent;} ';
+				styles += '.listAndAddTbl tr td {word-wrap:break-word;} </style>';
 
-		//add style to d
-		d.append(styles);
+			//in this div only everythings is and these is finally add to into_div 
+			var d = $('<div id="listAddTblContainer"></div>');
 
-		//draw paramerters section
-		if(doc.Parameters) {			
-			var params    = doc.Parameters;
-			lAdddrawParamsConditions(params, d);
-		}
+			//add style to d
+			d.append(styles);		
+
+			//draw paramerters section
+			if(doc.Parameters) {			
+				var params    = doc.Parameters;
+				lAdddrawParamsConditions(params, d);
+			}
+		} 
+		else { //this comes when you want to reload table
+			var d = $('<div></div>');
+		}	
+	
 
 		var tbl = $('<table class="listAndAddTbl" id="listAndAddTbl"></table>');
 
@@ -221,80 +219,6 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 				}
 
 				
-
-				// if(k1 > 0) {
-				// 	btd = $('<td></td>');
-				// 	cVal =  v1.colTxt;				
-				// 	dataType = hdrs[k1]['dataType'];
-
-				// 	if(k1 in colsMapping) {					
-				// 		btd.addClass('lAddFldsToSubmitCol');
-				// 		keyMap = colsMapping[k1];						
-				// 		btd.append('<label>'+cVal+'</label>'); 
-
-				// 		var tmpDiv = $('<div class="submitColsCont"></div>');
-				// 		var hdrsTemp =  hdrs[keyMap];
-				// 		//for labels we need to hide cols
-				// 		if(hdrsTemp.dataType == 'Label')
-				// 			btd.css('display', 'none');
-
-				// 		console.log(keyMap + '-' + k1);
-				// 		lAddDrawTypeOfUserInput(tmpDiv, hdrsTemp, v1);
-				// 		tmpDiv.append("<div class='lAddDisableUserInpts'></div>");
-				// 		btd.append(tmpDiv);
-				// 		btr.append(btd); //add to tr,
-				// 	} else { //if only text
-				// 		btd.text(cVal); 
-				// 		btr.append(btd); //add to tr,
-				// 	}
-
-					
-				// }
-				// btd = $('<td></td>');
-				// if($.inArray(k1, submitIndex) == -1) { //this means its only view
-				// 	cVal = v1.colTxt;
-				// 	//get datetype from hdrs, using k1 as index
-				// 	dataType = hdrs[k1]['dataType'];
-					
-				// 	if(dataType == 'Decimal' || dataType == 'Integer')
-				// 		btd.css('text-align', 'right');
-				// 	else
-				// 		btd.css('text-align', 'left');
-
-				// 	if((dataType == 'Date' || dataType == 'DateTime') && cVal.length > 0)  {
-				// 		cVal = retDateOrDateTime(cVal, dataType);
-				// 	} 
-
-				// 	if(dataType == 'Decimal') {
-
-				// 		if(hdrs[k1]['afterDecimal']) {
-				// 			plces = hdrs[k1]['afterDecimal'];						
-				// 			cVal = lAddLimitDecimal(cVal, plces);	
-				// 		} else {
-				// 			cVal = lAddLimitDecimal(cVal, 2);	
-				// 		}
-						
-				// 	}
-
-				// 	//add value to td
-				// 	btd.text(cVal);	
-					
-					
-
-				// } else { //this means data to submit
-				// 	btd.addClass('lAddFldsToSubmitCol');
-				// 	var tmpDiv = $('<div class="submitColsCont"></div>');
-				// 	var hdrsTemp =  hdrs[k1];
-				// 	//for labels we need to hide cols
-				// 	if(hdrsTemp.dataType == 'Label')
-				// 		btd.css('display', 'none');
-
-				// 	lAddDrawTypeOfUserInput(tmpDiv, hdrsTemp, v1);
-				// 	tmpDiv.append("<div class='lAddDisableUserInpts'></div>");
-				// 	btd.append(tmpDiv);
-				// }
-
-
 				// btr.append(btd); //add to tr,
 			});
 			
@@ -337,9 +261,15 @@ function exec_l_add(doc, intoDiv, mainUrl) {
 		          "sScrollX": "1200",
 		          "bStateSave": false,//saves the states, comment this if cookies are big
 		          // "sScrollXInner": "400%",
-		          "bScrollCollapse": true
+		          "bScrollCollapse": true,
 			}
 		);
+
+		//show refresh timings of datatable
+		var rereshTimings = new Date();
+		rereshTimings  = rereshTimings.toLocaleString();
+		rereshTimings  = rereshTimings.toString().replace(/\//g, '-') ;
+		$('#listAndAddTbl_filter label').prepend('<b>Refreshed: </b> '+ rereshTimings + ' <b> | </b> ');
 
 		//remove loading at the end
 		$('#detailDataDiv #l_add_loading').remove();		
@@ -456,7 +386,7 @@ function lAddDrawTypeOfUserInput(td, hdrs, rowData)  {
 function lAdddrawParamsConditions(paramsData, intoDiv) {
 		
 	var desc, lbl, picklistId='', name, td, name,type;
-	var tblDiv = $('<div id="lAddtblDivParams"></div>'), tbl=$('<table id="paramsTbl" cellspacing="5"></table>'),tr = $('<tr></tr>'), colLen = 3,p;
+	var tblDiv = $('<div id="lAddtblDivParams"></div>'), tbl=$('<table id="lAddParamsTbl" cellspacing="5"></table>'),tr = $('<tr></tr>'), colLen = 3,p;
 	var clas = 'odd';
 
 	$.each(paramsData, function(k, v) {
@@ -464,7 +394,7 @@ function lAdddrawParamsConditions(paramsData, intoDiv) {
 		desc = v['description'];
 		type = v['param_type'];
 		lbl  = v['label'];
-		td   = $('<td></td>');
+		td   = $('<td class="lAddPramsSubCol"></td>');
 		if(clas == 'odd') {
 			td.addClass('odd');
 			clas = 'even';
@@ -969,6 +899,134 @@ $(document).ready(function() {
 		 t.val(twoDeci);
 	});
 
+	//refresh table with new data
+	$('body').on('click', '#getLAddData', function() {
+		
+		//loop through each col of table and get params value
+		var typ, t, nm, val, url='', refreshPostStatus=false, tmpVal;
+		$('#lAddParamsTbl tr td.lAddPramsSubCol').each(function() {
+			t = $(this);
+			typ = t.attr('type');
+			nm = t.attr('name');
+			
+			//getting value from required fields, hint date and time
+			val = '';
+			t.find('.lAddParamsElem').each(function() {
+				tmpVal =  $(this).val();				
+				//change post status any single value found
+				if(tmpVal.length >0 )
+					refreshPostStatus = true;
+
+				val +=  tmpVal+ ' ';
+			});
+
+			val = val.trim();		
+			if(val.length > 0)
+				url += nm + val +'!~~!';
+		});
+
+		if(refreshPostStatus === false) {
+			alert('No data enterd to post.');
+			return;
+		}
+		
+		//this the variable are to be posted
+		url = url.substr(0, url.length - 4);
+		
+		//get the i and pa value from url
+		var id = lAddGetValueFromUrl('i');
+		if(id == '') {
+			alert('Id could not be retrieved from url!');
+			return false; 
+		}
+		else {
+			//get p value if setted, p is variable name in header
+			var getPParm = lAddGetValueFromUrl('pa');
+			if(getPParm == ''){
+				url = '&pa='+url;
+			}
+			else{
+				var getPParmArr = getPParm.split('!~~!');
+				getPParm = getPParmArr[0];
+				getPParm = getPParm.replace(/'/g, "");
+				url = '&pa='+getPParm+'!~~!'+url;					
+			}
+			setTimeout(function () {
+				$('#getLAddData').val('Wait..').attr('id', 'lAddSubmitting');
+				lAddPostDataTorAnFile(url, id, $(this).attr('url'));	
+			}, 100);
+			
+		}
+
+
+	});
+
 
 	/* end of document ready */
 });
+
+/* 
+	* this will post some variables to l_add.htm
+	* and does some actions like replots the data table and prams condtion get prepared again if they variats
+*/
+function lAddPostDataTorAnFile(urlData, id, mainUrl) {
+
+	$.ajax({
+		url: '/atCRM/custom/JSON/lAdd/l_add.htm',
+		data: 'i='+id+urlData,
+		type: 'GET',
+		dataType: 'JSON',
+		async: false,
+		success: function(data) {
+			
+			lAddReloadDataTable(data, $('#detailDataDiv'), mainUrl);
+
+			//reset the submit button
+			$('#lAddSubmitting').val('Refresh').attr('id','getLAddData');
+
+		},
+		error: function(response) {			
+			alert('Refresh table failed. Check whether json is valid or not!! Aborted');
+
+			//reset the submit button
+			$('#lAddSubmitting').val('Refresh').attr('id','getLAddData');
+			
+			console.log(response.responseText);
+		},
+	});
+}
+
+/* 
+	* this will delete previous data table and reloads with new data
+*/
+function lAddReloadDataTable(jsonData, intoDiv, mainUrl) {
+	
+	//then remove complete table from dom
+	$('#lAddtblDivListData, #lAddListSubmit').remove();
+
+	paymentModeArr = []; //unset the payment mode array
+	exec_l_add(jsonData, intoDiv, mainUrl, true);
+}
+
+
+/*
+	* this gives the value of variable from url
+	* need 1 parameter, which is variable name
+ */
+ function lAddGetValueFromUrl(name) {
+ 	var query = $('.subMnuSpan_current').parent().attr('href'); //document.URL;
+ 	var vars = query.split('?'), vars1, vars2, nameVar='';
+	
+	$.each(vars, function(k,v) {
+	    //remove &
+	    vars1 = v.split('&');
+	    $.each(vars1, function(k1, v1) {
+	        //remove equal
+	     vars2 = v1.split('=');
+	        if(vars2[0] == name)
+	            nameVar= vars2[1];	       
+	    });
+	 });
+ 	return nameVar;
+ }
+

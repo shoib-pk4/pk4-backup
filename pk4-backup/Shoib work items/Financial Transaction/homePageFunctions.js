@@ -536,11 +536,7 @@
 	function setUpPageParameters(uri,objId,fromMnu,subItmId,reloadFlag,listPopup,dropIndex,isCancel,recId)
 	{
 		console.log('set up page paramaters..');
-		//#shoib 
-		var dd = $('#detailDataDiv');
-		if(dd.length > 0 ) {
-			$('#reptCanU, #l2_container, #listAddTblContainer').remove();			
-		}
+		
 
 	    L_frm_lz=false;
 	    try{
@@ -1019,6 +1015,13 @@
 				 document.title=document.getElementById(objId+'-pageTitle').value +' - Impel';
 
 				jsonPageType=doc.PageType;
+
+				//#shoib 
+				var dd = $('#detailDataDiv');
+				if(dd.length > 0 ) {
+					$('#reptCanU, #l2_container, #listAddTblContainer').remove();			
+				}
+
 				switch(jsonPageType)
 				{
 				case "List":
@@ -1082,7 +1085,19 @@
 							var into_div = document.getElementById('detailDataDiv');
 							entityDiv = into_div;
 							closeLoadingDiv();
-							exec_rept(doc,into_div);
+							$.get('/atCRM/javascript/JSON/test.json', function(data) {
+								doc = JSON.parse(data);
+								setTimeout(function() {
+								//add progress bar here
+									$('#detailDataDiv').prepend('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+								}, 10);
+								setTimeout(function() {									
+									exec_rept(doc,into_div);
+								}, 10);	
+							});
+							
+							// exec_rept(doc,into_div);
+							
 							break;
 				case "l2": 
 							// hidePannel(true);
@@ -1101,7 +1116,7 @@
 								into_div.prepend('<div id="l_add_loading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
 							}, 0);
 							setTimeout(function() {
-								exec_l_add(doc, into_div, mainUrl);	
+								exec_l_add(doc, into_div, mainUrl, false);	
 							}, 10);							
 							
 							break;

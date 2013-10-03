@@ -123,11 +123,11 @@ function addHomepageScripts() {
   			
         var hash = $(this).attr('href'); //used to check if it contains javascript
          /* change page loading logic, I guess i am doing wrong: shoib*/
-       //  if(!hash.match('javascript') && hash.match('\\?')) {
-       //    hash = this.href;
-    			// hash = hash.replace(/^.*#/, '');          
-    			// pageload(hash);
-       //  }
+        if(!hash.match('javascript') && hash.match('\\?')) {         
+          hash = this.href;
+    			hash = hash.replace(/^.*#/, '');          
+    			pageload(hash);
+        }
   	 });
 
     //  on mouseenter show sublevel menus based

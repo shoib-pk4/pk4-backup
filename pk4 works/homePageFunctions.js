@@ -1032,6 +1032,7 @@
 							break;
 				case "adhocList":
 								handleCommonList(doc);
+								showColumnsForSingleSelect();
 							break;
 				case "Add/Edit":
 							if(document.getElementById('addEdit-URL'))

@@ -1,0 +1,27 @@
+<transform blankLineRemover>
+<if container.entityName == "leads">
+	<assign enttName = "Lead">
+</if>
+<if enttName == "" && container.entityDetails.EntityName>
+	<assign enttName = container.entityDetails.EntityName>
+<else>
+	<assign enttName = container.getReptRec.entityName>
+</if>
+{
+"PageCaption":"<if container.entityName>${container.entityName}<else>${container.getReptRec.name}</if>",
+"PageType":"adhocList",
+"AddUrl":"<if container.getReptRec.rept_type != "anyList">${servlet_prefix}/custom/JSON/add/${container.addUDM}.htm</if>",
+"EntityName":"<if container.entityName>${container.entityName}<else>${container.getReptRec.entityName}</if>",
+"EntityList_Id":"${container.entityDetails.EntityList_Id}",
+"TableName":"<if container.entityDetails.EntityName>${container.entityDetails.EntityName}<else>${container.getReptRec.entityName}</if>",
+"page_topMenu":[<assign len=container.pageTopMenu__listCtl.count><if len!=0><list container.pageTopMenu as page_topMenu>
+		{<assign len=len-1>"menu":["${page_topMenu.name}","${page_topMenu.description}","${page_topMenu.URI}","${page_topMenu.UsrSelDisplayOrder}"]}<if len!=0 >,</if></list></if>
+],
+"page_bottomMenu":[<assign len=container.pageBottomMenu__listCtl.count><if len!=0><list container.pageBottomMenu as page_topMenu>
+	{<assign len=len-1>"menu":["${page_topMenu.name}","${page_topMenu.description}","${page_topMenu.URI}","${page_topMenu.UsrSelDisplayOrder}"]}<if len!=0 >,</if></list></if>
+],
+"addl_options":"${container.getReptRec.rept_type}",
+"report_id":"${container.getReptRec.report_id}",
+"report_name":"${container.getReptRec.name}",
+"report_desc":"${container.getReptRec.description}"
+}</transform>

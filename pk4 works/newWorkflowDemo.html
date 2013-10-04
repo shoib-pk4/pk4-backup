@@ -1,0 +1,1686 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html> 
+ <head>
+  <title> Workflow for CRM </title>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/Jquery_Blue/jquery.ui.all.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/main.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/quickAdd.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/smartSuggest.css"/> 
+  <link rel="stylesheet" href="/atCRM/stylesheets/style_h/ui.core.css"/>
+  <link rel="stylesheet" href="/atCRM/stylesheets/style_h/ui.tabs.css"/>
+  <link rel="stylesheet" href="/atCRM/stylesheets/style_h/ui.theme.css"/>
+
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/jquery.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/jquery.dataTables.css"/>
+    
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/pivot/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/pivot/pivot.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/TableTools.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/TableTools_JUI.css"/>
+    <link rel="stylesheet" type="text/css" href="/atCRM/stylesheets/style_h/jquery-ui-1.8.21.custom.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/jquery.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/general.css"/>
+
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/flexigrid.css"/>
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/jquery/stylish-select.css"/> 
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/green/fly.css"/>
+    <link href="/atCRM/javascript/fckeditor/sample.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/atCRM/stylesheets/JSON/general.css"/>
+    
+    <style type='text/css'>
+       		html, body, h1, h2, p {
+       			margin: 0; padding: 0;
+            font-family: "Candara";
+       		}
+
+          /* this will modify scroll bar only for chrome and safari */
+          ::-webkit-scrollbar {
+            width: 12px;
+          }       
+          ::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+            border-radius: 10px;
+          }       
+          ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: #8eb132;
+          }
+
+          .bosSizing {
+            box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box;
+          }
+       		.workflowContainer {
+       			width: 80%;	display: block; height: auto; margin: auto;  padding: 10px 1%;
+            min-width: 1210px; border: solid 1px rgba(0,0,0,0.2); border-top: none;
+       		}
+       		.workflowTitle {
+       			height: 60px; display: block; 
+       		}
+       		.workflowHeading1 {
+       			width: 50%; float: left;
+       		}
+       		.workflowHelp {
+       			float: right;
+            padding: 2px 0 0 25px;
+            background: white url('/atCRM/images/imagesList.png') no-repeat -162px -36px;
+       		}
+       		.workflowRule, .workflowActions {
+       			display: block;  padding: 10px 0;
+          }
+       		.workflowHeading2 {
+       			padding: 0.5% 1%; display: inline-block; width: 98%;
+            background: #8eb132; border-radius: 2px;
+       		}
+          .workflowHeading2 span {
+            font-size: 20px;  display: inline-block;
+            color: white; font-weight: bold;
+          }
+
+          .actHdn {
+            margin-top: 0.8%;
+          }
+
+       		.ruleEditCont {
+       			display: inline-block; width: 98%; padding: 6px 0; margin: 10px 1%;
+       			border: none;  border-bottom: solid 1px rgba(0,0,0,0.2);
+       		}
+
+       		.editruleDescp, #editRuleTxt {
+       			float: left; font-size: 14px; color: grey; font-weight: bold;
+       		}
+
+       		#editRuleTxt {
+       			color: green; float: right; cursor: pointer;
+       		}
+       		#editRuleTxt:hover { text-decoration: underline; cursor: pointer; }
+
+       		.editRuleContainer {
+       			display: none;
+            margin: 10px auto;
+            width: 99%;
+       		}
+        
+         .updateRulesTbl {
+            width: 100%;
+            border-collapse: collapse;
+         }
+         .rulesDropDowns,  .txtFields, #ruleDescField, .newActTbl select, .newActTbl textarea, .newActTbl input[type=text] {
+            width: 225px; min-height: 30px; color: grey; padding: 2px;
+         }
+         .multiSelectBox {
+           width: 225px;
+           height: 90px;
+           margin-top: -53px;
+           border: solid 1px rgba(0,0,0,0.2);           
+         }
+
+         .multiSelectBoxForSms {
+          margin-top: -4px;
+         }
+
+         .wfMultiSelectBox {
+          position: absolute;
+         }
+
+         .newActTbl textarea {
+          height:  50px;
+         }
+         #addTriggerForRules {
+            text-align: right;
+            cursor: pointer;
+            font-size: 12px; color: green; text-decoration: underline;
+         }
+         
+
+         #CheckRuleActvStatus {float:  left;}
+
+         .rulesBtns, .openNewActList {
+            min-width: 100px; min-height: 40px; padding: 2px; border: solid 1px grey; float: right;
+            border-radius: 4px; font-weight: bold;
+         }
+         .rulesBtns {
+          background: #8eb132; color: white;
+          margin-right: 2px;
+         }
+
+         .openNewActList { float: right; }
+         .openNewActList:hover { cursor: pointer;}
+
+         .oldActionsContainer, .newActionsContainer { 
+            width: 98%; display: block;  margin: 10px auto;
+         }
+
+         .oldActionsContainer { overflow: auto; }
+
+         .newActionsContainer {display: none; }
+
+         .eachActCont {
+            display: inline-block; margin: 4px 0; border: solid 1px rgba(0,0,0,0.2);
+            padding: 2px; width: 100%;  
+         }
+
+         .newActionName {
+            width: 70%; float: left; padding: 2px 0; font-size: 14px; color: grey; font-weight: bold;
+         }
+
+         .newActionControlMore {
+            padding: 12px 14px; float: right;  text-align: center;
+            margin-right: 2px; cursor: pointer;
+            //border: solid 1px rgba(0,0,0,0.4);
+            color: grey; background: white url('/atCRM/images/imagesList.png') no-repeat -90px -36px;
+         }
+
+         .newActionControlMore.showing {
+          background: white url('/atCRM/images/imagesList.png') no-repeat -125px -36px;
+         }
+        
+         .newActionFieldContainer {
+            display: none; margin: 35px auto 20px auto;  clear: both;
+            padding: 10px 0; border: none; border-top: solid 1px rgba(0,0,0,0.2); 
+         }
+
+         .newActTbl {
+            width: 100%;
+            border-collapse: collapse;
+         }
+
+         .workflowFrmBtns {
+            border: solid 1px grey; float: right; padding: 4px; border-radius: 4px;
+            background: #8eb132; color: white; font-weight: bold; margin-right: 2px; 
+         }
+
+         .savedActions {
+           display: block; margin: 10px auto;
+           border: none;  border-bottom: dashed 1px rgba(0,0,0,0.2);
+           padding: 4px 0;
+         }
+
+         .eachActSavedTbl {
+           width: 100%; border-collapse: collapse;
+           text-align: left;
+         }
+
+         .editSavedActions {
+           display: none;
+         }
+
+         .editSavedActionsLink {
+           color: green; font-size: 14px; text-decoration: none; font-weight: bold; float: right;
+         }
+         .editSavedActionsLink:hover {
+           cursor: pointer; text-decoration: underline;
+         }
+         .tableColName {
+           font-size: 15px; font-weight: bold; line-height: 25px;  letter-spacing: 1px;
+         }
+
+         #ctPickList {display:  none;}
+
+         #commonPickListDiv {
+          display: none; width: 200px; height: 100px; background: white;
+         }
+
+         .condtionsForRules {
+            width: 640px; min-height: 150px;  border: solid 1px #A0AC9F; position: absolute;
+            display: none; background: rgb(225, 252, 177);
+         }
+         .condtionsForRules select {
+          max-width: 150px;overflow: auto; height: 30px; border: solid 1px rgb(105, 100, 100);
+         }
+
+         .condtionsForRules input {
+          border: solid 1px rgb(105, 100, 100);
+         }
+
+         .rulesTriggerCont {
+          width: 98%; display: block; margin: 10px auto; 
+          border: none; border-bottom: solid 1px  rgba(0,0,0,0.4); border-collapse: collapse;
+         }
+
+         #addRulesCondition {
+          width: 40px; height:  30px; background: url('/atCRM/images/imagesList.png') no-repeat -90px -36px;
+         }
+
+         #deleteRulesCondition {
+          width: 40px; height:  40px; background: url('/atCRM/images/imagesList.png') no-repeat -125px -36px;
+         }
+
+         .pointingDownImg {
+          display: block;
+          margin: -14px 0px 0px 31px;
+         }
+
+         .rulesTriggersBtnsCont {
+          float: right; width: 98%; height: 35px; margin-bottom: 5px;
+          border: none; border-bottom: dashed 1px white;
+         }
+
+         .savedActionsTbl {
+          border-spacing: 0;
+          border-collapse: collapse; text-align: center;      
+         }
+         .savedActionsTbl tr {
+          border: none; border-bottom: solid 1px rgba(0,0,0,0.4);
+         }
+
+         .savedActionsTbl th, .savedActionsTbl td {
+           padding: 8px 4px;
+         }
+
+         .savedActionsEdit {
+            color: green; font-size: 12px; cursor: pointer; font-weight: bold;
+         }
+         .savedActionsEdit:hover { text-decoration: underline; }
+
+         td {
+           width: 20px;
+           vertical-align: middle;
+         }
+
+         #actSMCTSP, #actCET {
+           position: relative;
+         }
+
+         .actSMCTSPMakingBlur, .actCETMakingBlur {         
+          background: rgba(0,0,0,0); display: none; position: absolute; 
+         }
+         .actSMCTSPMakingBlur {          
+          width: 230px; height: 63px;
+         }
+
+         .actCETMakingBlur {
+          width: 230px; height: 114px;
+         }
+
+         .disableSelection {
+            box-shadow: 1px 1px 6px rgba(0,0,0,0.2) inset, -1px -1px 6px rgba(0,0,0,0.2) inset;
+             background: rgba(0,0,0,0.4);
+         }
+
+         #actUnselectCpyEmailTo {
+          font-size: 8px; color: green; cursor: pointer;
+         }
+         #actUnselectCpyEmailTo:hover {
+          text-decoration: underline;
+         }
+    </style>
+    
+    
+    
+    <script type="text/javascript" src="/atCRM/javascript/JSON/jquery/jquery-1.6.2.js"></script>
+    <!-- this script contains on load ajax request -->
+    <script type="text/javascript">
+
+      var rulesJsonObj_glb, savedActionsObj_glb, filtersJsonObj_glb, entityJsonObj_glb, 
+      applicableColsJsonObj_glb; //glb for global
+      $(document).ready(function() {
+
+        /* 
+          *  this will give all the entities
+        */
+        $.ajax(
+          {
+            url: '/atCRM/custom/soapAPI/trulyApplicableColumns.json',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+              applicableColsJsonObj_glb = data;
+            },
+            error: function(resoponse) {
+              alert('error occured while load wfw_rule360View ');
+              console.log(resoponse);
+            },
+          }
+        );
+
+        /* 
+          *  this will give all the entities
+        */
+        $.ajax(
+          {
+            url: '/atCRM/custom/soapAPI/trulyApplicableEntities.json',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+              entityJsonObj_glb = data;
+            },
+            error: function(resoponse) {
+              alert('error occured while load wfw_rule360View ');
+              console.log(resoponse);
+            },
+          }
+        );
+
+
+        /* 
+          *  filters json
+        */
+        $.ajax(
+          {
+            url: '/atCRM/custom/JSON/system/filters.json?entityName=Contact',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+              filtersJsonObj_glb = data;
+            },
+            error: function(resoponse) {
+              alert('error occured while load wfw_rule360View ');
+              console.log(resoponse);
+            },
+          }
+        );
+
+      /* 
+          * get json for actions
+          * savedActionsObj_glb is global var
+      */
+      $.ajax(
+          {
+            url: '/atCRM/custom/JSON/list/wfw_action.json?wr=106',
+            type: 'GET',
+            dataType: 'json',
+             success: function(data) {
+                    savedActionsObj_glb = data; //this is global
+                    draw_saved_actions(data);
+              },
+              error: function(resoponse) {
+                  alert('error occured while load wfw_rule360View ');
+                  console.log(resoponse);
+              },
+          }
+      );        
+
+        /* 
+           * get json for rules
+           * rulesJsonObj_glb is global var
+        */
+        $.ajax(
+          {
+            url: '/atCRM/custom/JSON/view/wfw_rule360View.json?id=101',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+              rulesJsonObj_glb = data;
+            },
+            error: function(resoponse) {
+              alert('error occured while load wfw_rule360View ');
+              console.log(resoponse);
+            },
+          }
+        );
+
+
+        /* end of document ready */
+      });
+    </script>
+   <script type='text/javascript'> 
+      $(document).ready(function () {
+
+         //edit rule
+         $('#editRuleTxt').click(function() {
+          
+          //first time elements are drawn
+          if(!$('.editRuleContainer').hasClass('drawn')) {
+
+            //initialize var
+            var ruleName, ruleTriggeredName, descVal, recordType;
+            //check for new entry or edit mode
+            // if( rulesJsonObj_glb['PrimaryKeyValue']  == '' ) {
+            //   ruleName = '', ruleTriggeredName='', descVal='', recordType='INSERT';              
+            // }
+            // else {
+             
+             //loop to get other details like, desc, triggername, recordtype
+             // var zerothValue; //this contains 0th value of dataColumn
+             // var firstValue ; //this contains 1st value of dataColumn
+             //  $.each(rulesJsonObj_glb['TopPanel'], function(k,v)  {
+             //      zerothValue = v['dataColumn'][0].trim();
+             //      firstValue  = v['dataColumn'][1].trim();
+
+             //      if(zerothValue == 'Name')
+             //         ruleName = firstValue;
+
+             //      if(zerothValue == 'Description')
+             //         descVal = firstValue;
+
+             //      if(zerothValue == 'Rule on Object')
+             //        ruleTriggeredName = firstValue;
+
+             //      if(zerothValue == 'On Event')
+             //        recordType = firstValue;
+
+             //      //console.log(descVal + '-' + ruleTriggeredName + '-' + recordtype);
+             //  });
+            // }
+                        
+            var ruleNameElem = createElement($('<input />'),{'class':'txtFields', 'id':'txt_Rule_Name', 'value':ruleName, 'type':'text'});
+            
+            // var status   = createElement($('<input />'),{'id':'CheckRuleActvStatus', 'type':'checkbox', 'onchange':'Active_check(this.id)'});
+
+            var descElem = createElement($('<textarea></textarea>'),{'id':'ruleDescField', 'type':'checkbox', 'onchange':'Active_check(this.id)'});
+                descElem.val(descVal);
+
+            var triggerEvent = createElement($('<a></a>'),{'id':'addTriggerForRules'});
+                triggerEvent.text('Add Trigger');
+
+            var ruleLabelElem = $('<label></label>');
+                ruleLabelElem.attr('class','rulesSelected').attr('id', 'Rule_on_Obj');
+                ruleLabelElem.text(ruleTriggeredName);
+
+            //no of records json obj
+            var records = {               
+               'INSERT': 'Insert',
+               'UPDATE': 'Update',
+               'INSERT or UPDATE': 'Insert or Update',
+            };  
+            var recordDropDownParentElement = $('<select></select>');
+                recordDropDownParentElement.attr('class', 'rulesDropDowns').attr('id', 'ruleTypeof').attr('name', 'ruleTypeof');
+            var recordDropDwnElem = createDropDown(recordDropDownParentElement, records); 
+                recordDropDwnElem.val(recordType);
+            
+            
+            //add the values to table
+            $('#rnValue').append(ruleNameElem);
+            $('#rTriggerValue, ').append(ruleLabelElem);
+            $('#recordValue').append(recordDropDwnElem);
+            $('#descValue').append(descElem);
+            $('#triggerLink').append(triggerEvent);
+
+            //once elements drawn then add the class drawn for tbl container
+            $('.editRuleContainer').addClass('drawn');
+          }
+
+            
+            //hide the edit link
+            $('.ruleEditCont').slideUp('fast');
+            //show the list to user
+            $('.editRuleContainer').slideDown('fast');
+
+         });
+
+         //update rules
+         $('#updateRules').click(function() {
+            //show the list to user
+            $('.editRuleContainer').slideUp('fast');
+            //hide the edit link
+            $('.ruleEditCont').slideDown('fast');
+            /* 
+              perform update operation here
+              form the string and post it to url
+            */
+            var ruleName = "name=" + '"' + $('#txt_Rule_Name').val() + '"';
+            var rule     = "rule=" + '"' + $('#Rule_on_Obj').text() + '"';
+            var ruleActTypeOf = "type=" + '"' + $('#ruleTypeof').val() + '"';
+            var desc          = "desc=" + '"' + $('#ruleDescField').val() + '"';
+
+            var andConditions='';
+            if($('.condtionsForRules')) {
+              var ruleEntity, ruleEntityCond, rulePickListVal;
+              $('.condtionsForRules table').each(function() {
+                ruleEntity = $(this).find('.rulesEntityNames').val();
+                ruleEntityCond = $(this).find('.rulesTriggerCondVal').val();
+                rulePickListVal = $(this).find('.rulePickList').val();
+
+                andConditions += "re="+'"'+ruleEntity + '",'+"rec="+'"'+ruleEntityCond + '",'+"rpk="+'"'+ rulePickListVal+ '"&&';
+              });
+
+              andConditions = andConditions.substring(0, andConditions.length - 2);
+            }
+            if(andConditions != '')
+              var data = ruleName + ',' + rule + ',' + ruleActTypeOf + ',' + desc + ',' + andConditions;
+            else
+              var data = ruleName + ',' + rule + ',' + ruleActTypeOf + ',' + desc;
+
+            alert(data);
+             /* 
+                post data to particular url
+             */
+
+         });
+
+         //close updating rules block
+         $('#stopUpdatingRules').click(function() {
+            //show the list to user
+            $('.editRuleContainer').slideUp('fast');
+            //hide the edit link
+            $('.ruleEditCont').slideDown('fast');
+         });
+
+         //show new actions container
+         
+         $('#newActiondeactive').live('click', function () {
+            
+            $(this).attr('id', 'newActionactive').attr('value', 'Close');
+
+            //hide saved actions
+            $('.oldActionsContainer').slideUp('fast');
+
+            //draw inside content
+            drawNewActionControls();
+
+            //show new action container here
+            $('.newActionsContainer').slideDown('fast');
+
+         });
+
+         //show new actions container
+         $('#newActionactive').live('click', function () { 
+
+            $(this).attr('id','newActiondeactive').attr('value', 'New Action');;
+
+            //show new action container here
+            $('.newActionsContainer').slideUp('fast');
+            //hide old actions
+            $('.oldActionsContainer').slideDown('fast');
+
+         });
+
+         //show round robin container
+         $('#assignRoundRobin').live('click', function(k,v) {
+            if($(this).hasClass('showing')) {
+               $('#assignRoundRobin_dataContainer').slideUp('fast');
+               $(this).removeClass('showing');
+            }
+            else {
+               if(! $('#assignRoundRobin_dataContainer').hasClass('drawn'))
+                  show_round_robin_div();
+
+               $('#assignRoundRobin_dataContainer').slideDown('fast');
+               $(this).addClass('showing');
+            }            
+         });
+
+
+         //show create container
+         $('#createTask').live('click', function(k,v) {
+            if($(this).hasClass('showing')) {
+               $('#createTask_dataContainer').slideUp('fast');
+               $(this).removeClass('showing');
+            }
+            else {
+               if(! $('#createTask_dataContainer').hasClass('drawn'))
+                  show_create_task_div();
+
+               $('#createTask_dataContainer').slideDown('fast');
+               $(this).addClass('showing');
+            }            
+         });
+
+
+         //show create container
+         $('#sendMail').live('click', function(k,v) {
+            if($(this).hasClass('showing')) {
+               $('#sendMail_dataContainer').slideUp('fast');
+               $(this).removeClass('showing');
+            }
+            else {
+               if(! $('#sendMail_dataContainer').hasClass('drawn'))
+                  show_send_mail_div();
+
+               $('#sendMail_dataContainer').slideDown('fast');
+               $(this).addClass('showing');
+            }            
+         });
+
+
+         //show create container
+         $('#sendSms').live('click', function(k,v) {
+            if($(this).hasClass('showing')) {
+               $('#sendSms_dataContainer').slideUp('fast');
+               $(this).removeClass('showing');
+            }
+            else {
+               if(! $('#sendSms_dataContainer').hasClass('drawn'))
+                  show_send_sms_div();
+
+               $('#sendSms_dataContainer').slideDown('fast');
+               $(this).addClass('showing');
+            }            
+         });
+
+         //show create container
+         $('#newActUpdate').live('click', function(k,v) {
+            if($(this).hasClass('showing')) {
+               $('#newActUpdate_dataContainer').slideUp('fast');
+               $(this).removeClass('showing');
+            }
+            else {
+               if(! $('#newActUpdate_dataContainer').hasClass('drawn'))
+                  show_update_div();
+
+               $('#newActUpdate_dataContainer').slideDown('fast');
+               $(this).addClass('showing');
+            }            
+         });
+
+         
+
+         //show pick list if condition matched
+         $('#ctAssignTo').live('change', function() {
+            var pl = $('#ctPickList');          
+            if($(this).val() == 'Assing_typ_opt6') {
+              pl.css('display','block');
+            } else {
+              pl.css('display','none');
+            }
+         });
+
+         //show conditions
+         $('#addTriggerForRules').live('click', function() {
+             if($(this).hasClass('showing')) {
+                $(this).removeClass('showing').text('Add Trigger');
+                $('.condtionsForRules').css('display','none');
+             } 
+             else {             
+                //add class showing for clicked element
+                $(this).addClass('showing').text('Close');
+                
+                //only for first time 
+                if(!$('.condtionsForRules').hasClass('drawn')) {  
+                    
+                    //draw a container for condtions list
+                    var c = $("<div></div>");
+                      c.addClass('condtionsForRules');
+
+                    //rules picklist container
+                    // var pickListCont = "<div id='commonPickListDiv'></div>";
+                    //     c.append(pickListCont);
+                    
+                    var pointingImg = $('<img src="/atCRM/images/pointingDownImg.png" width="22" height="22" class="pointingDownImg" />');
+                      c.append(pointingImg);
+                    
+                    //this is container for submit anc cancel btns
+                    var btnsCont = $('<div></div>');
+                        btnsCont.addClass('rulesTriggersBtnsCont');
+                    var btns = "<input type='button'   value='No Rule' id='cancelCondForRules' class='workflowFrmBtns' /><input type='button' value='Ok' id='addedCondForRules' class='workflowFrmBtns'/>";
+                        btnsCont.append(btns);
+                        c.append(btnsCont);
+
+
+                    $('#triggerLink').append(c);
+                    $('.condtionsForRules').slideDown('fast');               
+                    //add trigger conditions for rules
+                    draw_conditions_for_rules(filtersJsonObj_glb);
+                    $('.condtionsForRules').addClass('drawn'); //marking as requested json via ajax
+                }
+
+                $('.condtionsForRules').css('display','block');              
+             }
+              
+         });
+
+         
+         //show properties on entity value for rules
+         $('.rulesEntityNames').live('change', function() {
+           var selectedVal = $(this).val();
+           var tblRfrTo    = $('option:selected', this).attr('tblRTo');
+           var colRfrTo = $('option:selected', this).attr('rfrColName');
+           var colType = $('option:selected', this).attr('colType');           
+           var colTypeArr = colType.split('_');
+           var colTypeStr  = colTypeArr[0];
+           var isFk    = colTypeArr[1];
+           var idCnt = $(this).attr('id').split('_').pop();
+           var tblId = 'ruleTrigTbl_'+idCnt;
+
+
+          //prepare pick list btn
+          var placeToAddBtn = $('#'+tblId+' #rulesIsPickList');
+
+           if(isFk == 1)  {
+               showPickListIconForRules(idCnt,selectedVal, tblRfrTo, colRfrTo,placeToAddBtn);
+               $('#eachRuleCondName_'+idCnt).val(''); //empty the value
+           }
+           else
+           if(colTypeStr == 'Datetime') {
+            $('#'+tblId+' #rulesIsPickList').children('.rulePickList').val(''); //empty the value
+            //remove pick list if added previously
+            $('#'+tblId+' #rulesIsPickList .rulesPickListBtns').remove();
+
+            var datePicIco = '<img src="/atCRM/images/calendar.gif" id="calendar_'+idCnt+'" alt="Pick Date" style="cursor:pointer;vertical-align:middle;padding-left:1px;" class="rulesPickListBtns" >';      
+            
+            placeToAddBtn.html(datePicIco);
+            new Calendar({
+                inputField: 'eachRuleCondName_'+idCnt,
+                dateFormat: "%d/%m/%Y", 
+                trigger: 'calendar_'+idCnt,
+                bottomBar: true,
+                fdow:0,
+                min: 19000101,
+                max: 29991231,
+                align: "BL",
+                onSelect: function() {
+                  this.hide();
+                }
+            });
+           }
+           else {
+            //remove pick list if added previously
+            $('#'+tblId+' #rulesIsPickList .rulesPickListBtns').remove();
+           }
+
+           propertiesAccToRulesEntityName(colType, tblId);
+         });
+
+         //add new condtion for rules
+         $('#addRulesCondition').live('click', function() {
+            $(this).attr('id', 'deleteRulesCondition');
+            draw_conditions_for_rules(filtersJsonObj_glb);
+         });
+
+         //delete the condition from rules
+         $('#deleteRulesCondition').live('click', function() {
+            var delId = $(this).attr('tblid');
+            $('#'+delId).remove();
+         });
+
+         //edit the actions
+         var rrVars = [];
+             rrVars = 
+         $('.savedActionsEdit').live('click', function(k,v) {
+           var ruleName = $(this).attr('actionName');
+           var rowId    = $(this).attr('id');
+
+           //hide some dom elements, which does not to be shown while
+           //editing
+           hide_other_opt_before_showing_edit_rule();
+
+           //based on action name show the edit fields
+           switch(ruleName) {
+
+                case "rr": 
+                  edit_round_robin_action(rowId, 'assignRoundRobin');
+                  break;
+
+                case "e": 
+                  edit_send_email_action(rowId, 'sendMail');
+                  break;
+
+                case "s": 
+                  edit_send_sms_action(rowId, 'sendSms');
+                  break;
+
+                case "u": 
+                  edit_update_task_action(rowId, 'newActUpdate');
+                  break;
+
+                case "c": 
+                  edit_create_task_action(rowId, 'createTask');
+                  break;
+           }
+         });
+
+         //close the action rule block
+         $('.newActionCloseBtns').live('click', function() {
+            var parentClsName = $(this).attr('for'); //parent class name
+            if(!$('.'+parentClsName).hasClass('fromEdit')) {
+                //just close the block
+                $('.'+parentClsName+' .newActionControlMore').trigger('click');
+            } 
+            else {
+              //inthis case the control is from edit, so before exit
+              //we need to revert back all the hidden elements to normal state
+              $('#'+parentClsName+'_dataContainer').slideUp();
+              $('.newActionsContainer').slideUp('fast');
+              $('.oldActionsContainer').slideDown('fast');
+              $('.openNewActList,.newActionControlMore').css('display','block');
+              $('.eachActCont').css('display','inline-block');
+              $('.'+parentClsName).removeClass('fromEdit')
+            }
+         });
+
+         //actSMCTSP = action send mail copy to specific people col
+         //making blur based on condition select for action sending mail
+         $('#actSMCTSP, .wfMultiSelectBox').live('click blur mousemove', function() {
+          if($('#0-1-4202-multi-multiSelDiv').children().length == 0 ) {    
+            if($("#smCpyMailTo :selected").length == 0) { 
+              $('.actCETMakingBlur').css('display', 'none');
+              $('#smCpyMailTo').removeClass('disableSelection');
+            }
+            else {
+              $('.actSMCTSPMakingBlur').css('display', 'block');
+              $('#actSMCTSP').removeClass('disableSelection');
+            }               
+          }
+          else {
+            $('.actCETMakingBlur').css('display', 'block');
+            $('#smCpyMailTo').addClass('disableSelection');
+          }
+
+         });
+
+         //making blur based on condition select for making blur
+         $('#smCpyMailTo').live('click blur mousemove', function() {
+           if($("#smCpyMailTo :selected").length == 0) {
+            if($('#0-1-4202-multi-multiSelDiv').children().length == 0 ) {
+              $('.actSMCTSPMakingBlur').css('display', 'none');  
+              $('#0-1-4202-multitxt').removeClass('disableSelection');
+            }
+            else {
+              $('.actCETMakingBlur').css('display', 'block');
+            }            
+           } 
+           else {
+            $('.actSMCTSPMakingBlur').css('display', 'block');
+            $('#0-1-4202-multitxt').addClass('disableSelection');
+           }
+         });
+
+         //unselect all the select list for copy email to in action section
+         $('#actUnselectCpyEmailTo').live('click', function() {
+          $('#smCpyMailTo option:selected').removeAttr('selected');
+          $('#0-1-4202-multitxt,#smCpyMailTo').removeClass('disableSelection');
+          $('.actCETMakingBlur, .actSMCTSPMakingBlur').css('display', 'none');
+         });
+
+         //remove conditions for rules
+         $('#cancelCondForRules').live('click', function() {
+          $('.condtionsForRules').remove();
+          $('#addTriggerForRules').trigger('click');
+         });
+
+         //added conditions for rules
+         $('#addedCondForRules').live('click', function() {
+          $('#addTriggerForRules').trigger('click');
+         });
+
+         //save the rr action
+         $('#saveRRAction').live('click', function () {
+           var assignmentList = 'asgndList='+ '"'+ $('#assignmentList').val() + '"';
+           var lastAsgndAt = 'lastAsgndAt='+ '"'+ $('#rrLastAsgndAt').val() + '"';
+           var lastAsgndTo = 'lastAsgndTo='+ '"'+ $('#rrLastAsgndTo').val() + '"';
+           var rrCandidateSql = '0-1-88='+ '"'+ $('#rrCandidateSql').val() + '"';
+           var rrHistoryCsv = '0-1-87='+ '"'+ $('#rrHistoryCsv').val() + '"';
+           var rrLastAssignedRec = '0-1-89='+ '"'+ $('#rrLastAssignedRec').val() + '"';
+
+           //form a data string
+           var data = assignmentList + '&' + lastAsgndAt + '&' + lastAsgndTo + '&' + rrCandidateSql + '&' +rrHistoryCsv + '&' + rrLastAssignedRec;
+
+           alert(data);
+           var url = 'http://192.168.11.11/atCRM/custom/JSON/add/addWfwAction/editAction?';
+           postDataString(data, url);
+
+           /* 
+            * post this data string to particular url
+           */
+         });
+
+         //save the create task action
+         $('#saveCreateTask').live('click', function () {
+           var subj = '0-1-49='+ '"'+ $('#ctSubj').val() + '"';
+           var notes = '0-1-50='+ '"'+ $('#ctNotes').val() + '"';
+           var after = '0-1-51='+ '"'+ $('#ctAft').val() + '"';
+           var taskStarts = '0-1-52='+ '"'+ $('#ctST').val() + '"';
+           var type = '0-1-74='+ '"'+ $('#ctName').val() + '"';
+           var status = '0-1-80='+ '"'+ $('#ctStatus').val() + '"';
+           var asgndTo = $('#ctAssignTo').val();
+           
+           if(asgndTo == 'Assing_typ_opt6') 
+              asgndTo = '0-1-42=' + $('#ctPickListVal').val();
+            else
+              asgndTo = '0-1-42=' + '"' + asgndTo + '"';
+           
+
+           //form a data string
+           var data = subj + ',' + notes + ',' + taskStarts + ',' + after + ',' + type + ',' + status + ',' + asgndTo;
+
+           alert(data);
+           var url = '';
+           postDataString(data, url);
+
+           /* 
+            * post this data string to particular url
+           */
+         });
+
+         //save send mail action
+         $('#saveSendMail').live('click', function () {
+           var eTemplate = 'template='+ '"'+ $('#smEmailTmplt').val() + '"'; //email template
+           var subj = '0-1-26='+ '"'+ $('#smSubj').val() + '"';
+           var mailTo = '0-1-30='+ '"'+ $('#smSendMailTo').val() + '"';
+            
+           var ssPeopleVal=''; //send specific people
+           $('#0-1-4201-multi-multiSelDiv .multiSelectRow').each(function () {
+             ssPeopleVal +=  $(this).attr('title') + ',';
+           });
+           if(ssPeopleVal != '')
+             ssPeopleVal = ssPeopleVal.substring(0, ssPeopleVal.length -1);
+
+           var ssPeople = '0-1-29='+ '"' + ssPeopleVal + '"';
+
+           var cSPeopleVal = ''; //copy specific people
+           $('#0-1-4202-multi-multiSelDiv .multiSelectRow').each(function () {
+             cSPeopleVal +=  $(this).attr('title')  + ',';
+           });
+           if(cSPeopleVal != '')
+             cSPeopleVal = cSPeopleVal.substring(0, cSPeopleVal.length -1);
+
+           var cSPeople = 'cSPeople=' + '"' + cSPeopleVal + '"';
+
+           var cEmailTo = '0-1-31=' + '"' + $('#smCpyMailTo').val() + '"'; //copy email to
+
+           //form a data string
+           var data = eTemplate + ',' + subj + ',' + mailTo + ',' + cEmailTo;
+
+           //send any one from copy to specific people and copy email to
+           if(ssPeopleVal != '')
+              data += ',' + ssPeople;
+            else
+              data += ',' + cSPeople;
+           
+
+           alert(data);
+           var url = '';
+           postDataString(data, url);
+
+           /* 
+            * post this data string to particular url
+           */
+         });
+
+          //save send sms action
+         $('#saveSendSms').live('click', function () {
+           var smsMsg = '0-1-39='+ '"'+ $('#smsToBeSent').val() + '"'; 
+           var smsToWhom = '0-1-40='+ '"'+ $('#smsToWhom').val() + '"';
+                       
+           var ssPeopleVal='0-1-41='; //send specific people
+           $('#0-1-4203-multi-multiSelDiv .multiSelectRow').each(function () {
+             ssPeopleVal +=  $(this).attr('title') + ',';
+           });
+           if(ssPeopleVal != '')
+             ssPeopleVal = '0-1-41='+'"' + ssPeopleVal.substring(0, ssPeopleVal.length -1) + '"';
+
+           
+           //form a data string
+           var data = smsMsg + ',' + smsToWhom + ',' + ssPeopleVal;
+
+           alert(data);
+           var url = '';
+           postDataString(data, url);
+
+           /* 
+            * post this data string to particular url
+           */
+         });
+
+          //update  action
+         $('#saveUpdateAction').live('click', function () {
+           var fldToUpdate = '0-1-71='+  $('#updateColsList').val() ; 
+           var colToUpdate = 'colToUpdateName='+ '"'+ $('#colToUpdate').val() + '"';
+           var updateEntitiesList = '0-1-78='+  $('#updateEntitiesList').val();
+           var tblToUpdate = 'tblToUpdateName='+ '"'+ $('#tblToUpdate').val() + '"';
+           var formulaToUpdate = '0-1-79='+ '"'+ $('#formulaToUpdate').val() + '"';                     
+           
+           //form a data string
+           var data = fldToUpdate + ',' + colToUpdate + ',' + updateEntitiesList + ',' + tblToUpdate + ',' + formulaToUpdate;
+
+           alert(data);
+           var url = '';
+           postDataString(data, url);
+           /* 
+            * post this data string to particular url
+           */
+         });
+
+         /* end of document ready for actions */
+      });
+   </script>
+
+   <!-- functions script -->
+   <script type="text/javascript">
+
+      /* 
+        * post data url to specific targe
+        * two arguments is excepted one is post data and 
+        * other is target url
+      */
+      function postDataString(dataUrl, url) {
+        $.ajax({
+          url: url,
+          data: dataUrl,
+          type: 'post',
+          aysnc: false,
+          success: function(data) {
+
+          },
+          error: function(resoponse) {
+            alert('Operation failed!');
+            console.log(resoponse);
+          }
+        });
+      }
+
+      /* 
+        * this will draw the saved actions to dom
+      */
+      function draw_saved_actions(obj) {
+          
+          var tbl = $('<table></table>');
+              tbl.addClass('savedActionsTbl');
+          
+          var trh = $('<tr></tr>'); //trh tr header
+              trh.addClass('savedActionsHdr');          
+          //now first draw the headers
+          var th;
+          $.each(obj['ColumnHeaders'], function(k, v) {
+            th = $('<th></th>');
+            th.text(v['colmnDesc']);
+            trh.append(th);
+          });
+          trh.append('<th></th>'); //this is for edit link
+          tbl.append(trh);
+
+          //now add the data
+          var trd,td, rowId, actType='', txt; 
+          var actNotations = ['rr','e','s','u','c']; //action notatios
+          $.each(obj['RowData'], function(k, v) {
+             trd = $('<tr></tr>');         
+             rowId =  v['pkId'];   
+             trd.attr('id', 'editRowNo_'+rowId);
+             $.each(v['data'], function(k1, v1) {
+                txt = v1['colTxt'];
+                td = $('<td></td>');
+                td.text(txt);
+                trd.append(td);
+                if($.inArray(txt, actNotations) != -1) 
+                  actType=txt;
+             });
+             trd.append('<td><a href="#" class="savedActionsEdit" id="'+rowId+'" actionName= "'+actType+'"> Edit </a></td>')
+             //add to table
+             tbl.append(trd);
+          });
+          //add to dom now
+          $('.oldActionsContainer').append(tbl);
+      }
+
+      /* 
+        * this will prepare picklist btn and adds to dom
+        * param1=where to add pick list,para3=table refering name, para4=column refering
+      */
+        
+      function showPickListIconForRules(idCnt,selectedVal, tblRfrTo, colRfrTo, placeToAdd) {  
+        var btn = "<a class='rulesPickListBtns' id='searchTxtFldpck_"+idCnt+"' onclick=\"populatePicklist('"+tblRfrTo+"', '"+colRfrTo+"','eachRuleCondName_"+idCnt+"','','0','addEditForm','', '"+selectedVal+"' );\" ><img src='/atCRM/images/JSON/picklist.png' style='cursor: pointer; margin-left: 4px;'></a>";
+
+        placeToAdd.append(btn); //add to dom
+      }
+
+         /* 
+            * global json object for rules triggers condtions
+            *  this contains properties for numeric, datetime etc
+         */
+         var rulesTriggerProperties = {
+           "Number_0": {
+                "eq": "Equal",
+                "ne": "Not Equal",
+                "lt": "Less Then",
+                "gt": "Greate Then"
+           },
+           "Number_1": {
+                "eq": "Equal",
+                "ne": "Not Equal"
+           },
+           "Datetime_0": {
+               "eq": "Equal",
+               "ne": "Not Equal" ,
+                "lt": "Less Then",
+                "gt": "Greate Then"
+           },
+           "String_0": {
+                "eq": "Equal",
+                "ne": "Not Equal",
+                "contains": "Contains",
+                "does not contains": "Does Not Contains",
+                "starts with": "Starts With",
+                "does not starts with": "Does Not Starts With",
+                "ends with": "Ends With",
+                "does not ends with": "Does Not Ends With"
+           }
+         };
+
+    /* 
+      * this will change the property of rules triggers according to entity name type
+    */
+    function propertiesAccToRulesEntityName(colType, tblId) {
+        
+        //first remove previously added
+        $('#'+tblId+' #ruleEntCond').children().remove();
+
+        var s = $('<select></select>');
+            s.addClass('rulesTriggerCondVal');
+        var opt;
+        $.each(rulesTriggerProperties[colType], function(k,v) {
+          opt = $('<option></option>');
+          opt.attr('value', k).text(v);
+          s.append(opt);
+        });
+
+        //add select box to dom
+        $('#'+tblId+' #ruleEntCond').append(s);
+    }
+
+    /* 
+      * this will draw html elements on dom
+    */
+    var rulesEntityNamesRowCount=0; //this is global
+    function draw_conditions_for_rules(obj) {
+
+      var tblid = 'ruleTrigTbl_' + rulesEntityNamesRowCount;
+      var tbl = "<table class='rulesTriggerCont' cellspacing='4' cellpadding='4' id='"+tblid+"'><tr>";
+          tbl += "<td id='ruleEntBlk'></td>";
+          tbl += "<td id='ruleEntCond'></td>";
+          tbl += "<td id='ruleIsFk'><input type='text' class='rulePickList' id='eachRuleCondName_"+rulesEntityNamesRowCount+"' /></td>";
+          tbl += "<td id='rulesIsPickList'></td>";
+          tbl += "<td id='ruleCondAddOrDel'><div id='addRulesCondition' tblid='"+tblid+"'></div></td>";
+          tbl += "</tr></table>";
+      //add tbl first to dom
+      $('.condtionsForRules').append(tbl);
+
+      var s = $('<select></select>');
+          s.addClass('rulesEntityNames');
+      var sid = 'rulesEntityNames_'+rulesEntityNamesRowCount;
+          s.attr('id', sid);
+
+      var opt;
+      $.each(obj['entityBaseColumnList'], function(k, v) {
+          opt = $('<option></option>');
+          opt.attr('value', v['columnName']).attr('colType', v['columnType']+'_'+v['isForeignKey']).attr('tblRTo', v['tableReferedTo']).attr('rfrColName', v['referColumnName']);
+          opt.text(v['desc_name']);
+
+          //add to select box
+          s.append(opt);
+      });
+      //add select box to container
+      $('#'+tblid + ' #ruleEntBlk').append(s);
+
+      var colType = $('option:selected', $('#'+sid)).attr('colType');
+      propertiesAccToRulesEntityName(colType, tblid); // add properties for selected entity
+
+      rulesEntityNamesRowCount++;
+    }
+
+
+
+      function show_update_div() {
+         var tbl = '<table class="newActTbl">';
+             tbl += '<tr><td> <p class="tableColName">Field to Update</p><select id="updateColsList"></select></td>';
+             tbl += '<td> <p class="tableColName">Column to Update Name</p><input type="text" id="colToUpdate" /></td></tr>';
+             tbl += '<tr><td><p class="tableColName">Object to Update</p><select id="updateEntitiesList"></select></td>';
+             tbl += '<td><p class="tableColName">Table to Update Name</p><input type="text" id="tblToUpdate" /></td></tr><tr>';
+             tbl += '<td><p class="tableColName">Formula</p><textarea id="formulaToUpdate"></textarea></td></tr><tr><td colspan="2"><input type="button" value="Close" class="newActionBtns workflowFrmBtns newActionCloseBtns" for="newActUpdate" /><input type="button" value="Save" class="newActionBtns workflowFrmBtns newActionSaveBtns" for="newActUpdate" id="saveUpdateAction" /></td></tr>';
+             tbl += '</table>';
+
+             //add to dom
+             $('#newActUpdate_dataContainer').html(tbl).addClass('drawn');
+
+             //update columns list
+             var entityCols = applicableColsJsonObj_glb[0]['entityCols'].split('$');
+             var col, optVal, optTxt,opt;
+             $.each(entityCols, function(k, v) {
+                col = v.split('#');
+                optVal = col[0];
+                optTxt = col[3];
+                opt = $('<option></option>');
+                opt.attr('value', optVal).text(optTxt);
+                $('#updateColsList').append(opt);
+             });
+
+            //update the entities
+            var entities = entityJsonObj_glb[0]['entity'].split('$');
+             $.each(entities, function(k, v) {
+                col = v.split('#');
+                optVal = col[0];
+                optTxt = col[3];
+                opt = $('<option></option>');
+                opt.attr('value', optVal).text(optTxt);
+                $('#updateEntitiesList').append(opt);
+             });
+      } 
+
+      function show_send_sms_div() {
+        window["array_0_1_4203_multi"] = [];
+        var pckListName = 'Account';
+
+         var tbl = '<table class="newActTbl">';
+             tbl += '<tr><td> <p class="tableColName">SMS to be sent</p><input type="text" id="smsToBeSent" /></td>';
+             tbl += '<td> <p class="tableColName">Send SMS to</p><select id="smsToWhom"> </select></td></tr>';
+             tbl += '<tr><td><p class="tableColName">Also send to specific people</p>';
+             
+             tbl += '<input type="hidden" name="0-1-4203" id="0-1-4203" value=""><input type="hidden" name="0-1-4203-multi" id="0-1-4203-multi" value=""><input type="hidden" name="0-1-4201-multi-max" id="0-1-4203-multi-max" value="5"><input type="hidden" name="0-1-4203-multi-fun" id="0-1-4203-multi-fun" value="">';
+             
+             tbl += '<input type="text" name="0-1-4203-multitxt" id="0-1-4203-multitxt" class="ui-corner-all multiSelectTxt" onkeyup="callAjax(\'multiSelectSugg\',this,event,\'/atCRM/custom/JSON/smartSuggest/genericPicklist.xml?pckListName=Account\',this.value,\'undefined\',\'undefined\');" onfocus="changeMultiTxt(this);" onblur="changeMultiTxt(this);" value="2 chars or **" autocomplete="off"/><div id="multiSelectSugg" name="multiSelectSugg" class="sf_suggestion" ></div></td></tr>';
+
+             tbl += '<tr><td><div class="multiSelectBox multiSelectBoxForSms" name="0-1-4203-multi-multiSelDiv" id="0-1-4203-multi-multiSelDiv"></div></td></tr>';
+
+             tbl += '<tr><td colspan="2"><input type="button" value="Close" class="newActionBtns workflowFrmBtns newActionCloseBtns" for="sendSms"/><input type="button" value="Save" class="newActionBtns workflowFrmBtns newActionSaveBtns" for="sendSms" id="saveSendSms" /></td></tr>';
+             tbl += '</table>';
+             
+             //add to dom
+             $('#sendSms_dataContainer').html(tbl).addClass('drawn');
+
+            var dropdown_obj = {
+               "smsToWhom": {
+                  "Current User": "Current User",
+                  "Current User's Manager": "Current User's Manager",
+                  "Terr owner": "Terr owner",
+                  "Rec crtd by": "Rec crtd by",
+                  "Rec last mod by": "Rec last mod by",
+                  "Xn contact": "Xn contact",
+               }
+            }
+
+            //loop through above object and fill the dropdowns
+             addOptionsToDropDown(dropdown_obj);
+      } 
+
+      function show_send_mail_div() {
+         /* initialize global window array */
+         window["array_0_1_4201_multi"] = [];
+         window["array_0_1_4202_multi"] = [];
+
+         var tbl = '<table class="newActTbl">';
+             tbl += '<tr><td> <p class="tableColName">Email Template</p><select id="smEmailTmplt" name="smEmailTmplt"></select></td>';
+             tbl += '<td> <p class="tableColName">Subject</p><input type="text" id="smSubj" /></td>';
+             tbl += '<td><p class="tableColName">Send Email to</p><select multiple id="smSendMailTo" rows="6"></select></td>';
+             tbl += '<tr><td><p class="tableColName">Also send to specific people</p>';
+             
+             tbl += '<input type="hidden" name="0-1-4201" id="0-1-4201" value=""><input type="hidden" name="0-1-4201-multi" id="0-1-4201-multi" value=""><input type="hidden" name="0-1-4201-multi-max" id="0-1-4201-multi-max" value="5"><input type="hidden" name="0-1-4201-multi-fun" id="0-1-4201-multi-fun" value="">';
+             
+             tbl += '<input type="text" name="0-1-4201-multitxt" id="0-1-4201-multitxt" class="ui-corner-all multiSelectTxt" onkeyup="callAjax(\'multiSelectSugg\',this,event,\'/atCRM/custom/JSON/smartSuggest/genericPicklist.xml?pckListName=Account\',this.value,\'undefined\',\'undefined\');" onfocus="changeMultiTxt(this);" onblur="changeMultiTxt(this);" value="2 chars or **" autocomplete="off"/><div id="multiSelectSugg" name="multiSelectSugg" class="sf_suggestion" ></div></td>';
+             
+             //actSMCTSP = action send mail copy to specific people col
+             tbl += '<td id="actSMCTSP"><div class="actSMCTSPMakingBlur"></div><p class="tableColName">Also copy to specific people</p>';
+
+             tbl += '<input type="hidden" name="0-1-4202" id="0-1-4202" value=""><input type="hidden" name="0-1-4202-multi" id="0-1-4202-multi" value=""><input type="hidden" name="0-1-4202-multi-max" id="0-1-4202-multi-max" value="5"><input type="hidden" name="0-1-4202-multi-fun" id="0-1-4202-multi-fun" value="">';
+
+             tbl += '<input type="text" name="0-1-4202-multitxt" id="0-1-4202-multitxt" class="ui-corner-all multiSelectTxt" onkeyup="callAjax(\'multiSelectSugg\',this,event,\'/atCRM/custom/JSON/smartSuggest/genericPicklist.xml?pckListName=Account\',this.value,\'undefined\',\'undefined\');" onfocus="changeMultiTxt(this);" onblur="changeMultiTxt(this);" value="2 chars or **" autocomplete="off"/><div id="multiSelectSugg" name="multiSelectSugg" class="sf_suggestion" ></div></td>';
+
+             tbl += '<td id="actCET"><div class="actCETMakingBlur"></div><p class="tableColName">Copy Email To<span id="actUnselectCpyEmailTo"> Unselect</span></p><select multiple id="smCpyMailTo" rows="4"></select></td>';    
+
+             tbl += '</tr><tr><td><div class="multiSelectBox" name="0-1-4201-multi-multiSelDiv" id="0-1-4201-multi-multiSelDiv"></div></td><td><div class="multiSelectBox wfMultiSelectBox" name="0-1-4202-multi-multiSelDiv" id="0-1-4202-multi-multiSelDiv"></div></td>';
+
+             tbl += '<td><input type="button" value="Close" class="newActionBtns workflowFrmBtns newActionCloseBtns" for="sendMail"/><input type="button" value="Save" class="newActionBtns workflowFrmBtns newActionSaveBtns" for="sendMail" id="saveSendMail" /></td></tr>';
+             tbl += '</table>';
+
+             //add to dom
+             $('#sendMail_dataContainer').html(tbl).addClass('drawn');
+
+             //json object for dropdowns, keys are ids of select box
+             var dropdown_obj = {
+               "smSendMailTo": {
+                  "Current User": "Current User",
+                  "Current User's Manager": "Current User's Manager",
+                  "Terr owner": "Terr owner",
+                  "Rec crtd by": "Rec crtd by",
+                  "Rec last mod by": "Rec last mod by",
+                  "Xn contact": "Xn contact",
+               },
+
+               "smCpyMailTo": {
+                  "Current User": "Current User",
+                  "Current User's Manager": "Current User's Manager",
+                  "Terr owner": "Terr owner",
+                  "Rec crtd by": "Rec crtd by",
+                  "Rec last mod by": "Rec last mod by",
+                  "Xn contact": "Xn contact",
+               },
+
+             };
+
+             //loop through above object and fill the dropdowns
+             addOptionsToDropDown(dropdown_obj);
+
+             prepareOptionsForDrpDwnFromJson('http://192.168.11.11/atCRM/custom/JSON/smartSuggest/dropDownDataForView.json?entity=email_templt', 'smEmailTmplt');
+      }     
+
+      function addOptionsToDropDown(Jsonobj) {
+            var opt;
+             $.each(Jsonobj, function(id,obj) {
+                $.each(obj, function(k,v) {
+                   opt = $('<option></option>');
+                   opt.attr('value', k);
+                   opt.text(v);
+                   $('#'+id).append(opt);
+                });
+             });
+
+      }
+
+      function show_create_task_div() {
+
+         var tbl = '<table class="newActTbl">';
+             tbl += '<tr><td> <p class="tableColName">Subject</p><input type="text" class="ctInp" id="ctSubj" /></td>';
+             tbl += '<td> <p class="tableColName">Assign to</p><select name="ctAssignTo" id="ctAssignTo"></select><div id="ctPickList"><input type="text" id="ctPickListVal"/><a id="searchTxtFld1pck" onclick="populatePicklist(\'User_Id\',\'SBEUser\',\'ctPickListVal\',\'\',\'0\',\'addEditForm\',\'\',\'Created by\');"><img src="/atCRM/images/JSON/picklist.png" style="cursor: pointer; margin-left: 4px;"></a></div></td>';
+             tbl += '<td><p class="tableColName">Notes</p><textarea id="ctNotes"></textarea></td></tr>';
+             tbl += '<tr><td><p class="tableColName">Task Starts</p><select name="ctST" id="ctST"></select></td>';
+             tbl += '<td> <p class="tableColName">After</p><select name="ctAft" id="ctAft"></select></td>';
+             tbl += '<td><p class="tableColName">Type</p><select name="ctName" id="ctName"></select></td></tr><tr><td><p class="tableColName">Status</p><select name="ctStatus" id="ctStatus"></select></td>';
+             tbl += '<td colspan="3"><input type="button" value="Close" class="newActionBtns workflowFrmBtns newActionCloseBtns" for="createTask"/><input type="button" value="Save" class="newActionBtns workflowFrmBtns newActionSaveBtns" for="createTask" id="saveCreateTask" /></td></tr>';
+             tbl += '</table>';
+
+             //add to dom
+             $('#createTask_dataContainer').html(tbl).addClass('drawn');
+
+             //json obj for creating task, keys are ids of dropdown and 
+             //properties are options
+             var dropdown_obj  = {
+              
+              "ctAssignTo": {
+                 "Assing_typ_opt1": "Current user",
+                 "Assing_typ_opt2": "Current user's manager",
+                 "Assing_typ_opt3": "Terr owner",
+                 "Assing_typ_opt4": "Rec crtd by",
+                 "Assing_typ_opt5": "Rec last mod by",
+                 "Assing_typ_opt6": "Selected user",
+                },
+
+              "ctST": {
+                "15 min": "15.00 min",
+                "30 min": "30.00 min",
+                "45 min": "45.00 min",
+                "1 hr": "1 hr",
+              },
+
+               "ctAft": {
+                "Rec crtd date": "Rec crtd date",
+                "Rec last mod date": "Rec last mod date",
+                "Current user last login": "Current user last login",
+                "Rule Trigger date": "Rule Trigger date",
+              },
+
+             }
+
+             //loop through above object and fill the dropdowns
+             addOptionsToDropDown(dropdown_obj);
+
+             //make an ajax call and get dropdown values for type select
+             prepareOptionsForDrpDwnFromJson('http://192.168.11.11/atCRM/custom/JSON/smartSuggest/dropDownDataForView.json?entity=actvt_type', 'ctName');
+            
+             //make an ajax call and get dropdown values for status select
+             prepareOptionsForDrpDwnFromJson('http://192.168.11.11/atCRM/custom/JSON/smartSuggest/dropDownDataForView.json?entity=actvt_status', 'ctStatus');
+             
+      }
+
+      /* 
+          * common function for adding options list to dropdowns
+        */
+        function prepareOptionsForDrpDwnFromJson(url, id) {
+          
+             $.ajax(
+              {
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(typeObj) {
+                  //file tye type drop down 
+                  var keyVal, opt;
+                  $.each(typeObj["PickListItems"]["listData"], function(k,v) {
+                    keyVal = v['columnData'].split('~)');
+                    opt = $('<option></option>');
+                    opt.attr('value', keyVal[0]);
+                    opt.text(keyVal[1]);
+                    //add to drown down list
+                    $('#' + id).append(opt);
+                  });
+                },
+                error: function(resoponse) {
+                  alert('error  in = '+ url);
+                  console.log(resoponse);
+                },
+              }
+            );
+        }
+      
+      function show_round_robin_div() {
+         var tbl = '<table class="newActTbl">';
+             tbl += '<tr><td><p class="tableColName">Assignment in Column</p><select name="assignmentList" id="assignmentList"></select></td>';
+             tbl += '<td><p class="tableColName">Last assigned at </p><input type="text" id="rrLastAsgndAt" /><td><p class="tableColName">Last assigned to</p>';
+             tbl += '<input type="text" id="rrLastAsgndTo" /></td></tr>';
+             tbl += '<tr><td><p class="tableColName">Candidate SQL</p><textarea id="rrCandidateSql"></textarea></td><td><p class="tableColName">History CSV</p>';
+             tbl += '<textarea id="rrHistoryCsv"></textarea></td><td><p class="tableColName">Last assigned rec</p>';
+             tbl += '<textarea id="rrLastAssignedRec"></textarea></td></tr>';
+             tbl += '<tr ><td colspan="3"><input type="button" value="Close" class="newActionBtns workflowFrmBtns newActionCloseBtns" for="assignRoundRobin"  /><input type="button" value="Save" class="newActionBtns workflowFrmBtns newActionSaveBtns" for="assignRoundRobin" id="saveRRAction"/></td></tr>';
+             tbl += '</table>';
+
+             //add to dom
+             $('#assignRoundRobin_dataContainer').html(tbl).addClass('drawn');
+
+             //add assign to dropdown
+             var opt;
+            $.each(filtersJsonObj_glb['entityBaseColumnList'], function(k, v) {
+                opt = $('<option></option>');
+                opt.attr('value', v['columnName']).text(v['desc_name']);
+                
+                //add to select box
+                $('#assignmentList').append(opt);
+            });
+
+      }
+
+      //show round robin edit list
+      function edit_round_robin_action(rowId, colName) { 
+
+        //first check whether rr has drawn html elements
+        if(!$('#assignRoundRobin_dataContainer').hasClass('drawn'))
+           show_round_robin_div();
+
+        //show rr block now
+        $('.'+colName).css('display','block').addClass('fromEdit');   
+        $('#assignRoundRobin_dataContainer').slideDown('fast');
+      }
+
+      //show send sms edit list
+      function edit_send_sms_action(rowId, colName) { 
+
+        //first check whether rr has drawn html elements
+        if(!$('#sendSms_dataContainer').hasClass('drawn'))
+           show_send_sms_div();
+
+        //show rr block now
+        $('.'+colName).css('display','block').addClass('fromEdit');   
+        $('#sendSms_dataContainer').slideDown('fast');
+      }
+
+      //show send email edit list
+      function edit_send_email_action(rowId, colName) { 
+
+        //first check whether rr has drawn html elements
+        if(!$('#sendMail_dataContainer').hasClass('drawn'))
+           show_send_mail_div();
+
+        //show rr block now
+        $('.'+colName).css('display','block').addClass('fromEdit');   
+        $('#sendMail_dataContainer').slideDown('fast');
+      }
+
+      //show update task edit list
+      function edit_update_task_action(rowId, colName) { 
+
+        //first check whether rr has drawn html elements
+        if(!$('#newActUpdate_dataContainer').hasClass('drawn'))
+           show_update_div();
+
+        //show rr block now
+        $('.'+colName).css('display','block').addClass('fromEdit');   
+        $('#newActUpdate_dataContainer').slideDown('fast');
+      }
+
+      //show create task edit list
+      function edit_create_task_action(rowId, colName) { 
+
+        //first check whether rr has drawn html elements
+        if(!$('#createTask_dataContainer').hasClass('drawn'))
+           show_create_task_div();
+
+        //show rr block now
+        $('.'+colName).css('display','block').addClass('fromEdit');  
+        $('#createTask_dataContainer').slideDown('fast');
+      }
+
+      //this will hide the elements, which doesn't need to be shown while editing
+      function hide_other_opt_before_showing_edit_rule() {
+        //hide saved actions
+          $('.oldActionsContainer').slideUp('fast');
+
+           //draw inside content only if not drawn previosly
+          if(!$('.newActionsContainer').hasClass('drawn')) {     
+            drawNewActionControls();
+          }
+          //show new action container here
+          $('.newActionsContainer').slideDown('fast');
+
+          //hide other actions before showing rr col list
+        $('.openNewActList, .eachActCont, .newActionControlMore').css('display','none');
+      }
+
+      //this will draw new action controllers if not drawn earlier
+      function drawNewActionControls() {
+
+         if(!$('.newActionsContainer').hasClass('drawn')) {
+            var controls = {
+               'assignRoundRobin': 'Assign Round Robin',
+               'createTask': 'Create Task',
+               'sendMail': 'Send Mail',
+               'sendSms': 'Send SMS',
+               'newActUpdate': 'Update'
+            };
+
+            $.each(controls, function(k,v) {
+               var c = $('<div></div>');
+                   c.addClass('eachActCont '+ k);
+
+               //n=name
+               var n = $('<div></div>') ;
+                   n.addClass('newActionName').text(v);
+
+               //m=more
+               var m = $('<div></div>');
+                   m.addClass('newActionControlMore');
+                   m.attr('id', k);
+               
+               var fieldContainer = $('<div></div>');
+                   fieldContainer.attr('id', k + '_dataContainer').addClass('newActionFieldContainer');
+                   
+
+                 c.append(n).append(m).append(fieldContainer);
+
+
+
+                 //add to dom
+                 $('.newActionsContainer').append(c);
+            });
+
+            //add the class after drawn
+            $('.newActionsContainer').addClass('drawn');
+         }
+      }
+
+      //it reurns the dropdown menu
+      function createDropDown(e, opt) {
+         var opt;
+         $.each(opt, function(k, v) {
+            opt = $('<option></option');
+            opt.attr('value', k).text(v);
+            e.append(opt);
+         });
+
+         return e;
+      }
+
+      //this will create html element with attributes 
+      //ele = element and obj = attributes with values
+      //types of elements supported are input, anchor, textarea
+      function createElement(ele,obj) {
+             $.each(obj, function(k,v) {
+                ele.attr(k,v);
+             });
+         return ele;
+      }
+
+   </script>
+ </head>
+
+ <body> 
+ 	<div class='workflowContainer bosSizing'> 
+ 		<!-- title -->
+ 		<div class='workflowTitle'> 
+ 			<span class='workflowHeading1'> <h1> Workflow Rule </h1> </span>
+ 			<span class='workflowHelp'> Help </span>
+ 		</div>
+
+ 		<!-- rule -->
+ 		<div class='workflowRule'> 
+      <p class='workflowHeading2'> 
+        <span> Rule </span>
+      </p> 			
+ 			<div class='rulesContainer'> 
+ 			   <div class='ruleEditCont'> 
+	 				<span class='editruleDescp'> Set up the rule with a Name and triggering conditions. </span>
+	 				<span id='editRuleTxt'> Edit </span>
+ 			   </div>
+ 			   <div class='editRuleContainer'>
+               <table border='0' class='updateRulesTbl'>
+                   <tr>
+                     <td id='rnValue'>
+                      <p class='tableColName'> Rule Name </p>
+                     </td>
+                     <td id='rTriggerValue' >
+                        <p class='tableColName'> Rule Triggerd </p>
+                     </td>
+                     <td id='recordValue'>
+                        <p class='tableColName'> Record Is </p>
+                     </td>
+                   </tr>
+                   <tr>      
+                     <td id='descValue'>
+                        <p class='tableColName'> Description </p>
+                     </td>  
+                     <td id='triggerLink'> 
+                       <p class='tableColName'> Add Trigger </p>
+                     </td>  
+                     </tr>
+                     <tr> 
+                     <td colspan='3'> 
+                        <input type='submit' value='Close' id='stopUpdatingRules' class='rulesBtns' />
+                        <input type='submit' value='Update' id='updateRules' class='rulesBtns' />
+                     </td>
+                  </tr>
+                </table>
+            </div>
+ 			</div>
+ 		</div>
+
+ 		<!-- actions -->
+ 		<div class='workflowActions'>
+      <p class='workflowHeading2'> 
+   			<span class='actHdn'> Actions </span>
+        <input type='button' id='newActiondeactive' value='New Action' class='openNewActList'  />
+      </p>
+         <!-- old actions -->
+         <div class='oldActionsContainer'>
+            
+         </div>
+         <!-- new actions container -->
+         <div class='newActionsContainer'>
+            
+         </div>
+
+ 		</div>
+
+ 	</div>
+  <!-- picklist data is ploted here -->
+  <div id="commonPickListDiv"></div> 
+
+  <!-- place js just above the closing body tag for better performance -->
+   <script type="text/javascript" src="/atCRM/javascript/JSON/smartsuggestNew.js"></script>   
+   <script type="text/javascript" src="/atCRM/javascript/JSON/addEdit.js"></script>
+   <script type="text/javascript" src="/atCRM/javascript/JSON/pickList.js" ></script> 
+   <script type="text/javascript" src="/atCRM/javascript/JSON/utils.js"></script>
+   <script type="text/javascript" src="/atCRM/javascript/JSON/commonElementFunction.js"></script>
+   <script type="text/javascript" src="/atCRM/javascript/jquery/jquery-ui-1.8.21.custom.min.js"></script>
+   <script type="text/javascript" src="/atCRM/javascript/cjquery.js"></script>
+   <script type="text/javascript" src="/atCRM/javascript/JSON/dateFormat.js"></script>
+   <script type="text/javascript" src="/atCRM/javascript/JSON/date-time-validation.js"></script>
+   <script type="text/javascript" src="/atCRM/javascript/dateValidate.js"></script>
+ </body>
+
+ </html>
+

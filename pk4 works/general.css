@@ -1509,7 +1509,7 @@ span.cke_wrapper cke_ltr,table.cke_editor, td.cke_contents, span.cke_skin_kama, 
 /* for filters */
 .singleFilterCont {
 	display: inline; float: left;
-	width: 400px;
+	width: 100%;
 }
 .addNewCondForFilter, .removeCondForFilter {
 	width:35px;
@@ -1524,9 +1524,10 @@ span.cke_wrapper cke_ltr,table.cke_editor, td.cke_contents, span.cke_skin_kama, 
 
 
 .singleFilterCont table select, .singleFilterCont table input[type=text] {
-	width: 80px !important;
+	width: 110px !important;
+	margin-top: -3px;
 }
 .singleFilterCont table {
-	width: 370px; float: left;
+	width: 350px; float: left;
 }
 /* for filters ends here */

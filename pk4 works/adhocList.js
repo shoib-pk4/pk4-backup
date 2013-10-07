@@ -73,8 +73,9 @@ function handleCommonList(data) {
 		if (data.addl_options == "anyList") {
 			retrieveListData(data.addl_options,data.report_id);
 		}
-
+		
 	} else {
+		
 		document.getElementById(subMnuItmId+"-adList").style.display="block";
 		if(reportId!=document.getElementById(subMnuItmId+'-reportId') || document.getElementById(subMnuItmId+'-reportField') != field || document.getElementById(subMnuItmId+'-reportUserEnt') != userEnt) {
 			retrieveListData();
@@ -687,7 +688,7 @@ function listPageMenuItems(data) {
 	//entity id
 	var entityListId = (data.EntityList_Id !== undefined)?data.EntityList_Id:0;
 
-	topMenuDiv.innerHTML+='<li style="width:400px;"><div class="singleFilterCont" id="singleFilterCont"><table></table><input type="button" value="go" id="singleFilterSub" style="float:left;" entityListId="'+entityListId+'" /></div></li><li class="listPageButtons" id="filterTab" style="padding:4px 4px 4px 7px;" onclick="showFilterPopUp('+entityListId+')" title="filter">More</li><li style="width:140px;"><input type="text" class="searchBox" id="'+subMnuItmId+'searchTxt"  name="'+subMnuItmId+'searchTxt" style="margin: 0px;width:120px;" value="'+srchBoxDispTxt+'" onfocus="if(this.value==\''+srchBoxDispTxt+'\')this.value=\'\'" onblur="if(this.value==\'\'){this.value=\''+srchBoxDispTxt+'\'}" onkeypress="{var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==13&&this.value!=\'\')retrieveListData(\'search\',this.value);}"><img  id="'+subMnuItmId+'searchImg" src="/atCRM/images/JSON/close_gray.png" style="z-index: 1; position: absolute; margin-left: -12px;padding: 7px 0 0 0;cursor:pointer;visibility:hidden" onclick="javascript:retrieveListData(\'search\',\'\',\''+srchBoxDispTxt+'\');" title="Clear Search"></li>';
+	topMenuDiv.innerHTML+='<li style="width:390px;" class="filtersLi"><div class="singleFilterCont" id="singleFilterCont"><table for="'+subMnuItmId+'topMenuDiv"></table><input type="button" value=" Go " for="'+subMnuItmId+'topMenuDiv" id="singleFilterSub" style="float:right;padding:3px 3px 3px 3px;" class="listPageButtons" entityListId="'+entityListId+'" /></div></li><li class="listPageButtons" id="filterTab" style="padding:4px 4px 4px 7px;" onclick="showFilterPopUp('+entityListId+')" title="filter">More</li><li style="width:140px;"><input type="text" class="searchBox" id="'+subMnuItmId+'searchTxt"  name="'+subMnuItmId+'searchTxt" style="margin: 0px;width:120px;" value="'+srchBoxDispTxt+'" onfocus="if(this.value==\''+srchBoxDispTxt+'\')this.value=\'\'" onblur="if(this.value==\'\'){this.value=\''+srchBoxDispTxt+'\'}" onkeypress="{var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==13&&this.value!=\'\')retrieveListData(\'search\',this.value);}"><img  id="'+subMnuItmId+'searchImg" src="/atCRM/images/JSON/close_gray.png" style="z-index: 1; position: absolute; margin-left: -12px;padding: 7px 0 0 0;cursor:pointer;visibility:hidden" onclick="javascript:retrieveListData(\'search\',\'\',\''+srchBoxDispTxt+'\');" title="Clear Search"></li>';
 
 	//Refresh button
 	topMenuDiv.innerHTML+="<li class=\"listPageButtons refreshButton\" onclick='retrieveListData(\"reload\");' title='Reload'>&nbsp;</li>";
@@ -1401,21 +1402,6 @@ function showFilterPopUp(entityId) {
 			position: 'center'
 	});
 
-	//hit the url and get columns for entity id
-	// var udm = '/atCRM/custom/metadata/eC.html?e='+entityId;
-	// //get  list of columns for particular entity
-	// $.ajax({
-	// 	url: udm,
-	// 	dataType: 'JSON',
-	// 	async: false,
-	// 	success: function(data) {			
-	// 		drawFilterTableOpt(data);
-	// 	},
-	// 	error: function(response) {
-	// 		console.log('Error while getgin entity columns..');
-	// 		console.log(response);
-	// 	},
-	// });
 	drawFilterTableOpt();
 	
 }
@@ -1424,6 +1410,7 @@ function showFilterPopUp(entityId) {
 	* this will draw filter conditions..
 */
 var tblFilterIndx=0, entityColumns, filterRowStatus;
+
 function drawFilterTableOpt() {	
 	filterRowStatus=false;
 	drawFilterRow(5, $('#filterTbl'), false);
@@ -1434,6 +1421,7 @@ function drawFilterTableOpt() {
 
 //draw filter row
 function drawFilterRow(cnt, toTbl, singleSelect) {
+	console.log('filter index-->' + tblFilterIndx);
 	var tr, col, opt, sel, n, inp, imgDiv;
 	for(var i=1; i<=cnt; i++) {
 		tr = $('<tr id="filterTblRow_'+tblFilterIndx+'"></tr>');
@@ -1451,7 +1439,12 @@ function drawFilterRow(cnt, toTbl, singleSelect) {
 
 		//first column of row
 		col = $('<td class="toPostCol"></td>');
-		sel = $('<select class="filterEntityCols toPostVal" id="filterCol_'+tblFilterIndx+'"></select>');
+		if(singleSelect == false)
+			var selectClass = 'filterEntityColsPopUp';
+		else
+			var selectClass = 'filterEntityCols';
+
+		sel = $('<select class="'+selectClass+' toPostVal" id="filterCol_'+tblFilterIndx+'" ></select>');
 		sel.append('<option value="" type="">---</option>');
 		$.each(entityColumns,function(k,v) {
 			n = v['name'];
@@ -1496,13 +1489,13 @@ function drawFilterRow(cnt, toTbl, singleSelect) {
 
 		filterRowStatus = true; //means atleast one rows exists
 		tblFilterIndx++;
+		console.log('filter index last-->' + tblFilterIndx);
 	}
 }
 
 //this will shows the filter columns for single select
 function showColumnsForSingleSelect () {
 
-	console.log('fetchin entity cols..');
 	//hit the url and get columns for entity id
 	var udm = '/atCRM/custom/metadata/eC.html?e='+$('#singleFilterSub').attr('entityListId');
 	console.log(udm);
@@ -1514,7 +1507,9 @@ function showColumnsForSingleSelect () {
 		success: function(data) {	
 			console.log(data);		
 			entityColumns = data['columns']; //colsForEntity is global var
-			drawFilterRow(1, $('#singleFilterCont table'), true);			
+			var dest = $('#'+entityDiv+ ' #singleFilterCont table');
+			if(dest.children().length == 0)			
+				drawFilterRow(1, dest, true);			
 		},
 		error: function(response) {
 			console.log('Error while getgin entity columns..');
@@ -1532,44 +1527,39 @@ var rulesTriggerMappings = {
 			"Number": "number",
 			"Date": "date",
 			"DateTime": "date",
-			"nu": "is null",
-			"nn": "is not null"
 		},
 		"colProperties": {
-           "number": {
-                "eq": "Equal",
-                "ne": "Not Equal",
-                "lt": "Less Then",
-                "gt": "Greate Then",
+            "number": {
+                "eq": "equal to",
+                "ne": "not equal to",
+                "lt": "less than",
+                "gt": "greater than",
 				"nu": "is null",
 				"nn": "is not null"
-           },
-           "numberPk": {
-                "eq": "Equal",
-                "ne": "Not Equal",
-				"nu": "is null",
-				"nn": "is not null"
-           },
-           "date": {
-               "eq": "Equal",
-               "ne": "Not Equal" ,
-                "lt": "Less Then",
-                "gt": "Greate Then",
-				"nu": "is null",
-				"nn": "is not null"
-           },
-           "text": {
-                "eq": "Equal",
-                "ne": "Not Equal",
-                "contains": "Contains",
-                "does not contains": "Does Not Contains",
-                "starts with": "Starts With",
-                "does not starts with": "Does Not Starts With",
-                "ends with": "Ends With",
-                "does not ends with": "Does Not Ends With",
-				"nu": "is null",
-				"nn": "is not null"
-           }
+		       },
+		       "numberpk": {
+		       "eq": "equal to",
+		       "ne": "not equal to",
+			   "nu": "is null",
+			   "nn": "is not null"
+		       },
+		       "date": {
+		       "eq": "equal to",
+		       "ne": "not equal to" ,
+		       "lt": "less than",
+		       "gt": "greater than",
+			   "nu": "is null",
+			   "nn": "is not null"
+		       },
+		       "text": {
+		       "eq": "equal to",
+		       "ne": "not equal to",
+		       "ct": "contains",
+		       "sw": "starts with",
+		       "ew": "ends with",
+			   "nu": "is null",
+			   "nn": "is not null"
+		       }
        }
    };
 
@@ -1589,7 +1579,7 @@ var rulesTriggerMappings = {
  	});
 
  	//show specific operator
- 	$('body').on('change', '.filterEntityCols', function() {
+ 	$('body').on('change', '.filterEntityCols', function() { 		
  		var t = $(this);
  		var type = $('option:selected', t).attr('type');
  		var id   = t.attr('id').split('_').pop();
@@ -1597,7 +1587,7 @@ var rulesTriggerMappings = {
  		//get mapping key name...
  		var mapKey = rulesTriggerMappings['colMapName'][type];
  		var properties = rulesTriggerMappings['colProperties'][mapKey];
- 		var opt, sel=$('#filterOpr_'+id);
+ 		var opt, sel=$('#'+entityDiv+ ' #filterOpr_'+id);
  		sel.children().remove();
  		sel.append('<option value="" type="">---</option>')
  		$.each(properties,function(k, v) {
@@ -1605,7 +1595,7 @@ var rulesTriggerMappings = {
  			sel.append(opt);
  		});
 
- 		var td = $('#filterEntDate_'+id);
+ 		var td = $('#'+entityDiv+ ' #filterEntDate_'+id);
  		if(mapKey == 'date') {
  			if(td.children('img').length == 0) {
 	 			var img = $('<img src="/atCRM/images/calendar.gif" id="filterCalendar_'+id+'" />');
@@ -1623,17 +1613,75 @@ var rulesTriggerMappings = {
 	                  this.hide();
 	                }
 	            });
+	            $('#'+entityDiv+ ' .filtersLi').css('width', '420px');
  			} else { 			
- 				img = td.children('img').css('display','block');	
- 				img.css('visibility', 'visible');
- 				$('#filterEntTxt_'+id).val(img.attr('alt'));
+ 				td.css('display','block');
+ 				img = td.children('img');	
+ 				$('#'+entityDiv+ ' .filtersLi').css('width', '420px');
+ 				$('#'+entityDiv+ ' #filterEntTxt_'+id).val(img.attr('alt'));
  			}
  		} else {
  			if(td.children('img').length > 0) {
- 				var txtFld = $('#filterEntTxt_'+id);
- 				td.children('img').css('visibility', 'hidden').attr('alt', txtFld.val());
+ 				var txtFld = $('#'+entityDiv+ ' #filterEntTxt_'+id);
+ 				td.children('img').attr('alt', txtFld.val());
  				td.css('display','none');
  				txtFld.val('');
+ 				$('#'+entityDiv+ ' .filtersLi').css('width', '390px');
+ 			}
+ 		}
+ 	});
+
+
+	//show specific operator
+ 	$('body').on('change', '.filterEntityColsPopUp', function() { 	
+ 		console.log('pop up..');
+ 		var t = $(this);
+ 		var type = $('option:selected', t).attr('type');
+ 		var id   = t.attr('id').split('_').pop();
+ 			
+ 		//get mapping key name...
+ 		var mapKey = rulesTriggerMappings['colMapName'][type];
+ 		var properties = rulesTriggerMappings['colProperties'][mapKey];
+ 		var opt, sel=$('#commonPopupDiv #filterOpr_'+id);
+ 		sel.children().remove();
+ 		sel.append('<option value="" type="">---</option>')
+ 		$.each(properties,function(k, v) {
+ 			opt = '<option value="'+k+'">'+v+'</option>';
+ 			sel.append(opt);
+ 		});
+
+ 		var td = $('#commonPopupDiv #filterEntDate_'+id);
+ 		if(mapKey == 'date') {
+ 			if(td.children('img').length == 0) {
+	 			var img = $('<img src="/atCRM/images/calendar.gif" id="filterCalendar_'+id+'" />');
+	 			td.html(img).css('display','block');
+	 			new Calendar({
+	                inputField: 'filterEntTxt_'+id,
+	                dateFormat: "%d/%m/%Y", 
+	                trigger: 'filterCalendar_'+id,
+	                bottomBar: true,
+	                fdow:0,
+	                min: 19000101,
+	                max: 29991231,
+	                align: "BL",
+	                onSelect: function() {
+	                  this.hide();
+	                }
+	            });
+	            $('#commonPopupDiv .filtersLi').css('width', '420px');
+ 			} else { 			
+ 				td.css('display','block');
+ 				img = td.children('img');	
+ 				$('#commonPopupDiv .filtersLi').css('width', '420px');
+ 				$('#commonPopupDiv #filterEntTxt_'+id).val(img.attr('alt'));
+ 			}
+ 		} else {
+ 			if(td.children('img').length > 0) {
+ 				var txtFld = $('#commonPopupDiv #filterEntTxt_'+id);
+ 				td.children('img').attr('alt', txtFld.val());
+ 				td.css('display','none');
+ 				txtFld.val('');
+ 				$('#commonPopupDiv  .filtersLi').css('width', '390px');
  			}
  		}
  	});
@@ -1642,7 +1690,7 @@ var rulesTriggerMappings = {
 	$('body').on('click', '#filterTblSubmit', function() {
 		//prepare url data
 		var urlData = '', rowData, flag,val;
-		$('#filterTblForm #filterTbl tr').each(function() {
+		$('#commonPopupDiv #filterTblForm #filterTbl tr').each(function() {
 			rowData = '';
 			flag=true;
 			$(this).children('td.toPostCol').each(function() {
@@ -1668,7 +1716,7 @@ var rulesTriggerMappings = {
 	$('body').on('click', '#singleFilterSub', function() {
 		//prepare url data
 		var urlData = '', rowData, flag,val;
-		$('#singleFilterCont table tr').each(function() {
+		$('#'+entityDiv+' #singleFilterCont table tr').each(function() {
 			rowData = '';
 			flag=true;
 			$(this).children('td.toPostCol').each(function() {

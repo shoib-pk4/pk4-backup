@@ -536,7 +536,6 @@
 	function setUpPageParameters(uri,objId,fromMnu,subItmId,reloadFlag,listPopup,dropIndex,isCancel,recId)
 	{
 		console.log('set up page paramaters..');
-		
 
 	    L_frm_lz=false;
 	    try{

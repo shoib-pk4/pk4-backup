@@ -725,7 +725,7 @@
 			      //document.getElementById("dyna_html").innerHTML="";
 			      document.getElementById('htmlIframe').src=uri;
 			      document.getElementById('htmlIframe').style.display='block';
-			      console.log(uri);
+			      
 			      //alert('adding to existing iframe');
 			    }
 			else
@@ -965,11 +965,6 @@
 		{	
 			//entity list id, used for filter for list types
 			entityListId = 0;
-			console.log(typeof data);
-			console.log(data.length);
-			console.log(data);
-			console.log(data.indexOf('EntityList_Id'));
-			console.log(data.indexOf('EntityList_Id')!== -1);
 			if(data.indexOf('EntityList_Id') !== -1) {
 				var jsonObj = JSON.parse(data);
 				entityListId = (jsonObj.EntityList_Id !== undefined)?jsonObj.EntityList_Id:0;

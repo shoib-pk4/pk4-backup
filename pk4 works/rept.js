@@ -119,6 +119,8 @@ function exec_rept (doc, into_div) {
 		
 		if($(this).parent().hasClass('ui-state-active'))
 			$('#showParams, #dtRefreshedAt').css('visibility', 'hidden');
+
+		$('#slideUpDwnCont').slideUp(); //slide up if params body is open
 		$('#exportDataTbl').attr('id', 'exportPvt'); //changing the ids for pvtTable
 		$('#reptMoreTblOptCont, #exportPvt').css('visibility', 'visible');			
 		$('#reptDtMoreSelc .DTTT_container').css('display', 'none'); //hide copy etc btns of data table
@@ -143,8 +145,9 @@ function exec_rept (doc, into_div) {
 	document.getElementById('tabChartBtn').addEventListener('click', function() {
 		if($(this).parent().hasClass('ui-state-active'))
 			$('#showParams, #dtRefreshedAt, .expBtn, #reptMoreTblOptCont').css('visibility', 'hidden');
+
 		$('#reptDtMoreSelc .DTTT_container').css('display', 'none'); //hide copy etc btns of data table
-		
+		$('#slideUpDwnCont').slideUp(); //slide up if params body is open
 		setTimeout(function() {
 			$('#reptChartInstr').css('display', 'none');
 			$('#reptChartLoading').css('display', 'block');
@@ -168,6 +171,7 @@ function exec_rept (doc, into_div) {
 		if($(this).parent().hasClass('ui-state-active'))
 			$('#showParams, #dtRefreshedAt, .expBtn, #reptMoreTblOptCont').css('visibility', 'hidden');
 			$('#reptDtMoreSelc .DTTT_container').css('display', 'none'); //hide copy etc btns of data table
+			$('#slideUpDwnCont').slideUp(); //slide up if params body is open
 	}, false);
 
 

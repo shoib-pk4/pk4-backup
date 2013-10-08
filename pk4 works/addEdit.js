@@ -3638,6 +3638,7 @@ $(document).ready(function() {
 	$('body').on('blur', '.addEditMonth', function() {
 		var m = $(this).val();
 		if(isNaN(m)) { //is string
+			m  = m.toLowerCase();
 			if(m in monthObj) {
 				m = monthObj[m];
 			} else {
@@ -3705,6 +3706,7 @@ $(document).ready(function() {
 		var mObj = $(this).parent().children('.addEditMonth');
 		var m = mObj.val();
 		if(isNaN(m)) { //is string
+			m  = m.toLowerCase();
 			if(m in monthObj) {
 				m = monthObj[m];
 			} 

@@ -291,8 +291,12 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 	}
 	document.getElementById(subMnuItmId+'-reportUrl').value=url2call;
 
-	if(filterParm !== undefined)
+	if(filterParm !== undefined) {
 		 url2call += filterParm;
+	} else {
+		//clear the filters
+		$('#'+entityDiv+' .toPostVal').val('');
+	}	 
 
 	xhr_request = $.ajax({
 		type: "GET",
@@ -685,10 +689,11 @@ function listPageMenuItems(data) {
 
 	//Text box for search	
 	var srchBoxDispTxt='Search for '+data.EntityName;
-	//entity id
-	var entityListId = (data.EntityList_Id !== undefined)?data.EntityList_Id:0;
+	
+	// //entity list id
+	// var entityListId = (data.EntityList_Id !== undefined)?data.EntityList_Id:0;
 
-	topMenuDiv.innerHTML+='<li style="width:390px;" class="filtersLi"><div class="singleFilterCont" id="singleFilterCont"><table for="'+subMnuItmId+'topMenuDiv"></table><input type="button" value=" Go " for="'+subMnuItmId+'topMenuDiv" id="singleFilterSub" style="float:right;padding:3px 3px 3px 3px;" class="listPageButtons" entityListId="'+entityListId+'" /></div></li><li class="listPageButtons" id="filterTab" style="padding:4px 4px 4px 7px;" onclick="showFilterPopUp('+entityListId+')" title="filter">More</li><li style="width:140px;"><input type="text" class="searchBox" id="'+subMnuItmId+'searchTxt"  name="'+subMnuItmId+'searchTxt" style="margin: 0px;width:120px;" value="'+srchBoxDispTxt+'" onfocus="if(this.value==\''+srchBoxDispTxt+'\')this.value=\'\'" onblur="if(this.value==\'\'){this.value=\''+srchBoxDispTxt+'\'}" onkeypress="{var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==13&&this.value!=\'\')retrieveListData(\'search\',this.value);}"><img  id="'+subMnuItmId+'searchImg" src="/atCRM/images/JSON/close_gray.png" style="z-index: 1; position: absolute; margin-left: -12px;padding: 7px 0 0 0;cursor:pointer;visibility:hidden" onclick="javascript:retrieveListData(\'search\',\'\',\''+srchBoxDispTxt+'\');" title="Clear Search"></li>';
+	topMenuDiv.innerHTML+='<li style="width:390px;" class="filtersLi"><div class="singleFilterCont" id="singleFilterCont"><table for="'+subMnuItmId+'topMenuDiv"></table><input type="button" value="" title="Go Quick-filte" for="'+subMnuItmId+'topMenuDiv" id="singleFilterSub" style="float:right;padding:3px 3px 3px 3px;" class="listPageButtons" entityListId="'+entityListId+'" /></div></li><li class="listPageButtons" id="filterTab"  onclick="showFilterPopUp('+entityListId+')" title="Add more Quick-filter conditions">More</li><li style="width:140px;"><input type="text" class="searchBox" id="'+subMnuItmId+'searchTxt"  name="'+subMnuItmId+'searchTxt" style="margin: 0px;width:120px;" value="'+srchBoxDispTxt+'" onfocus="if(this.value==\''+srchBoxDispTxt+'\')this.value=\'\'" onblur="if(this.value==\'\'){this.value=\''+srchBoxDispTxt+'\'}" onkeypress="{var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==13&&this.value!=\'\')retrieveListData(\'search\',this.value);}"><img  id="'+subMnuItmId+'searchImg" src="/atCRM/images/JSON/close_gray.png" style="z-index: 1; position: absolute; margin-left: -12px;padding: 7px 0 0 0;cursor:pointer;visibility:hidden" onclick="javascript:retrieveListData(\'search\',\'\',\''+srchBoxDispTxt+'\');" title="Clear Search"></li>';
 
 	//Refresh button
 	topMenuDiv.innerHTML+="<li class=\"listPageButtons refreshButton\" onclick='retrieveListData(\"reload\");' title='Reload'>&nbsp;</li>";
@@ -1387,7 +1392,7 @@ function buildEncodedUrl(url) {
 
 function showFilterPopUp(entityId) {	
 	//prepare html contents first
-	var container = "<div><div id='filterShowLoading'><center><img src='/atCRM/images/JSON/loading.gif'><p>Loading filters..</p></center></div><div id='filterContainer'><form id='filterTblForm'><table id='filterTbl'></table><input type='button' value='Go' id='filterTblSubmit' style='float:right;' /></form></div></div>";
+	var container = "<div><div id='filterShowLoading'><center><img src='/atCRM/images/JSON/loading.gif'><p>Loading filters..</p></center></div><div id='filterContainer'><form id='filterTblForm'><table id='filterTbl'></table></form><input type='button' value='Go' id='filterTblSubmit' style='float:right;width:40px;' /><input type='button' value='Clear' id='filterTblClear' style='float:right;margin-right:4px;' /></div></div>";
 	$('#commonPopupDiv').html(container);
 
 	//show pop up
@@ -1421,7 +1426,7 @@ function drawFilterTableOpt() {
 
 //draw filter row
 function drawFilterRow(cnt, toTbl, singleSelect) {
-	console.log('filter index-->' + tblFilterIndx);
+	
 	var tr, col, opt, sel, n, inp, imgDiv;
 	for(var i=1; i<=cnt; i++) {
 		tr = $('<tr id="filterTblRow_'+tblFilterIndx+'"></tr>');
@@ -1489,7 +1494,7 @@ function drawFilterRow(cnt, toTbl, singleSelect) {
 
 		filterRowStatus = true; //means atleast one rows exists
 		tblFilterIndx++;
-		console.log('filter index last-->' + tblFilterIndx);
+		
 	}
 }
 
@@ -1497,15 +1502,14 @@ function drawFilterRow(cnt, toTbl, singleSelect) {
 function showColumnsForSingleSelect () {
 
 	//hit the url and get columns for entity id
-	var udm = '/atCRM/custom/metadata/eC.html?e='+$('#singleFilterSub').attr('entityListId');
-	console.log(udm);
+	var udm = '/atCRM/custom/metadata/eC.html?e='+$('#'+entityDiv+ ' #singleFilterSub').attr('entityListId');
+	
 	//get  list of columns for particular entity
 	$.ajax({
 		url: udm,
 		dataType: 'JSON',
 		// async: false,
 		success: function(data) {	
-			console.log(data);		
 			entityColumns = data['columns']; //colsForEntity is global var
 			var dest = $('#'+entityDiv+ ' #singleFilterCont table');
 			if(dest.children().length == 0)			
@@ -1634,7 +1638,7 @@ var rulesTriggerMappings = {
 
 	//show specific operator
  	$('body').on('change', '.filterEntityColsPopUp', function() { 	
- 		console.log('pop up..');
+ 		
  		var t = $(this);
  		var type = $('option:selected', t).attr('type');
  		var id   = t.attr('id').split('_').pop();
@@ -1710,6 +1714,14 @@ var rulesTriggerMappings = {
 		} else {
 			alert('No "and" condtions selected. Please atleast 1 complete row.');
 		}		
+	});
+
+	$('body').on('click', '#filterTblClear', function() { 
+		$('#commonPopupDiv #filterTblForm #filterTbl tr').each(function() {
+			$(this).children('td.toPostCol').each(function() { 
+				$(this).children('.toPostVal').val(' ');
+			});
+		});
 	});
 
 	//submit the filters data

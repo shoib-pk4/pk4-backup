@@ -962,7 +962,19 @@
 		url: mainUrl,
 		async:callAsync,
 		success: function (data)
-		{
+		{	
+			//entity list id, used for filter for list types
+			entityListId = 0;
+			console.log(typeof data);
+			console.log(data.length);
+			console.log(data);
+			console.log(data.indexOf('EntityList_Id'));
+			console.log(data.indexOf('EntityList_Id')!== -1);
+			if(data.indexOf('EntityList_Id') !== -1) {
+				var jsonObj = JSON.parse(data);
+				entityListId = (jsonObj.EntityList_Id !== undefined)?jsonObj.EntityList_Id:0;
+			}
+
 			xhr_request="";
 			var loginPage=data.indexOf("<title>Impel login page</title>");
 			var errorPage=data.indexOf("<title>Something wrong!</title>");
@@ -1030,7 +1042,7 @@
 								handleJsonList(doc,null,null,null,objId,add2History);
 							break;
 				case "adhocList":
-								handleCommonList(doc);
+								handleCommonList(doc);									
 								showColumnsForSingleSelect();
 							break;
 				case "Add/Edit":

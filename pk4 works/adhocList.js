@@ -330,6 +330,12 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 				listPagination(doc.PagingAmount,doc.PageNumber,doc.RowData.length,action,doc.AddUrl,doc.TableName,url2call);	
 				closeLoadingDiv();
 			}
+		},
+		error: function(response) {
+			if(filterParm !== undefined) { //#shoib
+				alert('Abort filters did not apply.');
+				console.log(response);
+			}
 		}
 	});	
 }
@@ -693,7 +699,7 @@ function listPageMenuItems(data) {
 	// //entity list id
 	// var entityListId = (data.EntityList_Id !== undefined)?data.EntityList_Id:0;
 
-	topMenuDiv.innerHTML+='<li style="width:390px;" class="filtersLi"><div class="singleFilterCont" id="singleFilterCont"><table for="'+subMnuItmId+'topMenuDiv"></table><input type="button" value="" title="Go Quick-filte" for="'+subMnuItmId+'topMenuDiv" id="singleFilterSub" style="float:right;padding:3px 3px 3px 3px;" class="listPageButtons" entityListId="'+entityListId+'" /></div></li><li class="listPageButtons" id="filterTab"  onclick="showFilterPopUp('+entityListId+')" title="Add more Quick-filter conditions">More</li><li style="width:140px;"><input type="text" class="searchBox" id="'+subMnuItmId+'searchTxt"  name="'+subMnuItmId+'searchTxt" style="margin: 0px;width:120px;" value="'+srchBoxDispTxt+'" onfocus="if(this.value==\''+srchBoxDispTxt+'\')this.value=\'\'" onblur="if(this.value==\'\'){this.value=\''+srchBoxDispTxt+'\'}" onkeypress="{var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==13&&this.value!=\'\')retrieveListData(\'search\',this.value);}"><img  id="'+subMnuItmId+'searchImg" src="/atCRM/images/JSON/close_gray.png" style="z-index: 1; position: absolute; margin-left: -12px;padding: 7px 0 0 0;cursor:pointer;visibility:hidden" onclick="javascript:retrieveListData(\'search\',\'\',\''+srchBoxDispTxt+'\');" title="Clear Search"></li>';
+	topMenuDiv.innerHTML+='<li style="width:390px;" class="filtersLi"><div class="singleFilterCont" id="singleFilterCont"><table for="'+subMnuItmId+'topMenuDiv"></table><input type="button" value="" title="Go Quick-filte" for="'+subMnuItmId+'topMenuDiv" id="singleFilterSub" style="float:right;padding:3px 3px 3px 3px;" class="listPageButtons" entityListId="'+entityListId+'" /></div></li><li class="listPageButtons addEditMorePopUpFilters" id="filterTab"  onclick="showFilterPopUp('+entityListId+')" title="Add more Quick-filter conditions">More<div class="addEditMorePopUpFiltersState" style="display:none;"></div></li><li style="width:140px;"><input type="text" class="searchBox" id="'+subMnuItmId+'searchTxt"  name="'+subMnuItmId+'searchTxt" style="margin: 0px;width:120px;" value="'+srchBoxDispTxt+'" onfocus="if(this.value==\''+srchBoxDispTxt+'\')this.value=\'\'" onblur="if(this.value==\'\'){this.value=\''+srchBoxDispTxt+'\'}" onkeypress="{var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==13&&this.value!=\'\')retrieveListData(\'search\',this.value);}"><img  id="'+subMnuItmId+'searchImg" src="/atCRM/images/JSON/close_gray.png" style="z-index: 1; position: absolute; margin-left: -12px;padding: 7px 0 0 0;cursor:pointer;visibility:hidden" onclick="javascript:retrieveListData(\'search\',\'\',\''+srchBoxDispTxt+'\');" title="Clear Search"></li>';
 
 	//Refresh button
 	topMenuDiv.innerHTML+="<li class=\"listPageButtons refreshButton\" onclick='retrieveListData(\"reload\");' title='Reload'>&nbsp;</li>";
@@ -1407,7 +1413,43 @@ function showFilterPopUp(entityId) {
 			position: 'center'
 	});
 
-	drawFilterTableOpt();
+	if(!$('#'+entityDiv+' .addEditMorePopUpFilters').hasClass('addEditMoreFilterApplied')) {
+		drawFilterTableOpt();
+	} else {
+		var select, img, id;
+		// $('#commonPopupDiv #filterTblForm #filterTbl').append($('#'+entityDiv+' .addEditMorePopUpFiltersState').children().clone(true));
+		
+		$('#'+entityDiv+' .addEditMorePopUpFiltersState').children().appendTo('#commonPopupDiv #filterTblForm #filterTbl');
+
+			$('#commonPopupDiv #filterTblForm #filterTbl tr td').each(function() {
+				select = $(this).children('select');
+				select.each(function() { 
+					select.val($(this).attr('selct'));
+				});
+				img = $(this).children('img');
+				//attaching calendar event again because, after cloning and appending, calendar is getting disabled
+				img.each(function() {
+					id= $(this).attr('id').split('_').pop();
+						new Calendar({
+			                inputField: 'filterEntTxt_'+id,
+			                dateFormat: "%d/%m/%Y", 
+			                trigger: 'filterCalendar_'+id,
+			                bottomBar: true,
+			                fdow:0,
+			                min: 19000101,
+			                max: 29991231,
+			                align: "BL",
+			                onSelect: function() {
+			                  this.hide();
+			                  //remove filter if applied..
+		 					  $('#'+entityDiv+ ' #removeAddEditFilter').attr('id', 'singleFilterSub');
+			                }
+		            });
+				});
+			});
+		//hide loading 
+		$('#filterShowLoading').remove();
+	}
 	
 }
 
@@ -1416,8 +1458,7 @@ function showFilterPopUp(entityId) {
 */
 var tblFilterIndx=0, entityColumns, filterRowStatus;
 
-function drawFilterTableOpt() {	
-	filterRowStatus=false;
+function drawFilterTableOpt() {		
 	drawFilterRow(5, $('#filterTbl'), false);
 
 	//hide loading 
@@ -1427,29 +1468,36 @@ function drawFilterTableOpt() {
 //draw filter row
 function drawFilterRow(cnt, toTbl, singleSelect) {
 	
-	var tr, col, opt, sel, n, inp, imgDiv;
+	var tr, col, opt, sel, n, inp, imgDiv, colSel, oprSel, textBoxClass, filterRowStatus=false;
 	for(var i=1; i<=cnt; i++) {
 		tr = $('<tr id="filterTblRow_'+tblFilterIndx+'"></tr>');
 
-		if(singleSelect === false) {
+		if(singleSelect == false) {
+			console.log(1);
 			//this shows and condition text for each row
 			col = $('<td style="width:40px;"></td>');		
-			if(filterRowStatus == true)
+			if(filterRowStatus == true) {
 				col.text('and');
-			else 
+			}
+			else {
 				col.text('');
+				filterRowStatus = true; 
+			}
 			
 			tr.append(col);
+
+			 colSel = 'filterEntityColsPopUp';
+			 oprSel = 'filterOprColsPopUp';
+			 textBoxClass = '';
+		} else {
+			 colSel = 'filterEntityCols';
+			 oprSel = 'filterEntityOpr';
+			 textBoxClass = 'addEditFilterTextBox';
 		}
 
-		//first column of row
-		col = $('<td class="toPostCol"></td>');
-		if(singleSelect == false)
-			var selectClass = 'filterEntityColsPopUp';
-		else
-			var selectClass = 'filterEntityCols';
 
-		sel = $('<select class="'+selectClass+' toPostVal" id="filterCol_'+tblFilterIndx+'" ></select>');
+		col = $('<td class="toPostCol"></td>');
+		sel = $('<select class="'+colSel+' toPostVal" id="filterCol_'+tblFilterIndx+'" ></select>');
 		sel.append('<option value="" type="">---</option>');
 		$.each(entityColumns,function(k,v) {
 			n = v['name'];
@@ -1461,19 +1509,19 @@ function drawFilterRow(cnt, toTbl, singleSelect) {
 
 		//second column of row
 		col = $('<td class="toPostCol"></td>');
-		sel = $('<select class="filterEntityOpr toPostVal" id="filterOpr_'+tblFilterIndx+'"></select>');
+		sel = $('<select class="'+oprSel+' toPostVal" id="filterOpr_'+tblFilterIndx+'"></select>');
 		sel.append('<option value="" type="">---</option>');
 		col.append(sel);
 		tr.append(col);
 
 		//third  column
-		col = $('<td class="toPostCol"></td>');
-		inp = "<input class='toPostVal' type='text' value='' name='' id='filterEntTxt_"+tblFilterIndx+"' />";
+		col = $('<td class="toPostCol"></td>');		
+		inp = "<input class='toPostVal "+textBoxClass+"' type='text' value='' name='' id='filterEntTxt_"+tblFilterIndx+"' />";
 		col.append(inp);
 		tr.append(col);
 
 		//fourth column, contains date list
-		col = $('<td style="width:25px;display:none;" id="filterEntDate_'+tblFilterIndx+'"></td>');
+		col = $('<td style="width:25px;display:none;" id="filterDateCol_'+tblFilterIndx+'" ></td>');
 		tr.append(col);
 
 		if(singleSelect === false) {
@@ -1491,8 +1539,7 @@ function drawFilterRow(cnt, toTbl, singleSelect) {
 
 		//now add the row to table
 		toTbl.append(tr);
-
-		filterRowStatus = true; //means atleast one rows exists
+		
 		tblFilterIndx++;
 		
 	}
@@ -1527,8 +1574,12 @@ function showColumnsForSingleSelect () {
 var rulesTriggerMappings = {
 		"colMapName": {
 			"Text": "text",
+			"Textbox": "text",
+			"Multi": "text",
+			"Combo": "text",
 			"Decimal": "number",
 			"Number": "number",
+			"Integer": "number",
 			"Date": "date",
 			"DateTime": "date",
 		},
@@ -1583,13 +1634,23 @@ var rulesTriggerMappings = {
  	});
 
  	//show specific operator
- 	$('body').on('change', '.filterEntityCols', function() { 		
+ 	$('body').on('change', '.filterEntityCols', function() { 	
+
+ 		//remove filter if applied..
+ 		$('#'+entityDiv+ ' #removeAddEditFilter').attr('id', 'singleFilterSub');
+
  		var t = $(this);
  		var type = $('option:selected', t).attr('type');
  		var id   = t.attr('id').split('_').pop();
- 			
+ 		
  		//get mapping key name...
- 		var mapKey = rulesTriggerMappings['colMapName'][type];
+ 		var colsMap = rulesTriggerMappings['colMapName']; 
+ 		if(!(type in colsMap)) {
+ 			alert("Type not found for.. "+ '" '+type+' "');
+ 			return;
+ 		}
+
+ 		var mapKey = colsMap[type];
  		var properties = rulesTriggerMappings['colProperties'][mapKey];
  		var opt, sel=$('#'+entityDiv+ ' #filterOpr_'+id);
  		sel.children().remove();
@@ -1599,7 +1660,7 @@ var rulesTriggerMappings = {
  			sel.append(opt);
  		});
 
- 		var td = $('#'+entityDiv+ ' #filterEntDate_'+id);
+ 		var td = $('#'+entityDiv+ ' #filterDateCol_'+id);
  		if(mapKey == 'date') {
  			if(td.children('img').length == 0) {
 	 			var img = $('<img src="/atCRM/images/calendar.gif" id="filterCalendar_'+id+'" />');
@@ -1615,6 +1676,8 @@ var rulesTriggerMappings = {
 	                align: "BL",
 	                onSelect: function() {
 	                  this.hide();
+	                  //remove filter if applied..
+ 					  $('#'+entityDiv+ ' #removeAddEditFilter').attr('id', 'singleFilterSub');
 	                }
 	            });
 	            $('#'+entityDiv+ ' .filtersLi').css('width', '420px');
@@ -1639,6 +1702,9 @@ var rulesTriggerMappings = {
 	//show specific operator
  	$('body').on('change', '.filterEntityColsPopUp', function() { 	
  		
+ 		//add current selected val to its  attribute selct
+ 		$(this).attr('selct', $(this).val());
+
  		var t = $(this);
  		var type = $('option:selected', t).attr('type');
  		var id   = t.attr('id').split('_').pop();
@@ -1654,7 +1720,7 @@ var rulesTriggerMappings = {
  			sel.append(opt);
  		});
 
- 		var td = $('#commonPopupDiv #filterEntDate_'+id);
+ 		var td = $('#commonPopupDiv #filterDateCol_'+id);
  		if(mapKey == 'date') {
  			if(td.children('img').length == 0) {
 	 			var img = $('<img src="/atCRM/images/calendar.gif" id="filterCalendar_'+id+'" />');
@@ -1670,6 +1736,8 @@ var rulesTriggerMappings = {
 	                align: "BL",
 	                onSelect: function() {
 	                  this.hide();
+	                  //remove filter if applied..
+ 					  $('#'+entityDiv+ ' #removeAddEditFilter').attr('id', 'singleFilterSub');
 	                }
 	            });
 	            $('#commonPopupDiv .filtersLi').css('width', '420px');
@@ -1698,13 +1766,18 @@ var rulesTriggerMappings = {
 			rowData = '';
 			flag=true;
 			$(this).children('td.toPostCol').each(function() {
-				val = $(this).children('.toPostVal').val();
-				rowData +=  val + '!!';
-				if(val == '')
-					flag = false;
+				if($(this).css('visibility') !== 'hidden') {
+					val = $(this).children('.toPostVal').val();
+					rowData +=  val + '!!';
+					if(val == '')
+						flag = false;
+				} 	
 			});
+
+
 			if(flag !== false)
 				urlData += rowData.substr(0, rowData.length - 2) + '!~~!';
+
 		});		
 		if(urlData.length > 0)
 			urlData = '&aw='+ urlData.substr(0, urlData.length - 4);
@@ -1713,7 +1786,11 @@ var rulesTriggerMappings = {
 			retrieveListData("reload",'', '', urlData);
 		} else {
 			alert('No "and" condtions selected. Please atleast 1 complete row.');
-		}		
+		}
+
+		//change the color of more filter
+		$('#'+entityDiv+' #filterTab').addClass('addEditMoreFilterApplied');		
+
 	});
 
 	$('body').on('click', '#filterTblClear', function() { 
@@ -1722,6 +1799,11 @@ var rulesTriggerMappings = {
 				$(this).children('.toPostVal').val(' ');
 			});
 		});
+
+		//change the color of more filter
+		$('#'+entityDiv+' #filterTab').removeClass('addEditMoreFilterApplied');		
+		//update the state in div
+		$('#'+entityDiv+' .addEditMorePopUpFiltersState').html('');
 	});
 
 	//submit the filters data
@@ -1732,10 +1814,12 @@ var rulesTriggerMappings = {
 			rowData = '';
 			flag=true;
 			$(this).children('td.toPostCol').each(function() {
-				val = $(this).children('.toPostVal').val();
-				rowData +=  val + '!!';
-				if(val == '')
-					flag = false;
+				if($(this).css('visibility') !== 'hidden') {
+					val = $(this).children('.toPostVal').val();
+					rowData +=  val + '!!';
+					if(val == '')
+						flag = false;
+				} 
 			});
 			if(flag !== false)
 				urlData += rowData.substr(0, rowData.length - 2) + '!~~!';
@@ -1745,11 +1829,73 @@ var rulesTriggerMappings = {
 
 		if(urlData.length > 0) {
 			retrieveListData("reload",'', '', urlData);
+			$(this).attr('id', 'removeAddEditFilter'); //mark current clicked button as remove
 		} else {
 			alert('No "and" condtions selected. Please atleast 1 complete row.');
 		}		
 	});
 
+	//operator change trigger
+	$('body').on('change', '.filterEntityOpr', function() {
+		//remove filter if applied..
+ 		$('#'+entityDiv+ ' #removeAddEditFilter').attr('id', 'singleFilterSub');
+
+		var v = $(this).val();
+		var id = $(this).attr('id').split('_').pop();
+		if(v == 'nu' || v == 'nn') {						
+			$('#'+entityDiv+ ' #filterEntTxt_'+id).parent().css('visibility', 'hidden');
+			$('#'+entityDiv+ ' #filterDateCol_'+id + ' img').parent().css('visibility', 'hidden');
+		} else {
+			$('#'+entityDiv+ ' #filterEntTxt_'+id).parent().css('visibility', 'visible');
+			$('#'+entityDiv+ ' #filterDateCol_'+id + ' img').parent().css('visibility', 'visible');
+		}
+	});
+
+	//remove single select filter
+	$('body').on('click', '#removeAddEditFilter', function() {
+		$(this).attr('id', 'singleFilterSub'); 	
+		$('#'+entityDiv+' #singleFilterCont table tr').each(function() {
+			$(this).children('td.toPostCol').each(function() { 
+				$(this).css('visibility','visible');
+				$(this).children('.toPostVal').val(' ');
+			});
+		});
+		retrieveListData("reload",'', '', '&aw='); //reload with empty params
+	});	
+
+	//on key press of text field remove filter status
+	$('body').on('keypress', '.addEditFilterTextBox', function() {
+		//remove filter if applied..
+ 		$('#'+entityDiv+ ' #removeAddEditFilter').attr('id', 'singleFilterSub');
+	});
+
+	//pop up operator change action
+	$('body').on('change', '.filterOprColsPopUp', function() {
+		//add selected value to its selct attribute
+		var t = $(this);
+		t.attr('selct', t.val());
+
+		var v = t.val();
+		var id = t.attr('id').split('_').pop();
+		if(v == 'nu' || v == 'nn') {
+			$('#commonPopupDiv #filterEntTxt_'+id).parent().css('visibility', 'hidden');
+			$('#commonPopupDiv #filterDateCol_'+id + ' img').parent().css('visibility', 'hidden');
+		} else {
+			$('#commonPopupDiv #filterEntTxt_'+id).parent().css('visibility', 'visible');
+			$('#commonPopupDiv #filterDateCol_'+id+ ' img').parent().css('visibility', 'visible');
+		}
+
+	});
+
+
+	$('body').on('mouseup', '.ui-state-default', function() {
+		var trg = $('#'+entityDiv+' .addEditMorePopUpFiltersState');
+		if(trg.length > 0) {
+			//update the state in div
+			$('#'+entityDiv+' .addEditMorePopUpFiltersState').html($('#commonPopupDiv #filterTblForm #filterTbl').children().clone(true));
+		}
+		return;
+	});
 	
 	//end of document ready
  });

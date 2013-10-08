@@ -1546,6 +1546,12 @@ span.cke_wrapper cke_ltr,table.cke_editor, td.cke_contents, span.cke_skin_kama, 
 	padding: 4px 4px 4px 4px;
 }
 
+#removeAddEditFilter {
+	background: url('/atCRM/images/addEditCloseFilter.png') no-repeat center center/ 12px 12px;
+	width:30px;
+	padding: 4px 4px 4px 4px;
+}
+
 #filterTab {
 	background-repeat: no-repeat;	background: url("/atCRM/images/filte-whiter.png"), #1e5799; /* Old browsers */
 	background: url("/atCRM/images/filte-whiter.png"), -moz-linear-gradient(top,  #1e5799 0%, #2989d8 50%, #207cca 51%, #7db9e8 100%); /* FF3.6+ */
@@ -1558,5 +1564,10 @@ span.cke_wrapper cke_ltr,table.cke_editor, td.cke_contents, span.cke_skin_kama, 
 	background-repeat: no-repeat,repeat-x;
 	background-position: right center;	
 	padding: 4px 17px 4px 4px;
+}
+
+.addEditMoreFilterApplied {
+	border: solid 1px rgb(189, 64, 64) !important;
+	color: rgb(177, 28, 28) !important;
 }
 /* for filters ends here */

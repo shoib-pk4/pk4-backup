@@ -34,10 +34,10 @@ function exec_rept (doc, into_div) {
 	chartAjaxCall=true;
 	totalColCntDt=true;
 	
-	var cont =  '<div id="reptCanU" ><div id="reportElementHeader">  <table width="100%" class="reportHeaderCont" > <tr> <td align="left" class="pageTitle" style="width:240px;"> ' + rptName + ' </td><td style="width:300px;" align="left">' + rptSubName + '</td><td align="right" valign="bottom" > <input type="button" class="blueButton reptBtns" value="Parameters" style="width: 100px;" id="showParams" /> <input type="button" class="blueButton reptBtns expBtn" value="Export" style="width: 100px;border-radius: 4px 0px 0px 4px;" id="exportDataTbl" /><div id="reptMoreTblOptCont" ><input type="button" class="reptBtns reptMoreOpt" /> <div class="reptMoreSel" > <div id="reptDtMoreSelc" ></div> </div> </div> </div> </td> </tr> </table><div id="paramsContainer"><div class="reptShowLoading" id="dtLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> </div> </div> <div id="tabs-2" > <span id="dtRefreshedAt"></span> <div id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> <ul id="tabsContainer" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">  </ul> <div id="tabData"> <table id="reportData"> </table> </div><div id="tabChart" > <div class="highchartsHdr"><div class="reptShowLoading" id="reptChartLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div><span id="reptChartInstr">You can select the type of chart that you\'d like to see for each set of data here. </span><div id="selectTypeChartCont"></div></div> <div id="tabChartArea" status="0"> <span style="margin-top: 60px;display:block;">Your chart will be displayed here. </span></div> </div><div id="tabMap" >show map here </div> <div id="tabPivot" width="auto"> <div id="pvtLoading" class="reptShowLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <div id="pivot-menu-container">Please select the appropriate columns below to create your own Pivot Report.<br> </div> <div id="k_results"></div><div id="results"> </div> </div> </div> </div> <form name="xlForm" id="xlForm" style="display: none" action="http://sys.impelcrm.in:81/ret_xl.php" onclick="dtExportToExcel(\'reportData\')" method="post"><textarea name="rN" id="rN" style="display: none"></textarea><textarea name="rD" id="rD" style="display: none"></textarea></form></div>';
+	var cont =  '<div id="reptCanU" style="width:100%;"><div id="reportElementHeader">  <table width="100%" class="reportHeaderCont" > <tr> <td align="left" class="pageTitle" style="width:240px;"> ' + rptName + ' </td><td style="width:300px;" align="left">' + rptSubName + '</td><td align="right" valign="bottom" > <input type="button" class="blueButton reptBtns" value="Parameters" style="width: 100px;" id="showParams" /> <input type="button" class="blueButton reptBtns expBtn" value="Export" style="width: 100px;border-radius: 4px 0px 0px 4px;" id="exportDataTbl" /><div id="reptMoreTblOptCont" ><input type="button" class="reptBtns reptMoreOpt" /> <div class="reptMoreSel" > <div id="reptDtMoreSelc" ></div> </div> </div> </div> </td> </tr> </table><div id="paramsContainer"><div class="reptShowLoading" id="dtLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> </div> </div> <div id="tabs-2" > <span id="dtRefreshedAt"></span> <div id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> <ul id="tabsContainer" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">  </ul> <div id="tabData"> <table id="reportData"> </table> </div><div id="tabChart" > <div class="highchartsHdr"><div class="reptShowLoading" id="reptChartLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div><span id="reptChartInstr">You can select the type of chart that you\'d like to see for each set of data here. </span><div id="selectTypeChartCont"></div></div> <div id="tabChartArea" status="0"> <span style="margin-top: 60px;display:block;">Your chart will be displayed here. </span></div> </div><div id="tabMap" >show map here </div> <div id="tabPivot" width="auto"> <div id="pvtLoading" class="reptShowLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <div id="pivot-menu-container">Please select the appropriate columns below to create your own Pivot Report.<br> </div> <div id="k_results"></div><div id="results"> </div> </div> </div> </div> <form name="xlForm" id="xlForm" style="display: none" action="http://sys.impelcrm.in:81/ret_xl.php" onclick="dtExportToExcel(\'reportData\')" method="post"><textarea name="rN" id="rN" style="display: none"></textarea><textarea name="rD" id="rD" style="display: none"></textarea></form></div>';
 	
 	// var scr = "<script type='text/javascript' src='/atCRM/javascript/JSON/rept-more.js'></script>";
-	var sty = '<style type="text/css" id="reptStyle"> #reportData tr th,#reportData tr td  {word-wrap:break-word;min-width:60px;max-width:60px;} .dataTables_info {margin-bottom: 12px; color:grey;}  .dtHdrFixed {position:fixed;background-color:white;top:0;} #selectTypeOfHC, #chartSelXAxis {font-size: 12px;} .dtTotal {background-color: #014464; color: white;}  .dtTotal td {  border:none; border-right: solid 1px grey;border-left: solid 1px grey;} .ui-state-active-droppable {background-color: #DFEB5E !important; } .reptBtns:hover, .reptFrmBtns:hover {background-color:#014464 !important;color:white;} #filterCancel {cursor:pointer;visibility:hidden;} #reportData .Text {text-align: left !important;} #reportData .Integer, #reportData .Number {text-align: right !important;} #reportData tr td {text-align:left;} #hcTypeSelTbl {width: 100%;} #hcTypeSelTbl td { display: inline-block; font-size: 12px; font-weight:bold; } #reportData_wrapper .clear {clear:both;} .pageTitle {font-size: 20px; } .reportHeaderCont { text-align: left; border-radius: 4px; margin: 10px auto; color: white; padding: 5px; background: #014464;background: -moz-linear-gradient(top, #0272a7, #013953);background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0272a7), to(#013953));border: 1px solid #002232;-moz-box-shadow: inset 0px 0px 1px #edf9ff;-webkit-box-shadow: inset 0px 0px 1px #edf9ff;box-shadow: inset 0px 0px 1px #edf9ff; } .reptBtns {background-color: #fff !important;} #reptMoreTblOptCont {position:relative; width: 30px; height: 30px; float:right; } #reptMoreTblOptCont:hover .reptMoreSel {display:block;} .reptMoreSel a {width: 25px !important;}  .reptMoreSel {display: none; right:0; top:28px;border: solid 1px #F1F1F1; position: absolute; background-color:#DADADA; padding: 4px; border-radius: 2px; z-index:1; width: 42px; } .reptMoreOpt {width: 30px !important;height: 28px; border-radius: 0px 4px 4px 0px; background: url("/atCRM/images/imagesList.png") no-repeat -60px -35px; } #tabMapBtn {display:none !important;}  #tabs-min .ui-tabs-nav li {top: 0px !important;} #k_results #vals, #k_results #rows {width: 15%; }  #k_results #cols {width: 85%;} #reportTblContainer {width: 100%; overflow: auto; } #filterRow th {padding: 4px 0 !important;} .eachColFilterSelect {margin: auto; width: 50px; display: block; } .filterRowHide {display:none;} .reptShowLoading{ display:none;text-align:center;color:red;} .highchartsHdr { font-family: candara, "sans-serif"; text-align:left; font-size:16px;display:block;} #tabChartArea {border: solid 1px #9C9797; display:block; width: 900px;height:400px; margin:auto;} #pivot-menu-container {text-align:left; font-size:14px; font-family:candara; margin:4px 0px;} #selectTypeChartCont {width: 100%;display:block;margin:12px auto;} #tabChart {display:block; margin: auto; width: 90%;} #paramsTbl td input[type=text] { width: 80%; } #paramsTbl td { display: inline-block; vertical-align: top; margin-right: 1.5%; width: 18%; } #slideUpDwnCont {display:none;} .showParamsCondCont {font-size: 16px;font-weight:bold; text-align:left; height: 30px;display:block; } .showParamsCondCont #showParams {float:right;}   #paramsTbl .multiSelectBox {width:82%;} #paramsTbl .sf_suggestion {margin-top: -56px;} #tblDiv {display:inline-block;width:100%;} .reptFrmBtns {float:right;margin-right: 5px; } .reptParamsDesc {font-size: 12px;display: block; color:grey;} #dtRefreshedAt {position:absolute; right: 1%;top: 0; font-size: 12px;} .reptParamsLbl {font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;} #paramsTbl {width:100%; border-collapse: collapse;} #paramsContainer { padding: 0.5% 0; width: 99%; display: block; height:auto;} .filterApplied {background-color:palegreen;} .dpass {display: none;} #reportData tr th {position:relative;} #k_results {display:block;overflow:auto;} #reportData_wrapper {overflow:auto;} #tabs-2 {position:relative;} #tabs-2 .dataTables_filter {width: 425px; } .removeCol {display:none;} .showOrHideColsActv { height: 250px !important; background-color: white;border: solid 2px white;border-radius: 3px; background-position:top left !important; overflow-x:hidden !important; overflow-y:auto !important; width:220px !important; margin-left: -12.5% !important;} #reportData {text-align:center;} #tabs-min .ui-tabs-nav li {top: 2px !important; }  .toggleColName:hover {background-color:rgb(164, 198, 218);} .toggleColName { border:none; border-top:solid 1px rgba(10, 9, 9, 0.1);width: 100%; cursor: pointer; font-size: 12px; font-family: candara; display:block;margin: 2px 0;text-align:left;padding: 2px 0;} #reportData_filter input { display: inline;} #reportData_length label { width 260px; } #reportData_length select { display: inline-block; } #tabs-min { background: transparent; border: none; } #filterColsByCombo {background: url("/atCRM/images/imagesList.png") no-repeat 1px -2px;} #showOrHideCols, #filterColsByCombo { cursor: pointer; background-color: white; border: solid 1px white; transition: height all 1s; -webkit-transition: all 1s; -moz-transition: all 1s; -o-transition: all 1s; z-index:1; overflow: hidden; position:absolute; width:31px; margin: 0.5% 0 0 -1%; padding: 24px 4px 2px 4px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; height: 25px;  } #showOrHideCols {margin-left: 2.3%; background: white url("/atCRM/images/gearDown.png") no-repeat top right / 28px 24px;}  #tabs-min .ui-widget-header { background: transparent; border: none; border-bottom: 1px solid #c0c0c0; -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; } #tabs-min .ui-state-default { background: transparent; border: none; } #tabs-min .ui-state-active { border: none; } #tabs-min .ui-state-default a { color: #c0c0c0; } #tabs-min .ui-state-active a { color: #459E00; background: transparent url(/atCRM/stylesheets/style_h/images/uiTabsArrow.png) no-repeat bottom center; } .dataTables_wrapper { font-size: 9pt; } .flash{ padding-top:4px; padding-bottom:4px; background-color: #FFFF33; font-weight:bold; font-size:12px;-moz-border-radius: 6px;-webkit-border-radius: 6px; color: black; } .alignRight { text-align: right; } .ui-tabs .ui-tabs-nav { margin: 0; padding: 0 0 0 0.4em; border: 1px solid #d4ccb0; background: none !important;} .blkSdw {box-shadow: 1px 1px 4px black;-moz-box-shadow: 1px 1px 4px black;-webkit-box-shadow: 1px 1px 4px black;-o-box-shadow: 1px 1px 4px black;}  .showingParams {background-color: skyblue !important; color: black;} #slideUpDwnCont {border: solid 1px rgba(0,0,0,0.2); border-left: none;border-right:none;} table#reportData thead tr th {  padding-right:36px; } .filterColsByComboActv { border:solid 1px #FF0606; -webkit-box-shadow: 1px 1px 4px #111010; -moz-box-shadow: 1px 1px 4px #111010;box-shadow: 1px 1px 4px #111010; }  </style>';
+	var sty = '<style type="text/css" id="reptStyle"> #reportElementHeader {min-width: 1000px;width:100%;} #reportData tr th,#reportData tr td  {word-wrap:break-word;min-width:60px;max-width:60px;} .dataTables_info {margin-bottom: 12px; color:grey;}  .dtHdrFixed {position:fixed;background-color:white;top:0;} #selectTypeOfHC, #chartSelXAxis {font-size: 12px;} .dtTotal {background-color: #014464; color: white;}  .dtTotal td {  border:none; border-right: solid 1px grey;border-left: solid 1px grey;} .ui-state-active-droppable {background-color: #DFEB5E !important; } .reptBtns:hover, .reptFrmBtns:hover {background-color:#014464 !important;color:white;} #filterCancel {cursor:pointer;visibility:hidden;} #reportData .Text {text-align: left !important;} #reportData .Integer, #reportData .Number {text-align: right !important;} #reportData tr td {text-align:left;} #hcTypeSelTbl {width: 100%;} #hcTypeSelTbl td { display: inline-block; font-size: 12px; font-weight:bold; } #reportData_wrapper .clear {clear:both;} .pageTitle {font-size: 20px; } .reportHeaderCont { text-align: left; border-radius: 4px; margin: 10px auto; color: white; padding: 5px; background: #014464;background: -moz-linear-gradient(top, #0272a7, #013953);background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0272a7), to(#013953));border: 1px solid #002232;-moz-box-shadow: inset 0px 0px 1px #edf9ff;-webkit-box-shadow: inset 0px 0px 1px #edf9ff;box-shadow: inset 0px 0px 1px #edf9ff; } .reptBtns {background-color: #fff !important;} #reptMoreTblOptCont {position:relative; width: 30px; height: 30px; float:right; } #reptMoreTblOptCont:hover .reptMoreSel {display:block;} .reptMoreSel a {width: 25px !important;}  .reptMoreSel {display: none; right:0; top:28px;border: solid 1px #F1F1F1; position: absolute; background-color:#DADADA; padding: 4px; border-radius: 2px; z-index:1; width: 42px; } .reptMoreOpt {width: 30px !important;height: 28px; border-radius: 0px 4px 4px 0px; background: url("/atCRM/images/imagesList.png") no-repeat -60px -35px; } #tabMapBtn {display:none !important;}  #tabs-min .ui-tabs-nav li {top: 0px !important;} #k_results #vals, #k_results #rows {width: 15%; }  #k_results #cols {width: 85%;} #reportTblContainer {width: 100%; overflow: auto; } #filterRow th {padding: 4px 0 !important;} .eachColFilterSelect {margin: auto; width: 50px; display: block; } .filterRowHide {display:none;} .reptShowLoading{ display:none;text-align:center;color:red;} .highchartsHdr { font-family: candara, "sans-serif"; text-align:left; font-size:16px;display:block;} #tabChartArea {border: solid 1px #9C9797; display:block; width: 900px;height:400px; margin:auto;} #pivot-menu-container {text-align:left; font-size:14px; font-family:candara; margin:4px 0px;} #selectTypeChartCont {width: 100%;display:block;margin:12px auto;} #tabChart {display:block; margin: auto; width: 90%;} #paramsTbl td input[type=text] { width: 80%; } #paramsTbl td { display: inline-block; vertical-align: top; margin-right: 1.5%; width: 18%; } #slideUpDwnCont {display:none;} .showParamsCondCont {font-size: 16px;font-weight:bold; text-align:left; height: 30px;display:block; } .showParamsCondCont #showParams {float:right;}   #paramsTbl .multiSelectBox {width:82%;} #paramsTbl .sf_suggestion {margin-top: -56px;} #tblDiv {display:inline-block;width:100%;} .reptFrmBtns {float:right;margin-right: 5px; } .reptParamsDesc {font-size: 12px;display: block; color:grey;} #dtRefreshedAt {position:absolute; right: 1%;top: 0; font-size: 12px;} .reptParamsLbl {font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;} #paramsTbl {width:100%; border-collapse: collapse;} #paramsContainer { padding: 0.5% 0; width: 99%; display: block; height:auto;} .filterApplied {background-color:palegreen;} .dpass {display: none;} #reportData tr th {position:relative;} #k_results {display:block;overflow:auto;} #reportData_wrapper {overflow:auto;} #tabs-2 {position:relative;min-width:1000px;width:100%;} #tabs-2 .dataTables_filter {width: 425px; } .removeCol {display:none;} .showOrHideColsActv { height: 250px !important; background-color: white;border: solid 2px white;border-radius: 3px; background-position:top left !important; overflow-x:hidden !important; overflow-y:auto !important; width:220px !important; margin-left: -12.5% !important;} #reportData {text-align:center;} #tabs-min .ui-tabs-nav li {top: 2px !important; }  .toggleColName:hover {background-color:rgb(164, 198, 218);} .toggleColName { border:none; border-top:solid 1px rgba(10, 9, 9, 0.1);width: 100%; cursor: pointer; font-size: 12px; font-family: candara; display:block;margin: 2px 0;text-align:left;padding: 2px 0;} #reportData_filter input { display: inline;} #reportData_length label { width 260px; } #reportData_length select { display: inline-block; } #tabs-min { background: transparent; border: none; } #filterColsByCombo {background: url("/atCRM/images/imagesList.png") no-repeat 1px -2px;} #showOrHideCols, #filterColsByCombo { cursor: pointer; background-color: white; border: solid 1px white; transition: height all 1s; -webkit-transition: all 1s; -moz-transition: all 1s; -o-transition: all 1s; z-index:1; overflow: hidden; position:absolute; width:31px; margin: 0.5% 0 0 -1%; padding: 24px 4px 2px 4px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; height: 25px;  } #showOrHideCols {margin-left: 2.3%; background: white url("/atCRM/images/gearDown.png") no-repeat top right / 28px 24px;}  #tabs-min .ui-widget-header { background: transparent; border: none; border-bottom: 1px solid #c0c0c0; -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; } #tabs-min .ui-state-default { background: transparent; border: none; } #tabs-min .ui-state-active { border: none; } #tabs-min .ui-state-default a { color: #c0c0c0; } #tabs-min .ui-state-active a { color: #459E00; background: transparent url(/atCRM/stylesheets/style_h/images/uiTabsArrow.png) no-repeat bottom center; } .dataTables_wrapper { font-size: 9pt; } .flash{ padding-top:4px; padding-bottom:4px; background-color: #FFFF33; font-weight:bold; font-size:12px;-moz-border-radius: 6px;-webkit-border-radius: 6px; color: black; } .alignRight { text-align: right; } .ui-tabs .ui-tabs-nav { margin: 0; padding: 0 0 0 0.4em; border: 1px solid #d4ccb0; background: none !important;} .blkSdw {box-shadow: 1px 1px 4px black;-moz-box-shadow: 1px 1px 4px black;-webkit-box-shadow: 1px 1px 4px black;-o-box-shadow: 1px 1px 4px black;}  .showingParams {background-color: skyblue !important; color: black;} #slideUpDwnCont {border: solid 1px rgba(0,0,0,0.2); border-left: none;border-right:none;} table#reportData thead tr th {  padding-right:36px; } .filterColsByComboActv { border:solid 1px #FF0606; -webkit-box-shadow: 1px 1px 4px #111010; -moz-box-shadow: 1px 1px 4px #111010;box-shadow: 1px 1px 4px #111010; }  </style>';
 	
 	into_div.innerHTML = sty + cont;
 
@@ -68,9 +68,9 @@ function exec_rept (doc, into_div) {
 
 	drawParamsConditions(params);
 
-	//set the width of table
+	//set the width of table	
 	var w = $(document).width() - 30;
-	$('#tabs-2, #reportElementHeader').css('width', w+'px');
+	$('#tabs-2').css('width', w+'px');
 	
 	
 
@@ -178,6 +178,8 @@ function exec_rept (doc, into_div) {
 	//wrap report table into div
 	wrapReportTblInDiv();
 
+	//clear the previous btns
+	$('#reptDtMoreSelc').html('');
 	//move data table button to reptDtmoreSel div
 	$('.DTTT_container').appendTo('#reptDtMoreSelc');
 
@@ -385,6 +387,7 @@ $(document).ready(function () {
 	});
 
 	//show or hide col
+	colIdsForWhichFiltersApplied = []; //this is global, bad practise but no choice
 	$('body').on('click', '.toggleColName', function(e) {
 			
 		var colId = $(this).attr('id');
@@ -393,29 +396,47 @@ $(document).ready(function () {
 		if($(this).hasClass('toggleColNameActv')) {
 			//hide column
 			$('#reportData tr').each(function() {
-				$(this).find("th:eq("+colId+")").addClass('removeCol');
-				$(this).find("td:eq("+colId+")").addClass('removeCol');
+				// $(this).find("th:eq("+colId+")").addClass('removeCol');
+				// $(this).find("td:eq("+colId+")").addClass('removeCol');
+				$(this).find("th:eq("+colId+")").addClass('dpass');
+				$(this).find("td:eq("+colId+")").addClass('dpass');
 			});			
 
 			//this is for total tr
-			$('#tmpDivForTot table tbody tr td').eq(colId).addClass('removeCol');	
+			// $('#tmpDivForTot table tbody tr td').eq(colId).addClass('removeCol');	
+			$('#tmpDivForTot table tbody tr td').eq(colId).addClass('dpass');	
 				
 			$('#'+cbxId).prop('checked', false);
-			$(this).removeClass('toggleColNameActv')
+			$(this).removeClass('toggleColNameActv');
+
+			//store the column ids for which it applied filters, this is fix for sorting or searching before applying filters #shoib
+			colIdsForWhichFiltersApplied.push(colId);
 		} 
 		else {
 			//show the column
 			$('#reportData tr').each(function() {
-				$(this).find("th:eq("+colId+")").removeClass('removeCol');
-				$(this).find("td:eq("+colId+")").removeClass('removeCol');
+				// $(this).find("th:eq("+colId+")").removeClass('removeCol');
+				// $(this).find("td:eq("+colId+")").removeClass('removeCol');
+				$(this).find("th:eq("+colId+")").removeClass('dpass');
+				$(this).find("td:eq("+colId+")").removeClass('dpass');
 			});
 
 			//this is for total tr
-			$('#tmpDivForTot table tbody tr td').eq(colId).removeClass('removeCol');	
+			// $('#tmpDivForTot table tbody tr td').eq(colId).removeClass('removeCol');	
+			$('#tmpDivForTot table tbody tr td').eq(colId).removeClass('dpass');	
 				
 			$('#'+cbxId).prop('checked', true);
-				$(this).addClass('toggleColNameActv')
+				$(this).addClass('toggleColNameActv');
+
+			//if cols checked, means showing, then remove that element from global arr	
+			var indx = colIdsForWhichFiltersApplied.indexOf(colId);	
+			if(indx > -1) {
+				colIdsForWhichFiltersApplied.splice(indx, 1);
+			}
 		}
+
+		
+
 
 		e.stopPropagation();
 	});
@@ -572,6 +593,22 @@ $(document).ready(function () {
 		 var deci = t.val();
 		 var twoDeci = Math.round(deci * 100) / 100;
 		 t.val(twoDeci);
+	});
+
+	//on mouse over of rept can change width of tabs
+	var tempDocWidth='';
+	$('body').on('mouseover', '#reptCanU', function() {
+		//set the width of table	
+		var doc =  $(document);
+		var w = doc.width() - 30;
+		if(w != tempDocWidth) {
+			var sw = screen.width;
+			$('#tabs-2').css('width', (sw-30)+'px');		
+			
+			w = doc.width() - 30; //takin one more time becuase previous w will be diffrent after applying screen width;
+			$('#tabs-2').css('width', w+'px');		
+			tempDocWidth = w;
+		}
 	});
 
 
@@ -734,7 +771,8 @@ function reloadDataTable(data) {
 	
 
 
-
+	//clear the previous btns
+	$('#reptDtMoreSelc').html('');
 	//move data table button to reptDtmoreSel div
 	$('.DTTT_container').appendTo('#reptDtMoreSelc');
 
@@ -765,12 +803,12 @@ function plotDataTable(data) {
 	oTable = $('#reportData').dataTable({
 			"aaData": dataTblData,	
 			"aoColumnDefs": dataTblHdr,
-			"aLengthMenu":[[10,  25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+			"aLengthMenu":[[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
 			//"sDom": "\"<clear>\"frtip",
 			// "sDom": 'T<"clear"><"H"lfr>t<"F"ip>',
 			"sDom": 'T<"clear">lfrtip<"clear">',
 			"aaSorting": [[0, 'asc']],
-			'iDisplayLength': -1, //this works, Tip: if not revert statsave to false and check.
+			'iDisplayLength': 10, //this works, Tip: if not revert statsave to false and check.
 			"bLengthChange": true, 
 			"bDestroy": true,
 			// "sScrollX": "100%",
@@ -801,6 +839,9 @@ function plotDataTable(data) {
 			"fnDrawCallback": function() {
 				//this is called when data table has been drawn completely 
 				addTrForShowingTotal();
+
+				//show or hide cols after dt modifying
+				showOrHideColsAfterDtModifying();
 			}
 	});
 
@@ -809,6 +850,25 @@ function plotDataTable(data) {
 	var totEntries = dataTblData.length;
 	$('#reportData_length label').append( ' (Total '+ totEntries + ')');
 	
+}
+
+/* 
+	* this is fix for improper columns showing and adding after adding filters and then sorting etc..
+*/
+function showOrHideColsAfterDtModifying() {
+	$.each(colIdsForWhichFiltersApplied, function(k,colId) {
+		//hide column
+		$('#reportData tr').each(function() {
+			// $(this).find("th:eq("+colId+")").addClass('removeCol');
+			// $(this).find("td:eq("+colId+")").addClass('removeCol');
+			$(this).find("th:eq("+colId+")").addClass('dpass');
+			$(this).find("td:eq("+colId+")").addClass('dpass');
+		});			
+
+		//this is for total tr
+		// $('#tmpDivForTot table tbody tr td').eq(colId).addClass('removeCol');	
+		$('#tmpDivForTot table tbody tr td').eq(colId).addClass('dpass');
+	});
 }
 
 /* 

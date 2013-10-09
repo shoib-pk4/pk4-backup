@@ -294,11 +294,13 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 	if(filterParm !== undefined) {
 		 url2call += filterParm;
 	} else {
-		//clear the filters
+		//clear the filters #shoib
 		$('#'+entityDiv+' .toPostVal').val('');
+		$('#'+entityDiv+' #removeAddEditFilter').attr('id', 'singleFilterSub');
+		$('#'+entityDiv+' .addEditMoreFilterApplied').removeClass('addEditMoreFilterApplied');
 	}	 
 
-	xhr_request = $.ajax({
+	xhr_request = $.ajax({		
 		type: "GET",
 		url: url2call,
 		success: function (data) {

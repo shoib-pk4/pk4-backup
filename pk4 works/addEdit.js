@@ -177,7 +177,7 @@ function handleAddEditJsonData(data,popupDiv,entityTilediv,popupAddUrl,popupList
 			{
 				var PkValue=data.PrimaryKeyValue;
 				PkValue=PkValue.replace(/\,/g,"");
-				PkValue=PkValue.split(".")
+				PkValue=PkValue.split(".");
 				PkValue=PkValue[0];
             }
 		var errDiv=CreateDIV(dataDiv,'commonErrPopupDiv','addEditErrorDiv','','98%');
@@ -1836,7 +1836,13 @@ function createFormFields(fieldElemTd,fldData,formName,data,hideDropBox)
 						fldObj=CreatePASSWORD(fieldElemTd, "inputFieldClass", elemId, fldVal,maxLength);														
 						if(nullableFld=="0")mandatoryFldElem.push(elemId);
 					break;	
-	  
+		
+		case "defaultTeritory":
+
+					if(fieldType!='None' && fieldType!='none')
+					createDefaultTeritory(fieldElemTd, "inputFieldClass", elemId);
+					if(nullableFld=="0")mandatoryFldElem.push(elemId);
+					break;
 
 		default:
 						if(fieldType!='None' && fieldType!='none')
@@ -3715,7 +3721,38 @@ $(document).ready(function() {
 		$(this).parent().children('.dateHiddenField').val(dt);
 	});
 
+	//set teritories
+	$('body').on('click', '.chooseDefaultTeritory', function() {
+		var v = $(this).val();
 
+		if(v == 'fromTxtFld') { //take from login name
+			$('#takeFromLoginName').css('display', 'block');
+			var ln = $('#0-201-203').val();
+			//add ln to hidden fild and txt fld
+			$('.defaultTeritoryFldValHdn, #defaultTeritoryName').val(ln);
+			
+			//hide other block
+			$('#defaultTeritories').css('display', 'none');
+		} else {
+			$('#defaultTeritories').css('display', 'block');
+
+			if(!$(this).hasClass('havingTerr')) {
+				showDefaultTerritories();
+				$(this).addClass('havingTerr');
+			}
+
+			//hide other block
+			$('#takeFromLoginName').css('display', 'none');
+		}
+	});
+
+	//on change of default terr change the hidden default inp fld
+	$('body').on('change', '#defaultSelTerr', function() {
+		var v = $(this).val();
+		$('.defaultTeritoryFldValHdn').val(v);
+	});
+
+	//end of document ready
 });
 
 //add edit get last day of month
@@ -3793,3 +3830,97 @@ function validateThreeDigitMonth(m) {
 	
 	return m;
 }
+
+
+//function creates default territories user input
+function createDefaultTeritory(target, className, id) {
+	var c = '<div>'; //this is main container for below elements
+	//create radio btns with container
+	c += '<ul style="list-style-type:none;padding:0;margin:0;"><li><label>Create my teritory: </label><input type="radio" value="fromTxtFld" name="defaultTeritory" class="chooseDefaultTeritory" /></li><li><label>Use existing teritory: </label><input type="radio" value="frmCmbo" name="defaultTeritory" class="chooseDefaultTeritory" /></li></ul>';
+	
+	//create form with one text field
+	 c += '<p><div id="takeFromLoginName" style="display:none;"><input type="text" id="defaultTeritoryName" disabled="disabled" /> </div> <div id="defaultTeritories" style="display:none;"></div></p></div>';
+
+	 c += '<input type="hidden" id ="'+id+'" name="'+id+'" class="defaultTeritoryFldValHdn" />';
+	
+	//finally add it to td
+	target.innerHTML = c; 
+}
+
+
+
+//this shows default teritories
+function showDefaultTerritories() {
+	
+	var fldVal= "", elemId='defaultSelTerr';
+	fldObj=CreateSelectBox(document.getElementById('defaultTeritories'), "inputFieldClassDrop", elemId, fldVal);
+						var dispVal="";
+						
+						//L_cmb_quick_add.style.width='100px';
+						var terrUrl=zcServletPrefix+"/custom/JSON/system/territoriesInSession.htm";
+						$.ajax(
+						{
+								type: "GET",
+								url:terrUrl,
+								dataType: "json",
+								async:false,
+								success: function (doc)
+								{   
+									var allTerrs = doc["allTerrs"];	
+									if(!fldVal){
+										var defaultTerr = doc["defaultTerr"];
+										fldVal=defaultTerr;
+									}
+									var allTerrsLength =  allTerrs.length;												
+									var isIE = document.all ? true : false;
+									 
+									for(i=0,j=0;i<allTerrsLength;i++,j++)
+									{
+										
+										terrName = allTerrs[j]["territories"];
+										terrId =  allTerrs[j]["terrId"];
+										readOnly=  allTerrs[j]["readOnly"];
+										
+
+										if(fldVal==terrId)
+										{	
+											fldObj[i]=new Option(terrName, terrId);
+											fldObj[i].selected = true;														
+											dispVal=fldObj.options[i].text;
+											L_valueArr = dispVal ;
+											L_valueArr = L_valueArr.split(">");
+											dispVal=L_valueArr[L_valueArr.length-1];	
+										}
+										else	
+										{
+											fldObj[i]=new Option(terrName, terrId);		
+										  
+										}
+								 }
+								}
+						});
+						if(dispVal == "")
+						{
+							 dispVal = "None";
+							 for(f=0;f<fldObj.length;f++)
+							 {
+								 try
+								 {
+									 if(dispVal.toUpperCase()  == (fldObj.options[f].text).toUpperCase() )
+									 {
+										dispVal[f].selected = true;
+										break;
+									 }
+								 }
+								 catch (e)
+								 {
+									 continue;
+								 }
+							 }
+						}
+						// makeComboSearchable(dispVal,false,'','dropDown-terr');										
+						// $(".inputFieldClassDrop").combobox();						
+						// if(nullableFld=="0")mandatoryFldElem.push('combo_'+elemId);
+
+}
+

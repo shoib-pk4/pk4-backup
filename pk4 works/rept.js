@@ -72,10 +72,8 @@ function exec_rept (doc, into_div) {
 	var w = $(document).width() - 30;
 	$('#tabs-2').css('width', w+'px');
 	
-	
 
 	plotDataTable(doc);
-	
 
 	//remove filters, on load type
 	for(var i=0, len = doc['dataTblHdr'].length; i < len; i++) {
@@ -184,9 +182,33 @@ function exec_rept (doc, into_div) {
 	$('.DTTT_container').appendTo('#reptDtMoreSelc');
 
 
-	//$('.reptOnloadLoading').remove();
+	//show scroll for dt, fix table which has many cols, and user enable to figure out existence
+	showDuplicateScrollForReptDt();
+
 
 	/* end of exec_rept function */
+}
+
+
+function showDuplicateScrollForReptDt() {
+	//get parent width
+	var rpt = $('#reportTblContainer');
+	var w = rpt.css('width');
+	var offset = rpt.offset();
+	var lft = offset.left;
+
+	var tblWidth = $('#reportData').css('width');
+
+	//create hack here
+	var c = $('<div id="reptDtHackScroll" style="position:fixed;bottom:0;overflow-y:hidden;overflow-x:auto;"></div>');
+		c.css({'width':w,'left':lft+'px'});
+
+	var scroller = $('<div ></div>');
+		scroller.css({'height':'1px','width':tblWidth});
+
+	c.append(scroller);
+
+	$('#tabData').append(c);
 }
 
 
@@ -194,42 +216,23 @@ function exec_rept (doc, into_div) {
 
 $(document).ready(function () {
 
+	
 	//add scripts
 	var scr = '<script type="text/javascript" src="https://www.google.com/jsapi"> </script>';
 		scr += '<script type="text/javascript" src="/atCRM/javascript/jquery/pivot/gchart_renderers.js"> </script>';
 	$('head').append(scr);
 
 	//makin datable header fixed
-	// $(window).scroll(function () {
-	// 	var hdr = $('#reportData thead tr:first-child');
-
-	// 	if(hdr.length > 0) {
-	// 		hdr = $('#reportData thead tr:first-child');
-	// 		var cont = $('#reportTblContainer').offset();
-	// 			cont = cont.left;
-	// 		var o  = hdr.offset(); 
-	// 		var ho = o.top; //header offset
-	// 		// var rh = parseInt(hdr.css('height').replace('px', '')); //row height
-
-	// 		var co = $(window).scrollTop();//current window offset
-
-	// 		var podr = ho - co ;// header offset
-	// 		if(podr  < 0) {
-	// 			//make it fixed
-	// 			if($('#reportData thead .dtHdrRowClone').length == 0)
-	// 				$('#reportData thead').prepend(hdr.clone().addClass('dtHdrRowClone').css('visibility','hidden'));
-
-	// 			var lft = cont - $('#reportTblContainer').scrollLeft(); //left scroll offset of div
-				
-	// 			$('#reportData thead tr:nth-child(2)').addClass('dtHdrFixed').css('left', lft+'px');
-	// 		} else {
-	// 			$('#reportData thead .dtHdrRowClone').remove();
-	// 			//remove fixed				
-	// 			hdr.removeClass('dtHdrFixed').css('left','0px');				
-	// 		}
-	//     }
-
-	// });
+	$(window).scroll(function () {
+		//only rept can u
+		if($('#reptCanU').length > 0) {
+			if ($(window).scrollTop() == $(document).height()-$(window).height()){
+			    $('#reptDtHackScroll').css('visibility','hidden');
+			} else {
+				$('#reptDtHackScroll').css('visibility','visible');
+			}
+		}
+	});
 
 	//show params container
 	$('body').on('click', '#showParams', function(e) {
@@ -557,7 +560,7 @@ $(document).ready(function () {
 		var c =  $('#reportTblContainer');
 		if(c.length > 0) {
 			$('#reportTblContainer').bind('scroll', function() {
-				$('#tmpDivForTot').scrollLeft(c.scrollLeft());			
+				$('#tmpDivForTot, #reptDtHackScroll').scrollLeft(c.scrollLeft());			
 			});								
 		}
 	});
@@ -607,9 +610,23 @@ $(document).ready(function () {
 			
 			w = doc.width() - 30; //takin one more time becuase previous w will be diffrent after applying screen width;
 			$('#tabs-2').css('width', w+'px');		
+
+			//fitting hack scroll properlly
+			var offset = $('#reportTblContainer').offset();
+			var lft = offset.left;
+			$('#reptDtHackScroll').css('width', (w-lft)+'px');		
 			tempDocWidth = w;
 		}
 	});
+
+	//this is hack for wider dt scroll
+	$('body').on('mousedown', '#reptDtHackScroll', function() {
+		$(this).bind('scroll', function() {
+			var sl = $(this).scrollLeft();			
+			$('#reportTblContainer, #tmpDivForTot').scrollLeft(sl);
+		});	
+	});
+
 
 
 	/* end of document ready */

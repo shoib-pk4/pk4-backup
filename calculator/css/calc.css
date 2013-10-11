@@ -1,0 +1,34 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+table {
+	text-align: center;	
+	margin: auto;
+	font-family: "sans-serif";	
+}
+tbody td, tbody th {
+	border: solid 1px grey;	
+}
+label {
+	display: block;
+	width: 50px; height: 50px;
+	cursor: pointer;
+}
+
+#result {
+	width: 98%;
+	height: 30px;
+	text-align: right;
+}
+
+tbody td:hover, tbody th:hover {
+	background-color: grey;
+	color: white;
+}
+
+#showResult {
+	background-color: red;
+	color:white;
+}

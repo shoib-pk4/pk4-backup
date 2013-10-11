@@ -2026,7 +2026,15 @@ function updateData(funOnsubmit,formSubmitPostFun,isAddNew)
 			document.getElementById("cancelButton").disabled='true';
 			if(document.getElementById("addNnewButton")) document.getElementById("addNnewButton").disabled='true';
 			document.getElementById("addEditForm").style.cursor="wait";
-			submitAddEditForm(formSubmitPostFun,isAddNew);
+
+			if(funOnsubmit == 'validateAddSBEUser') {
+				//make an ajax call and get teritory id
+				alert('get teritory id!');
+				submitAddEditForm(formSubmitPostFun,isAddNew);	
+			} else {
+				submitAddEditForm(formSubmitPostFun,isAddNew);	
+			}
+			
 		}	
 	}	
 
@@ -3836,7 +3844,7 @@ function validateThreeDigitMonth(m) {
 function createDefaultTeritory(target, className, id) {
 	var c = '<div>'; //this is main container for below elements
 	//create radio btns with container
-	c += '<ul style="list-style-type:none;padding:0;margin:0;"><li><label>Create my teritory: </label><input type="radio" value="fromTxtFld" name="defaultTeritory" class="chooseDefaultTeritory" /></li><li><label>Use existing teritory: </label><input type="radio" value="frmCmbo" name="defaultTeritory" class="chooseDefaultTeritory" /></li></ul>';
+	c += '<table style="text-align:right;font-weight:normal;"><tr><td>Create my teritory </td><td><input type="radio" value="fromTxtFld" name="defaultTeritory" class="chooseDefaultTeritory" /></td></tr><tr><td>Use existing teritory </td><td><input type="radio" value="frmCmbo" name="defaultTeritory" class="chooseDefaultTeritory" /></td></tr></table>';
 	
 	//create form with one text field
 	 c += '<p><div id="takeFromLoginName" style="display:none;"><input type="text" id="defaultTeritoryName" disabled="disabled" /> </div> <div id="defaultTeritories" style="display:none;"></div></p></div>';

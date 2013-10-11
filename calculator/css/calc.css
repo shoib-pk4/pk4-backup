@@ -9,7 +9,7 @@ table {
 	font-family: "sans-serif";	
 }
 tbody td, tbody th {
-	border: solid 1px grey;	
+	border: solid 1px gray;	
 }
 label {
 	display: block;
@@ -24,11 +24,16 @@ label {
 }
 
 tbody td:hover, tbody th:hover {
-	background-color: grey;
+	background-color: gray;
 	color: white;
 }
 
 #showResult {
 	background-color: red;
 	color:white;
+}
+
+.operators {
+	background-color: #1A65B8;
+	color: white;
 }

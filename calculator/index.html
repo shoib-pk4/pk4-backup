@@ -5,11 +5,14 @@
 		<link rel='stylesheet' type='text/css' href='css/calc.css'>
 	</head>
 	<body>
+		<h2> 
+			Number + Operator + Number = Press Equal
+		</h2>
 		<table>
 			<thead>
 				<tr>
 					<th colspan='4'>
-						<input type='text' id='result' placeholder='0' /> 
+						<input type='text' id='result' placeholder='0' onkeydown="return false;" /> 
 					</th>
 				</tr>
 			</thead>
@@ -18,25 +21,25 @@
 					<td> <label class='btns'> 1 </label></td>
 					<td> <label class='btns'> 2 </label></td>
 					<td> <label class='btns'> 3 </label></td>
-					<th> <label class='btns'> + </label></th>
+					<th> <label class='btns operators'> + </label></th>
 				</tr>
 				<tr>
 					<td> <label class='btns'> 4 </label></td>
 					<td> <label class='btns'> 5 </label></td>
 					<td> <label class='btns'> 6 </label></td>
-					<th> <label class='btns'> - </label></th>
+					<th> <label class='btns operators'> - </label></th>
 				</tr>
 				<tr>
 					<td> <label class='btns'> 7 </label></td>
 					<td> <label class='btns'> 8 </label></td>
 					<td> <label class='btns'> 9 </label></td>
-					<th> <label class='btns'> * </label></th>
+					<th> <label class='btns operators'> * </label></th>
 				</tr>
 				<tr>
-					<th> <label class='btns'> / </label></th>
+					<th> <label class='btns operators'> / </label></th>
 					<td> <label class='btns'> 0 </label></td>
 					<th> <label class='btns' id='showResult' > = </label></th>
-					<th> <label class='btns'> AC </label></th>
+					<th> <label class='btns operators'> AC </label></th>
 				</tr>
 			</tbody>
 		</table>

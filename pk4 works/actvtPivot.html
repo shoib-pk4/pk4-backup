@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<comment>
+  $Id: index.html,v 1.18 2008/02/11 10:19:28 source Exp $
+
+  This file is part of the OpenLink Ajax Toolkit (OAT) project
+
+  Copyright (C) 2005-2007 OpenLink Software
+
+  This project is free software; you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by the
+  Free Software Foundation; only version 2 of the License, dated June 1991
+
+  This project is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software Foundation,
+  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+</comment>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" >
+		var featureList=["pivot","statistics"];
+	</script>
+	<script type="text/javascript" src="/atCRM/javascript/oat/oat/loader.js"></script>
+	<link rel="stylesheet" type="text/css" href="/atCRM/javascript/oat/demo/style.css" />
+	<title>Activity Pivot</title>
+
+<style type="text/css">
+
+	#actvShowInfo {
+		border:solid 1px grey;
+		border-radius:100%;
+		float: right;
+		padding: 6px 10px;
+		text-align:center;
+		color: grey;
+		cursor: pointer;
+		font-weight: bold;
+	}
+	
+	timeFrame {
+		background: #000;
+		color: #fff;
+		width: 500px;
+		height: 250px;
+		border: 5px dotted blue;
+	}
+
+	timeFrame:hover {
+		background: #fff;
+		color: #000;
+		border: 15px dashed red;
+	}
+
+timeFrame:link {color:#FF0000;}      /* unvisited link */
+timeFrame:visited {color:#00FF00;}  /* visited link */
+timeFrame:hover {color:#FF00FF;}  /* mouse over link */
+timeFrame:active {color:#0000FF;}  /* selected link */
+td.off {
+	padding-top:10px;
+	padding-left:5px;
+	background: #FFFFFF;
+}
+td.on { 
+	padding-top:10px;
+	padding-left:5px;
+	/* IE10 */ 
+	background-image: -ms-linear-gradient(top, #FFFFFF 0%, #29EF50 100%);
+
+	/* Mozilla Firefox */ 
+	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #29EF50 100%);
+
+	/* Opera */ 
+	background-image: -o-linear-gradient(top, #FFFFFF 0%, #29EF50 100%);
+
+	/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #29EF50));
+
+	/* Webkit (Chrome 11+) */ 
+	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #29EF50 100%);
+
+	/* Proposed W3C Markup */ 
+	background-image: linear-gradient(top, #FFFFFF 0%, #29EF50 100%);
+}
+td.clk { 
+	padding-top:10px;
+	padding-left:5px;
+	/* IE10 */ 
+	background-image: -ms-linear-gradient(top, #FFFFFF 0%, #A7EF48 100%);
+
+	/* Mozilla Firefox */ 
+	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #A7EF48 100%);
+
+	/* Opera */ 
+	background-image: -o-linear-gradient(top, #FFFFFF 0%, #A7EF48 100%);
+
+	/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #A7EF48));
+
+	/* Webkit (Chrome 11+) */ 
+	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #A7EF48 100%);
+
+	/* Proposed W3C Markup */ 
+	background-image: linear-gradient(top, #FFFFFF 0%, #A7EF48 100%);
+}
+</style>
+
+
+<script>
+var showLoadDiv=false;
+var tData = [];
+
+function getMatrix(input_string) {
+	input_string = input_string.replace(/(\r\n|\n|\r)/gm,"");
+    var parts = input_string.split('#');
+	var subparts = [];
+	var allParts = [];
+    for (var i=0; i<parts.length; i++) {
+		subparts = parts[i].split(',');
+		allParts.push(subparts);
+    }
+    return allParts;
+}
+
+function showPivottu(repType) 
+{
+	showrept_desc();
+	if(showLoadDiv==true)
+	{
+		document.getElementById("init_desc").style.display = 'none';
+		var data = [];
+		var tempData;
+		var req ;
+		// Browser compatibility check                  
+		if (window.XMLHttpRequest) {
+		   req = new XMLHttpRequest();
+			}
+		else if (window.ActiveXObject) {
+		 try {
+		   req = new ActiveXObject("Msxml2.XMLHTTP");
+		 } catch (e) {
+		   try {
+			 req = new ActiveXObject("Microsoft.XMLHTTP");
+		   } catch (e) {}
+		 }
+		}
+		var req = new XMLHttpRequest();
+		req.onreadystatechange = function () 
+		{
+			if (req.readyState==4 && req.status==200) {
+				var tempData = req.responseText;
+				tData = tempData.split ("~");
+				data = getMatrix(tData[1]); 
+				var header = ["Name","Type","Date","Count"];
+				console.log(OAT.Pivot);
+				var pivot = new OAT.Pivot("pivottu_content","","pivottu_page",header,data,[0],[2],[1],3,{type:OAT.PivotData.TYPE_CUSTOM[0],customType:function(data){return data.toFixed(0);},showEmpty:1, subtotals:0, totals:1});
+				console.log('active oat pivot...');
+				console.log(pivot);
+				hiderept_desc(repType);
+
+				console.log(data);
+			}
+		}
+		var getUrl = "${servlet_prefix}/custom/rept_name/piv/actvtPiv.html?tF=" + repType;
+		req.open("GET", getUrl, true);
+		req.send(null);
+	}
+
+
+	/*
+		var aggRef = function() {
+			pivot.options.agg = parseInt($v("pivottu_agg"));
+			pivot.go();
+		}
+		var aggRefTotals = function() {
+			pivot.options.aggTotals = parseInt($v("pivottu_agg_totals"));
+			pivot.go();
+		}
+		OAT.Dom.clear("pivottu_agg");
+		OAT.Dom.clear("pivottu_agg_totals");
+		for (var i=0;i<OAT.Statistics.list.length;i++) {
+			var item = OAT.Statistics.list[i];
+			OAT.Dom.option(item.longDesc,i,"pivottu_agg");
+			OAT.Dom.option(item.longDesc,i,"pivottu_agg_totals");
+			if (pivot.options.agg == i) { $("pivottu_agg").selectedIndex = i; }
+			if (pivot.options.aggTotals == i) { $("pivottu_agg_totals").selectedIndex = i; }
+		}
+		OAT.Dom.attach("pivottu_agg","change",aggRef);
+		OAT.Dom.attach("pivottu_agg_totals","change",aggRefTotals);
+	*/
+}
+
+function showrept_desc()
+{
+	showLoadDiv=true;
+	document.getElementById('rept_desc').style.display="block";
+	document.getElementById('instruct').style.display="none";
+	document.getElementById('extra_info').style.display="none";
+	document.getElementById('rep_type').style.display="none";
+	document.getElementById('pivottu_page').style.display="none";
+	document.getElementById('pivottu_content').style.display="none";
+	document.getElementById('pivottu_chart').style.display="none";
+	
+}
+
+function hiderept_desc(rep_type)
+{
+	document.getElementById('rept_desc').style.display="none";
+	document.getElementById('instruct').style.display="block";
+	var txt = document.getElementById('extra_info');
+	txt.innerHTML = tData[0] + "<br><br>";
+	document.getElementById('extra_info').style.display="block";
+	
+	var rep_str = '';
+	if (rep_type == 'd')
+	{ rep_str = 'Daily Report';
+	} else if (rep_type == 'w')
+	{rep_str = 'Weekly Report';
+	} else if (rep_type == 'm')
+	{rep_str = 'Monthly Report';
+	} else if (rep_type == 'q')
+	{rep_str = 'Quarterly Report';
+	} else if (rep_type == 'y')
+	{rep_str = 'Yearly Report';
+	} else {rep_str = "";};
+
+	var txt = document.getElementById('rep_type');
+	txt.innerHTML = rep_str + "<br><br>";
+	document.getElementById('rep_type').style.display="block";
+	document.getElementById('pivottu_page').style.display="block";
+	document.getElementById('pivottu_content').style.display="block";
+	document.getElementById('pivottu_chart').style.display="block";
+}
+
+
+ //shows or hides pivot instructions 
+ function showOrHideActvPvtInstruction() {
+ 	var doc = document;
+ 	var trgDiv = doc.getElementById('actPvtInfo');
+ 	var status = trgDiv.style.display;
+ 	if(status === 'none') {
+ 		trgDiv.style.display = 'block';
+ 	} else {
+ 		trgDiv.style.display = 'none';
+ 	}
+ }
+
+
+</script>
+
+<body>
+
+<div style="width: 300px; display: none; background: none repeat scroll 0% 0% rgb(247, 247, 247); margin-top: 3px; font-family: tahoma,verdana; font-size: 12px; padding: 6px; font-weight: bold; position: absolute; text-align: center; z-index: 9999; left: 588.5px;" name="rept_desc" id="rept_desc">Data is being fetched. Please wait.</div>
+
+<div id="new pivottu">
+<table>
+	<tr>
+		<td width="15%">
+			<h3>Activities</h3>
+		</td>
+		<td style="font-family: Tahoma; font-size: 12px;"  width="85%">
+			Activity Counts for people who report to you and one level further
+			<span id="actvShowInfo" title="Instruction to pivot" onclick="showOrHideActvPvtInstruction()" > ? </span>
+		</td>
+	</tr>
+	<tr>
+		<td align="left" valign="top">
+			<table style="myTable">
+				<tr><td nowrap="nowrap" class="off" onmouseover="this.className='on'" onmouseout="this.className='off'" onclick="this.className='clk';"><a href="#" style="display: block; width: 100%; height: 35px;" onclick="showPivottu('d');">Daily Report</a></td></tr>
+				<tr><td nowrap="nowrap" class="off" onmouseover="this.className='on'" onmouseout="this.className='off'" onclick="this.className='clk';"><a href="#" style="display: block; width: 100%; height: 35px;" onclick="showPivottu('w');">Weekly Report</a></td></tr>
+				<tr><td nowrap="nowrap" class="off" onmouseover="this.className='on'" onmouseout="this.className='off'" onclick="this.className='clk';"><a href="#" style="display: block; width: 100%; height: 35px;" onclick="showPivottu('m');">Monthly Report</a></td></tr>
+				<tr><td nowrap="nowrap" class="off" onmouseover="this.className='on'" onmouseout="this.className='off'" onclick="this.className='clk';"><a href="#" style="display: block; width: 100%; height: 35px;" onclick="showPivottu('q');">Quarterly Report</a></td></tr>
+				<tr><td nowrap="nowrap" class="off" onmouseover="this.className='on'" onmouseout="this.className='off'" onclick="this.className='clk';"><a href="#" style="display: block; width: 100%; height: 35px;" onclick="showPivottu('y');">Yearly Report</a></td></tr>
+			</table>
+		</td>
+		<td style="margin-left:1px;"  >
+		 
+		  <div id="actPvtInfo" style="display:none; width:90%;">
+			<div id="init_desc">This section will show the Activity report that you choose. Please click on a link on the left. The data may take some time to display.
+			<br>After the data loads:
+			</div>
+			<div id="instruct" style="font-family: Tahoma; font-size: 12px; color: black;">
+			<ul>
+				<li>Use buttons below the table to toggle charts.</li>
+				<li>Click any aggregate heading (black on gray background) to change the order, filter values and toggle subtotals</li>
+				<li>Drag any aggregate heading to any place that becomes red (when you click-and-hold on a heading), to change the layout and details.</li>
+				<li>When all fields are included in the layout, an area that says "[drag paging columns here]" appears. Drag any aggregate heading to that location to select specific values to display.</li>
+				<li>Click the red X to return that specific field back to the layout.</li>
+			</ul>
+			</div>
+			</div>
+			<div id="extra_info" style="font-family: Tahoma; font-size: 12px; color: black"></div>
+			<div id="rep_type" style="font-family: Tahoma; font-size: 16px; color: black; font-weight: bold;"></div>
+		</ul>
+				<div id="pivottu">
+				<div id="pivottu_page"></div>
+				<div id="pivottu_content"></div>
+				<div id="pivottu_chart"></div>
+			</div>
+		</td>
+	</tr>
+</table>
+</div>
+	
+</body>
+</html>

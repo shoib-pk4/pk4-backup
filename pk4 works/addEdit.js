@@ -2031,7 +2031,7 @@ function updateData(funOnsubmit,formSubmitPostFun,isAddNew)
 				//save first teritory details
 				$.ajax(
 					{
-						url: '/atCRM/custom/advancedAdd/addTerritory.html',
+						url: '/atCRM/custom/advancedAdd/addTerr.html',
 						type: 'POST',
 						data: '0-1-3='+$('#0-201-357').val()+'&0-1-17txt='+session_login, //session_login is global defined in homepage.html
 						async: false,

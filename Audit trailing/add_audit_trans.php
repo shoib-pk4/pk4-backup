@@ -15,17 +15,13 @@
 	
 	class audit_trailing {
 
-		var $conn_db_tennant;
-		var $requestorid='kishore@impelcrm.in', $master_connection='host=192.168.11.11 port=5432 dbname=immaster user=postgres password=postgres'; //dev
-		//$mq=$_GET['mq'], $orgid, $requestorid='kishore@impelcrm.in', $master_connection='host=10.228.237.204 port=9999 dbname=impelmaster user=impelapi password=impel_2013'; //prod
-		var $srvLoginName;
+		var $conn_db_tennant, $srvLoginName, $master_connection, $ovArr, $nvArr;
 		var $tbl, $pk, $oper, $user, $dateTime, $org,   $startDate, $conn_string_tennant, $run_id, $my_pid, $orgname, $entity_name;
 		var $old_values, $column_details=array(), $changedColDetails=array(), $count_column_details=0, $columns=array();
-		var $ovArr, $nvArr;
 
 		//get neccessary params
-		public function __construct() {			
-
+		public function __construct($db_conn) {			
+			$this->master_connection = $db_conn;
 			$this->entity_name = trim($_POST['tbl']); //get entity name string
 			$this->mq          = trim($_POST['mq']); //get mq
 			$this->user        = trim($_POST['user']); //get user id integer
@@ -39,42 +35,15 @@
 			$this->run_id = rand(1000000, 9999999);
 			$this->my_pid = getmypid ();
 			$this->dateTime = date('Y-m-d H:i:s'); //get the current date and time
-
-			//store in log post values, when ever this is triggerd
-			// $msg =  $this->dateTime . ' Post values =';
-			// $msg .= ' Entiname='.$this->entity_name.' Mq='.$this->mq.' User='.$this->user.' Org id='.$this->orgname;
-			// $msg .= ' Pk='.$this->pk.' Ov='.$this->old_values.' Nv='.$this->new_values;
-			// $this->logError($msg);
-
-			// $this->entity_name = 'contact'; //get entity name string
-			//  $this->orgname     = 20; //get org id integer
-			//  $this->mq          = 'KZQGVNs7DRMAWT7Rov+fmA=='; //get mq
 			
 		}
 
+		//validate session
 		public function validateSession() {
-
-			
-
-			$curl = curl_init();
-		    curl_setopt ($curl, CURLOPT_URL, "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid); //dev
-		    //curl_setopt ($curl, CURLOPT_URL, "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid); //prod
-		    curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt ($curl, CURLOPT_AUTOREFERER, true);
-			curl_setopt ($curl, CURLOPT_FRESH_CONNECT, true);
-			curl_setopt ($curl, CURLOPT_HEADER, false);	
-			
-		    $enttsResult1 = curl_exec ($curl);
-		    
-			if($enttsResult1 == "") {
-				$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty. = ';
-				$this->logError($msg);
-				exit;
-			} else {
-				$usermq = $enttsResult1;
+				$devUrl = "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$this->mq;
+				$prodUrl = "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$this->mq;
 				$curl = curl_init();
-				curl_setopt ($curl, CURLOPT_URL, "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq); //dev
-				//curl_setopt ($curl, CURLOPT_URL, "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq); //prod
+				curl_setopt ($curl, CURLOPT_URL, $devUrl); //dev				
 				curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt ($curl, CURLOPT_AUTOREFERER, true);
 				curl_setopt ($curl, CURLOPT_FRESH_CONNECT, true);
@@ -83,20 +52,20 @@
 				$enttsResult = curl_exec ($curl);
 				curl_close ($curl);	
 
+
+
 				if($enttsResult == "") {
-					$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty. = ';
+					$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty.'. $devUrl;
 					$this->logError($msg);
 					exit;
 				}	
 				$json_entts = json_decode($enttsResult,true);
-				// $this->usrid = $json_entts[0]["usrid"]; 	
-				// $this->orgid = $json_entts[0]["orgid"]; 
+				//take the login name
 				$this->srvLoginName = $json_entts[0]["LoginName"]; 		
 				
-			}
 		}
 
-
+		//get tenanat connection
 		public function getTenantConnection() {
 			$conn_db_master = pg_connect($this->master_connection); 
 
@@ -172,14 +141,7 @@
 				array_push($this->column_details, $row); //store complete array
 				array_push($this->columns, strtolower($row['column_name'])); //store only name
 			}
-
-			// foreach ($this->column_details as $value) {
-			// 	array_push($this->columns, strtolower($value['column_name']));
-			// }		
 			
-
-			// exit;
-			// $this->logError("Sql=".$query."\n\r"."Columns->".$cols."\n\r".' Total Columns = '.$this->count_column_details."\r\n"); //this is to debug remove when done
 		}
 
 		//performs match on old values and new values array
@@ -226,7 +188,6 @@
 
 			}
 
-			// $this->logError($matchStr);	//this is for debug remove when done		
 			
 		}
 
@@ -360,11 +321,18 @@
 		// end of class
 	}
 
-	
+
+	//take server address	
 	$host = $_SERVER['SERVER_ADDR'];
-	$audit_obj = new audit_trailing(); //create class object
+	
 	//validate origin url
 	if(preg_match('/^192.168/', $host) || preg_match('/^10/', $host)) {		
+
+		//take connection string from constants file
+		require('../constants/php_config.cfg');		
+		//create class object	and taking master conn from php config file
+		$audit_obj = new audit_trailing($master_connection); 
+		//these are public functions triggerd one after other
 		$audit_obj->validateSession();
 		$audit_obj->getTenantConnection();
 		$audit_obj->getAuditColumns();
@@ -372,6 +340,7 @@
 		$audit_obj->addEntryInAuditTrans();
 		
 	} else {
+		//invalid access to file
 		echo 'Invalid ip';		
 	}
 

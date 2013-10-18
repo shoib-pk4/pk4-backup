@@ -1088,24 +1088,42 @@
 							$(mainDataDiv).html(doc.content);
 							break;
 				case "rept":
-							hideLeftPannel(true);
-							var into_div = document.getElementById('detailDataDiv');
-							entityDiv = into_div;
-							closeLoadingDiv();
-							$.get('/atCRM/javascript/JSON/test.json', function(data) {
-								doc = JSON.parse(data);
-								setTimeout(function() {
-								//add progress bar here
-									$('#detailDataDiv').prepend('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
-								}, 10);
-								setTimeout(function() {									
-									exec_rept(doc,into_div);
-								}, 10);	
-							});
+							setTimeout(function() {
+								var d = document;
+								entityDiv = d.getElementById('detailDataDiv');
+								setTimeout(function(){
+									entityDiv.appendChild('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+								}, 100);								
+								exec_rept(doc,entityDiv);								
+							}, 0);
+							break;
+							// var d = document;
+							// // hideLeftPannel(true);
+							// var into_div = d.getElementById('detailDataDiv');
+							// entityDiv = into_div;
+							// d.getElementById('loadingDiv').style.display = 'block';
+							// into_div.appendChild('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');							
+							// $('#detailDataDiv').prepend('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+							// var t = setTimeout(exec_rept(doc,into_div), 0);
+							// 	//add progress bar here
+							// 		$('#detailDataDiv').prepend('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+									
+							// }, 10);
+							// closeLoadingDiv();
+							// $.get('/atCRM/javascript/JSON/test.json', function(data) {
+							// 	doc = JSON.parse(data);
+							// 	setTimeout(function() {
+							// 	//add progress bar here
+							// 		$('#detailDataDiv').prepend('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+							// 	}, 10);
+							// 	setTimeout(function() {									
+							// 		exec_rept(doc,into_div);
+							// 	}, 10);	
+							// });
 							
 							// exec_rept(doc,into_div);
 							
-							break;
+							// break;
 				case "l2": 
 							// hidePannel(true);
 							var into_div = document.getElementById('detailDataDiv');

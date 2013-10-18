@@ -15,7 +15,7 @@
 	
 	class audit_trailing {
 
-		var $conn_db_tennant, $srvLoginName, $master_connection, $ovArr, $nvArr;
+		var $conn_db_tennant, $srvLoginName, $master_connection, $ovArr, $nvArr, $requestorid = "vinutha@pk4.in";
 		var $tbl, $pk, $oper, $user, $dateTime, $org,   $startDate, $conn_string_tennant, $run_id, $my_pid, $orgname, $entity_name;
 		var $old_values, $column_details=array(), $changedColDetails=array(), $count_column_details=0, $columns=array();
 
@@ -40,10 +40,26 @@
 
 		//validate session
 		public function validateSession() {
-				$devUrl = "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$this->mq;
-				$prodUrl = "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$this->mq;
+
+			$curl = curl_init();
+		    curl_setopt ($curl, CURLOPT_URL, "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid); //dev
+		    //curl_setopt ($curl, CURLOPT_URL, "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid); //prod
+		    curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt ($curl, CURLOPT_AUTOREFERER, true);
+			curl_setopt ($curl, CURLOPT_FRESH_CONNECT, true);
+			curl_setopt ($curl, CURLOPT_HEADER, false);	
+			
+		    $enttsResult1 = curl_exec ($curl);
+		    
+			if($enttsResult1 == "") {
+				$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty. = ';
+				$this->logError($msg);
+				exit;
+			} else {
+				$usermq = $enttsResult1;
 				$curl = curl_init();
-				curl_setopt ($curl, CURLOPT_URL, $devUrl); //dev				
+				curl_setopt ($curl, CURLOPT_URL, "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq); //dev
+				//curl_setopt ($curl, CURLOPT_URL, "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq); //prod
 				curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt ($curl, CURLOPT_AUTOREFERER, true);
 				curl_setopt ($curl, CURLOPT_FRESH_CONNECT, true);
@@ -52,16 +68,39 @@
 				$enttsResult = curl_exec ($curl);
 				curl_close ($curl);	
 
-
-
 				if($enttsResult == "") {
-					$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty.'. $devUrl;
+					$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty. = ';
 					$this->logError($msg);
 					exit;
 				}	
 				$json_entts = json_decode($enttsResult,true);
-				//take the login name
-				$this->srvLoginName = $json_entts[0]["LoginName"]; 		
+				// $this->usrid = $json_entts[0]["usrid"]; 	
+				// $this->orgid = $json_entts[0]["orgid"]; 
+				$this->srvLoginName = $json_entts[0]["LoginName"]; 	
+			}		
+				
+				// $devUrl = "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$this->mq;
+				// $prodUrl = "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$this->mq;
+				// $curl = curl_init();
+				// curl_setopt ($curl, CURLOPT_URL, $devUrl); //dev				
+				// curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
+				// curl_setopt ($curl, CURLOPT_AUTOREFERER, true);
+				// curl_setopt ($curl, CURLOPT_FRESH_CONNECT, true);
+				// curl_setopt ($curl, CURLOPT_HEADER, false);	
+				
+				// $enttsResult = curl_exec ($curl);
+				// curl_close ($curl);	
+
+
+
+				// if($enttsResult == "") {
+				// 	$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty.'. $devUrl;
+				// 	$this->logError($msg);
+				// 	exit;
+				// }	
+				// $json_entts = json_decode($enttsResult,true);
+				// //take the login name
+				// $this->srvLoginName = $json_entts[0]["LoginName"]; 		
 				
 		}
 

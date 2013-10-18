@@ -1091,6 +1091,7 @@
 							setTimeout(function() {
 								var d = document;
 								entityDiv = d.getElementById('detailDataDiv');								
+								document.title = "Parsing...";
 								exec_rept(doc,entityDiv);							
 								
 							}, 0);

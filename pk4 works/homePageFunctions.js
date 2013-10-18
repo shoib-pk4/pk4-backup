@@ -1090,13 +1090,11 @@
 				case "rept":
 							setTimeout(function() {
 								var d = document;
-								entityDiv = d.getElementById('detailDataDiv');
-								setTimeout(function(){
-									entityDiv.appendChild('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
-								}, 100);								
-								exec_rept(doc,entityDiv);								
+								entityDiv = d.getElementById('detailDataDiv');								
+								exec_rept(doc,entityDiv);							
+								
 							}, 0);
-							break;
+							// break;
 							// var d = document;
 							// // hideLeftPannel(true);
 							// var into_div = d.getElementById('detailDataDiv');
@@ -1109,21 +1107,21 @@
 							// 		$('#detailDataDiv').prepend('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
 									
 							// }, 10);
-							// closeLoadingDiv();
+							closeLoadingDiv();
 							// $.get('/atCRM/javascript/JSON/test.json', function(data) {
 							// 	doc = JSON.parse(data);
-							// 	setTimeout(function() {
-							// 	//add progress bar here
-							// 		$('#detailDataDiv').prepend('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
-							// 	}, 10);
+							// 	// setTimeout(function() {
+							// 	// //add progress bar here
+							// 	// // $('#detailDataDiv').prepend('<div id="reptOnloadLoading" style="display:block; width: 200px;height: 30px; margin:auto;"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div>');
+							// 	// }, 10);
 							// 	setTimeout(function() {									
-							// 		exec_rept(doc,into_div);
+							// 		exec_rept(doc,entityDiv);
 							// 	}, 10);	
 							// });
 							
 							// exec_rept(doc,into_div);
 							
-							// break;
+							break;
 				case "l2": 
 							// hidePannel(true);
 							var into_div = document.getElementById('detailDataDiv');

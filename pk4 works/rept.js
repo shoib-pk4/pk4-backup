@@ -794,10 +794,11 @@ function redrawPivotWithSaveObj(obj) {
 
 		}
 	});
-	var agg = obj['aggregator'];
+	var agg    = obj['aggregator'];
 	var aggStr = agg.charAt(0).toUpperCase() + agg.slice(1);
-	valueStr = '<span class="reptTblCondVar">Showing <b>'+ obj['renderer'] + '</b> of (<b>'+ obj['rows'].toString().replace(/axis_/g, '') +'</b>) and ';
-	valueStr += 'as <b>'+obj['cols'].toString().replace(/axis_/g, '')+'</b>, with <b>'+aggStr+'</b> of <b>'+obj['vals'].toString().replace(/axis_/g, '')+'</b></span>';
+
+	valueStr = '<span class="reptTblCondVar">Showing <b>'+ obj['renderer'] + '</b> of <b>'+ reptReturnCommaSeparatedStrFromArr( obj['rows'] )+'</b> (as rows) and ';
+	valueStr += ' <b>'+reptReturnCommaSeparatedStrFromArr( obj['cols'] ) +'</b> as columns, with <b>'+aggStr+'</b> of <b>'+ reptReturnCommaSeparatedStrFromArr( obj['vals'] ) +'</b> in cells.</span>';
 
 	//show the conditions
 	$('#pivot-menu-container').prepend(valueStr);
@@ -806,7 +807,12 @@ function redrawPivotWithSaveObj(obj) {
 	
 }
 
-//get c
+//get comma separated strin from arr
+function reptReturnCommaSeparatedStrFromArr(arr) {
+	var str =  arr.toString().replace(/axis_/g, '');
+		str = str.replace(/,/g, ', ');
+		return str;
+}
 
 /* 
 	* Redraw chart with saved structure
@@ -1089,10 +1095,9 @@ function reloadDataTable(data) {
 		iniFnFilter();
 	}
 
+	totalColCntDt = true; //this means, calculate total once again
 	plotDataTable(data);
 	
-
-
 	//clear the previous btns
 	$('#reptDtMoreSelc').html('');
 	//move data table button to reptDtmoreSel div

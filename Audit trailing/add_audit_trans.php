@@ -15,7 +15,7 @@
 	
 	class audit_trailing {
 
-		var $conn_db_tennant, $srvLoginName, $master_connection, $ovArr, $nvArr, $requestorid = "vinutha@pk4.in";
+		var $conn_db_tennant, $srvLoginName, $master_connection, $ovArr, $nvArr, $requestorid = "kishore@pk4.in";
 		var $tbl, $pk, $oper, $user, $dateTime, $org,   $startDate, $conn_string_tennant, $run_id, $my_pid, $orgname, $entity_name;
 		var $old_values, $column_details=array(), $changedColDetails=array(), $count_column_details=0, $columns=array();
 
@@ -29,6 +29,7 @@
 			$this->old_values  = trim($_POST['ov']); //old values 
 			$this->new_values  = trim($_POST['nv']); // new values
 			$this->pk          = trim($_POST['pk']); // pk
+			$this->dbName          = trim($_POST['dbName']); // dbName
 
 			ini_alter('date.timezone','Asia/Calcutta'); //set the timezone
 
@@ -57,9 +58,9 @@
 				$this->logError($msg);
 				exit;
 			} else {
-				$url = "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
-				$url = "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
 				$usermq = $enttsResult1;
+				//$url = "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
+				$url = "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
 				$curl = curl_init();
 				curl_setopt ($curl, CURLOPT_URL, $url); 
 				curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -116,8 +117,8 @@
 				$this->logError($msg);
 				exit;
 			} 
-
-			$querygetTenantDtsSQL = "SELECT tenant_master.org_name, tenant_master.jdbc_url, mt_user_master.user_id FROM tenant_master,mt_user_master WHERE mt_user_master.tenant_id = tenant_master.tenant_id AND mt_user_master.user_name = '".$this->srvLoginName."'";
+			
+			$querygetTenantDtsSQL = "SELECT tenant_master.org_name, tenant_master.jdbc_url FROM tenant_master WHERE tenant_master.name = '".$this->dbName."'";
 			$getTenantDtsSQL = @pg_query($conn_db_master, $querygetTenantDtsSQL);
 			if($getTenantDtsSQL === FALSE) {
 				$msg =  $this->dateTime . ' Selecting tenant query failed. Query= '.$querygetTenantDtsSQL;
@@ -142,8 +143,8 @@
 
 				$db_server = substr($db_server, 0,strlen($db_server) - 5);
 
-				$this->conn_string_tennant = "hostaddr=$db_server port=$db_port dbname=$db_name user=postgres password=postgres";	 //dev
-				//$this->conn_string_tennant = "hostaddr=$db_server port=$db_port dbname=$db_name user=impelapi password=impel_2013";	 //prod
+				//$this->conn_string_tennant = "hostaddr=$db_server port=$db_port dbname=$db_name user=postgres password=postgres";	 //dev
+				$this->conn_string_tennant = "hostaddr=$db_server port=$db_port dbname=$db_name user=impelapi password=impel_2013";	 //prod
 				
 				//free results to free memory
 				pg_free_result($getTenantDtsSQL);
@@ -152,7 +153,7 @@
 			//tennant connection
 			$this->conn_db_tennant = @pg_connect($this->conn_string_tennant);
 			if (!$this->conn_db_tennant) {
-				$msg =  $this->dateTime . ' Tenant connection failed. Tennant= '.$this->conn_string_tennant;
+				$msg =  $this->dateTime . ' Tenant connection failed. Tennant= '.$jdbc_url;
 				$this->logError($msg);
 				exit;
 			} else {
@@ -182,7 +183,6 @@
 				array_push($this->column_details, $row); //store complete array
 				array_push($this->columns, strtolower($row['column_name'])); //store only name
 			}
-			
 		}
 
 		//performs match on old values and new values array
@@ -236,8 +236,8 @@
 		public function addEntryInAuditTrans() {
 			$totalEntry = count($this->changedColDetails);
 			if($totalEntry == 0 ) {
-				$msg =  $this->dateTime . ' No entry found to add in transaction. Terminating.';
-				$this->logError($msg);
+				$msg =  $this->dateTime . ' No entry found to add in transaction. Terminating !!! ';
+				$this->logError($msg.implode(',',$this->columns));
 				exit;
 			}
 

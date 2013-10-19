@@ -37,7 +37,7 @@ function exec_rept (doc, into_div) {
 	var cont = '<div id="reptCanU" style="width:100%;"><div id="reportElementHeader">  <table width="100%" class="reportHeaderCont" > <tr> <td align="left" class="pageTitle" style="width:240px;"> ' + rptName + ' </td><td style="width:300px;" align="left">' + rptSubName + '</td><td align="right" valign="bottom" > <input type="button" class="blueButton reptBtns" value="Parameters" style="width: 100px;" id="showParams" /> <input type="button" class="blueButton reptBtns expBtn" value="Export" style="width: 100px;border-radius: 4px 0px 0px 4px;" id="exportDataTbl" /><div id="reptMoreTblOptCont" ><input type="button" class="reptBtns reptMoreOpt" /> <div class="reptMoreSel" > <div id="reptDtMoreSelc" ></div> </div> </div> </div> </td> </tr> </table><div id="paramsContainer"> </div> </div> <div id="tabs-2" > <span id="dtRefreshedAt"></span> <div id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> <ul id="tabsContainer" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">  </ul> <div id="tabData"><div class="reptShowLoading" id="dtLoading"><p>Loading data..Wait</p><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <table id="reportData"> </table> </div><div id="tabChart" > <div class="highchartsHdr"><div class="reptShowLoading" id="reptChartLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div><span id="reptChartInstr"><span class="reptTblUseInfo">You can select the type of chart that you\'d like to see for each set of data here.</span> <input type="button" class="twitter-btn twitter-btn-warning saveChart" value="Save"  id="saveChart" title="Save Chart" /> </span><div id="selectTypeChartCont"></div></div> <div id="tabChartArea" status="0"> <span style="margin-top: 60px;display:block;">Your chart will be displayed here. </span></div> </div><div id="tabMap" >show map here </div> <div id="tabPivot" width="auto"> <div id="pvtLoading" class="reptShowLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <div id="pivot-menu-container"><span class="reptTblUseInfo">Please select the appropriate columns below to create your own Pivot Report.</span> <input type="button" class="twitter-btn twitter-btn-warning" value="Edit"  id="editSavePivot" title="Customize Pivot" /><input type="button" class="twitter-btn twitter-btn-warning savePivot" value="Save"  id="savePivot" title="Save Pivot" /> </div> <div id="k_results"></div><div id="results"> </div> </div> </div> </div><form method="post" action="/atCRM/custom/adhocReports/rXL.xls" id="exelDownloadForm"> <input type="hidden" name="rD" id="rD"  /> <input type="hidden" name="rN" id="rN"  /></form> </div>';
 	
 	// var scr = "<script type='text/javascript' src='/atCRM/javascript/JSON/rept-more.js'></script>";
-	var sty = '<style type="text/css" id="reptStyle"> .table-bordered {border: solid 1px white !important; } .table-bordered td+td {border: solid 1px #ddd !important;} .pvtTdFullBorder {border: solid 1px #ddd !important;} #reptOwner {color:grey;font-size:12px;float:right;margin-right: 6px;} #reptOwner span {color:#F87777;}.pivotCustHide {display:none;} #reportElementHeader {min-width: 1000px;width:100%;} #reportData tr th,#reportData tr td  {word-wrap:break-word;min-width:60px;max-width:60px;} .dataTables_info {margin-bottom: 12px; color:grey;}  .dtHdrFixed {position:fixed;background-color:white;top:0;} #selectTypeOfHC, #chartSelXAxis {font-size: 12px;} .dtTotal {background-color: #014464; color: white;}  .dtTotal td {  border:none; border-right: solid 1px grey;border-left: solid 1px grey;} .ui-state-active-droppable {background-color: #DFEB5E !important; } #pivot-menu-container, #reptChartInstr {height:37px;} .savePivot, .saveChart {float:right; display:none;}  #editSavePivot, #cancelEditPivot { float:right;} .reptBtns:hover, .reptFrmBtns:hover {background-color:#014464 !important;color:white;} #filterCancel {cursor:pointer;visibility:hidden;} #reportData .Text {text-align: left !important;} #reportData .Integer, #reportData .Number {text-align: right !important;} #reportData tr td {text-align:left;} #hcTypeSelTbl {width: 100%;} #hcTypeSelTbl td { display: inline-block; font-size: 12px; font-weight:bold; } #reportData_wrapper .clear {clear:both;} .pageTitle {font-size: 20px; } .reportHeaderCont { text-align: left; border-radius: 4px; margin: 10px auto; color: white; padding: 5px; background: #014464;background: -moz-linear-gradient(top, #0272a7, #013953);background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0272a7), to(#013953));border: 1px solid #002232;-moz-box-shadow: inset 0px 0px 1px #edf9ff;-webkit-box-shadow: inset 0px 0px 1px #edf9ff;box-shadow: inset 0px 0px 1px #edf9ff; } .reptBtns {background-color: #fff !important;} #reptMoreTblOptCont {position:relative; width: 30px; height: 30px; float:right; } #reptMoreTblOptCont:hover .reptMoreSel {display:block;} .reptMoreSel a {width: 25px !important;}  .reptMoreSel {display: none; right:0; top:28px;border: solid 1px #F1F1F1; position: absolute; background-color:#DADADA; padding: 4px; border-radius: 2px; z-index:1; width: 42px; } .reptMoreOpt {width: 30px !important;height: 28px; border-radius: 0px 4px 4px 0px; background: url("/atCRM/images/imagesList.png") no-repeat -60px -35px; } #tabMapBtn {display:none !important;}  #tabs-min .ui-tabs-nav li {top: 1px !important;} #k_results #vals, #k_results #rows {width: 15%; }  #k_results #cols {width: 85%;} #reportTblContainer {width: 100%; overflow: auto; } #filterRow th {padding: 4px 0 !important;} .eachColFilterSelect {margin: auto; width: 50px; display: block; } .filterRowHide {display:none;} .reptShowLoading{ display:none;text-align:center;color:red;} .highchartsHdr { font-family: candara, "sans-serif"; text-align:left; font-size:16px;display:block;} #tabChartArea {border: solid 1px #9C9797; display:block; width: 900px;height:400px; margin:auto;} #pivot-menu-container {text-align:left; font-size:14px; font-family:candara; margin:4px 0px;} #selectTypeChartCont {width: 100%;display:block;margin:12px auto;} #tabChart {display:block; margin: auto; width: 90%;} #paramsTbl td input[type=text] { width: 80%; } #paramsTbl td { display: inline-block; vertical-align: top; margin-right: 1.5%; width: 18%; } #slideUpDwnCont {display:none;} .showParamsCondCont {font-size: 16px;font-weight:bold; text-align:left; height: 30px;display:block; } .showParamsCondCont #showParams {float:right;}   #paramsTbl .multiSelectBox {width:82%;} #paramsTbl .sf_suggestion {margin-top: -56px;} #tblDiv {display:inline-block;width:100%;} .reptFrmBtns {float:right;margin-right: 5px; } .reptParamsDesc {font-size: 12px;display: block; color:grey;} #dtRefreshedAt {position:absolute; right: 1%;top: 0; font-size: 12px;} .reptParamsLbl {font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;} #paramsTbl {width:100%; border-collapse: collapse;} #paramsContainer { padding: 0.5% 0; width: 99%; display: block; height:auto;} .filterApplied {background-color:palegreen;} .dpass {display: none;} #reportData tr th {position:relative;} #k_results {display:block;overflow:auto;} #reportData_wrapper {overflow:auto;} #tabs-2 {position:relative;min-width:1000px;width:100%;} #tabs-2 .dataTables_filter {width: 425px; } .removeCol {display:none;} .showOrHideColsActv { height: 250px !important; background-color: white;border: solid 2px white;border-radius: 3px; background-position:top left !important; overflow-x:hidden !important; overflow-y:auto !important; width:220px !important; margin-left: -12.5% !important;} #reportData {text-align:center;}   .toggleColName:hover {background-color:rgb(164, 198, 218);} .toggleColName { border:none; border-top:solid 1px rgba(10, 9, 9, 0.1);width: 100%; cursor: pointer; font-size: 12px; font-family: candara; display:block;margin: 2px 0;text-align:left;padding: 2px 0;} #reportData_filter input { display: inline;} #reportData_length label { width 260px; } #reportData_length select { display: inline-block; } #tabs-min { background: transparent; border: none; } #filterColsByCombo {background: url("/atCRM/images/imagesList.png") no-repeat 1px -2px;} #showOrHideCols, #filterColsByCombo { cursor: pointer; background-color: white; border: solid 1px white; transition: height all 1s; -webkit-transition: all 1s; -moz-transition: all 1s; -o-transition: all 1s; z-index:1; overflow: hidden; position:absolute; width:31px; margin: 0.5% 0 0 -1%; padding: 24px 4px 2px 4px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; height: 25px;  } #showOrHideCols {margin-left: 2.3%; background: white url("/atCRM/images/gearDown.png") no-repeat top right / 28px 24px;}  #tabs-min .ui-widget-header { background: transparent; border: none; border-bottom: 1px solid #c0c0c0; -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; } #tabs-min .ui-state-default { background: transparent; border: none; } #tabs-min .ui-state-active { border: none; } #tabs-min .ui-state-default a { color: #c0c0c0; } #tabs-min .ui-state-active a { color: #459E00; background: transparent url(/atCRM/stylesheets/style_h/images/uiTabsArrow.png) no-repeat bottom center; } .dataTables_wrapper { font-size: 9pt; } .flash{ padding-top:4px; padding-bottom:4px; background-color: #FFFF33; font-weight:bold; font-size:12px;-moz-border-radius: 6px;-webkit-border-radius: 6px; color: black; } .alignRight { text-align: right; } .ui-tabs .ui-tabs-nav { margin: 0; padding: 0 0 0 0.4em; border: 1px solid #d4ccb0; background: none !important;} .blkSdw {box-shadow: 1px 1px 4px black;-moz-box-shadow: 1px 1px 4px black;-webkit-box-shadow: 1px 1px 4px black;-o-box-shadow: 1px 1px 4px black;}  .showingParams {background-color: skyblue !important; color: black;} #slideUpDwnCont {border: solid 1px rgba(0,0,0,0.2); border-left: none;border-right:none;} table#reportData thead tr th {  padding-right:36px; } .filterColsByComboActv { border:solid 1px #FF0606; -webkit-box-shadow: 1px 1px 4px #111010; -moz-box-shadow: 1px 1px 4px #111010;box-shadow: 1px 1px 4px #111010; }  </style>';
+	var sty = '<style type="text/css" id="reptStyle"> .reptTblUseInfo {float:left;} .reptTblCondVar b {color:black;} .reptTblCondVar {color:grey;font-weight:normal;width: 60%; display:inline-block;} .table-bordered {border: solid 1px white !important; } .table-bordered td+td {border: solid 1px #ddd !important;} .pvtTdFullBorder {border: solid 1px #ddd !important;} #reptOwner {color:grey;font-size:12px;float:right;margin-right: 6px;border-bottom: dashed 1px #DAD7D7;} #reptOwner span {color:#F87777;}.pivotCustHide {display:none;} #reportElementHeader {min-width: 1000px;width:100%;} #reportData tr th,#reportData tr td  {word-wrap:break-word;min-width:60px;max-width:60px;} .dataTables_info {margin-bottom: 12px; color:grey;}  .dtHdrFixed {position:fixed;background-color:white;top:0;} #selectTypeOfHC, #chartSelXAxis {font-size: 12px;} .dtTotal {background-color: #014464; color: white;}  .dtTotal td {  border:none; border-right: solid 1px grey;border-left: solid 1px grey;} .ui-state-active-droppable {background-color: #DFEB5E !important; } #pivot-menu-container, #reptChartInstr {height:37px;} .savePivot, .saveChart {float:right; display:none;}  #editSavePivot, #cancelEditPivot { float:right;} .reptBtns:hover, .reptFrmBtns:hover {background-color:#014464 !important;color:white;} #filterCancel {cursor:pointer;visibility:hidden;} #reportData .Text {text-align: left !important;} #reportData .Integer, #reportData .Number {text-align: right !important;} #reportData tr td {text-align:left;} #hcTypeSelTbl {width: 100%;} #hcTypeSelTbl td { display: inline-block; font-size: 12px; font-weight:bold; } #reportData_wrapper .clear {clear:both;} .pageTitle {font-size: 20px; } .reportHeaderCont { text-align: left; border-radius: 4px; margin: 10px auto; color: white; padding: 5px; background: #014464;background: -moz-linear-gradient(top, #0272a7, #013953);background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0272a7), to(#013953));border: 1px solid #002232;-moz-box-shadow: inset 0px 0px 1px #edf9ff;-webkit-box-shadow: inset 0px 0px 1px #edf9ff;box-shadow: inset 0px 0px 1px #edf9ff; } .reptBtns {background-color: #fff !important;} #reptMoreTblOptCont {position:relative; width: 30px; height: 30px; float:right; } #reptMoreTblOptCont:hover .reptMoreSel {display:block;} .reptMoreSel a {width: 25px !important;}  .reptMoreSel {display: none; right:0; top:28px;border: solid 1px #F1F1F1; position: absolute; background-color:#DADADA; padding: 4px; border-radius: 2px; z-index:1; width: 42px; } .reptMoreOpt {width: 30px !important;height: 28px; border-radius: 0px 4px 4px 0px; background: url("/atCRM/images/imagesList.png") no-repeat -60px -35px; } #tabMapBtn {display:none !important;}  #tabs-min .ui-tabs-nav li {top: 1px !important;} #k_results #vals, #k_results #rows {width: 15%; }  #k_results #cols {width: 85%;} #reportTblContainer {width: 100%; overflow: auto; } #filterRow th {padding: 4px 0 !important;} .eachColFilterSelect {margin: auto; width: 50px; display: block; } .filterRowHide {display:none;} .reptShowLoading{ display:none;text-align:center;color:red;} .highchartsHdr { font-family: candara, "sans-serif"; text-align:left; font-size:16px;display:block;} #tabChartArea {border: solid 1px #9C9797; display:block; width: 900px;height:400px; margin:auto;} #pivot-menu-container {text-align:left; font-size:14px; font-family:candara; margin:4px 0px;} #selectTypeChartCont {width: 100%;display:block;margin:12px auto;} #tabChart {display:block; margin: auto; width: 90%;} #paramsTbl td input[type=text] { width: 80%; } #paramsTbl td { display: inline-block; vertical-align: top; margin-right: 1.5%; width: 18%; } #slideUpDwnCont {display:none;} .showParamsCondCont {font-size: 16px;font-weight:bold; text-align:left; height: 30px;display:block; } .showParamsCondCont #showParams {float:right;}   #paramsTbl .multiSelectBox {width:82%;} #paramsTbl .sf_suggestion {margin-top: -56px;} #tblDiv {display:inline-block;width:100%;} .reptFrmBtns {float:right;margin-right: 5px; } .reptParamsDesc {font-size: 12px;display: block; color:grey;} #dtRefreshedAt {position:absolute; right: 1%;top: 0; font-size: 12px;} .reptParamsLbl {font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;} #paramsTbl {width:100%; border-collapse: collapse;} #paramsContainer { padding: 0.5% 0; width: 99%; display: block; height:auto;} .filterApplied {background-color:palegreen;} .dpass {display: none;} #reportData tr th {position:relative;} #k_results {display:block;overflow:auto;} #reportData_wrapper {overflow:auto;} #tabs-2 {position:relative;min-width:1000px;width:100%;} #tabs-2 .dataTables_filter {width: 425px; } .removeCol {display:none;} .showOrHideColsActv { height: 250px !important; background-color: white;border: solid 2px white;border-radius: 3px; background-position:top left !important; overflow-x:hidden !important; overflow-y:auto !important; width:220px !important; margin-left: -12.5% !important;} #reportData {text-align:center;}   .toggleColName:hover {background-color:rgb(164, 198, 218);} .toggleColName { border:none; border-top:solid 1px rgba(10, 9, 9, 0.1);width: 100%; cursor: pointer; font-size: 12px; font-family: candara; display:block;margin: 2px 0;text-align:left;padding: 2px 0;} #reportData_filter input { display: inline;} #reportData_length label { width 260px; } #reportData_length select { display: inline-block; } #tabs-min { background: transparent; border: none; } #filterColsByCombo {background: url("/atCRM/images/imagesList.png") no-repeat 1px -2px;} #showOrHideCols, #filterColsByCombo { cursor: pointer; background-color: white; border: solid 1px white; transition: height all 1s; -webkit-transition: all 1s; -moz-transition: all 1s; -o-transition: all 1s; z-index:1; overflow: hidden; position:absolute; width:31px; margin: 0.5% 0 0 -1%; padding: 24px 4px 2px 4px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; height: 25px;  } #showOrHideCols {margin-left: 2.3%; background: white url("/atCRM/images/gearDown.png") no-repeat top right / 28px 24px;}  #tabs-min .ui-widget-header { background: transparent; border: none; border-bottom: 1px solid #c0c0c0; -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; } #tabs-min .ui-state-default { background: transparent; border: none; } #tabs-min .ui-state-active { border: none; } #tabs-min .ui-state-default a { color: #c0c0c0; } #tabs-min .ui-state-active a { color: #459E00; background: transparent url(/atCRM/stylesheets/style_h/images/uiTabsArrow.png) no-repeat bottom center; } .dataTables_wrapper { font-size: 9pt; } .flash{ padding-top:4px; padding-bottom:4px; background-color: #FFFF33; font-weight:bold; font-size:12px;-moz-border-radius: 6px;-webkit-border-radius: 6px; color: black; } .alignRight { text-align: right; } .ui-tabs .ui-tabs-nav { margin: 0; padding: 0 0 0 0.4em; border: 1px solid #d4ccb0; background: none !important;} .blkSdw {box-shadow: 1px 1px 4px black;-moz-box-shadow: 1px 1px 4px black;-webkit-box-shadow: 1px 1px 4px black;-o-box-shadow: 1px 1px 4px black;}  .showingParams {background-color: skyblue !important; color: black;} #slideUpDwnCont {border: solid 1px rgba(0,0,0,0.2); border-left: none;border-right:none;} table#reportData thead tr th {  padding-right:36px; } .filterColsByComboActv { border:solid 1px #FF0606; -webkit-box-shadow: 1px 1px 4px #111010; -moz-box-shadow: 1px 1px 4px #111010;box-shadow: 1px 1px 4px #111010; }  </style>';
 	
 	into_div.innerHTML = sty + cont;
 
@@ -572,7 +572,7 @@ $(document).ready(function () {
 			globalChartPlotted.redraw();
 		}
 		catch(e) {
-			alert(e);
+			alert('Failed to draw' + e);
 		}
 	});
 
@@ -706,8 +706,8 @@ $(document).ready(function () {
 		$(this).val('Cancel').attr('id', 'cancelEditPivot');
 		$('.table-bordered').css('border', 'solid 1px #ddd !important');
 		$('.table-bordered td+td').addClass('pvtTdFullBorder');
-		$('.reptTblUseInfo').css('display', 'inline-block');
-		$('.reptTblCondVar').css('display', 'none');
+		$('#tabPivot .reptTblUseInfo').css('display', 'inline-block');
+		$('#tabPivot .reptTblCondVar').css('display', 'none');
 	});
 
 	//show pivot customizing buttons
@@ -718,8 +718,8 @@ $(document).ready(function () {
 		$('.table-bordered').css('border', 'solid 1px #ddd !important');
 		$('.table-bordered').css('border', 'solid 1px white !important');
 		$('.table-bordered td+td').addClass('pvtTdFullBorder');
-		$('.reptTblUseInfo').css('display', 'none');
-		$('.reptTblCondVar').css('display', 'inline-block');
+		$('#tabPivot .reptTblUseInfo').css('display', 'none');
+		$('#tabPivot .reptTblCondVar').css('display', 'inline-block');
 	});
 
 	//save charts 
@@ -728,7 +728,7 @@ $(document).ready(function () {
 		//change id of btn, so that it can prevent from multiple clicks
 		$(this).val('Saving..').attr('id', 'savingChart');
 		//init
-		var chartUiStatus = {}, id;
+		var chartUiStatus = {}, id, value, t;
 
 		chartUiStatus['axis'] = $('#chartSelXAxis').val();
 
@@ -736,8 +736,10 @@ $(document).ready(function () {
 		chartUiStatus['chartTypes'] = [];
 		var chartTypes = chartUiStatus['chartTypes'];
 		$('#selectTypeChartCont .selectTypeOfHC').each(function() {
-			id = $(this).attr('id');
-			chartTypes.push(id);
+			t = $(this);
+			id = t.attr('id');
+			value = t.val();
+			chartTypes.push(id + '##' + value);
 		});
 
 		//now save it
@@ -769,23 +771,34 @@ $(document).ready(function () {
 /* 
 	* Redraw pivot with saved structure
 */
+var reptPvtKeyVal = {
+	'rows': 'Rows have',
+	'cols': 'Columns have',
+	'renderer': 'Chart type',
+	'aggregator': 'Quantity',
+	'vals': 'Cells have'
+};
+//Showing <renderer> of <rows> (as rows) and <cols> as cols, with <aggregator> of <vals> in cells.
 function redrawPivotWithSaveObj(obj) {
 	
-	var typVal, valueStr='';
+	var typVal;
 	$.each(obj, function(id,rowColVals) {
 		typVal =  typeof rowColVals;
 		if(typVal === 'string') { //this value will be of select
 			$('#'+id).val(rowColVals);
-			valueStr += ' <b> '+id+' </b>: '+' <span style="color:grey;"> '+rowColVals+' | </span> ';
 		} 
 		else if(typVal === 'object') { //in this case object contains ids of particula container
 			$.each(rowColVals, function(k,ids) {
 				$('#'+ids).appendTo('#'+id);
-				valueStr += ' <b> '+k+' </b>:'+' <span style="color:grey;"> '+ids+' -> </span> ';
 			});
+
 		}
 	});
-	valueStr = '<span class="reptTblCondVar">' + valueStr + '</span>';
+	var agg = obj['aggregator'];
+	var aggStr = agg.charAt(0).toUpperCase() + agg.slice(1);
+	valueStr = '<span class="reptTblCondVar">Showing <b>'+ obj['renderer'] + '</b> of (<b>'+ obj['rows'].toString().replace(/axis_/g, '') +'</b>) and ';
+	valueStr += 'as <b>'+obj['cols'].toString().replace(/axis_/g, '')+'</b>, with <b>'+aggStr+'</b> of <b>'+obj['vals'].toString().replace(/axis_/g, '')+'</b></span>';
+
 	//show the conditions
 	$('#pivot-menu-container').prepend(valueStr);
 	//just trigger change on render select, so that pivot shows result
@@ -793,22 +806,29 @@ function redrawPivotWithSaveObj(obj) {
 	
 }
 
+//get c
+
 /* 
 	* Redraw chart with saved structure
 */
 function redrawChartWithSaveObj(obj) {
-	
+	console.log(obj);
 	var axis = obj.axis, axisObj=$('#chartSelXAxis'), valueStr=''; //get the axis
 	//set axis type
 	axisObj.val(axis);
 
 	//now set the different charts
-	var charts = obj.chartTypes;
-	$.each(charts, function(id,selVal) {
-		$('#'+id).val(selVal);
-		valueStr += ' <b> '+id+' </b>: '+' <span style="color:grey;"> '+selVal+' </span> ';
-	});
+	var charts = obj.chartTypes, id, value;
+	$.each(charts, function(k,selVal) {
+		selVal = selVal.split('##');
+		id = selVal[0];
+		value = selVal[1];
 
+		$('#'+id).val(value).trigger('change');
+		console.log('#'+id+' option[value='+value+']');
+		valueStr += '<b>'+$('#'+id+' option[value='+value+']').text()+'</b>, ';
+	});
+	valueStr = '<span style="color:grey;">Showing for '+ '<b style="color:black">'+ $('#chartSelXAxis option[value='+axis+']').text() +'</b>'+ ', Chart types are ('+ '<b style="color:black">'+valueStr.substr(0, valueStr.length-2) + '</b>)</span>';
 	//show the conditions
 	$('#reptChartInstr').prepend(valueStr);
 	//now finally trigger change of axis, so that it plots all the charts
@@ -882,13 +902,15 @@ function getPivotOrChartSavedContent(reptId) {
                 	initializePivot();
                 	redrawPivotWithSaveObj(_PivotChart);
                 	$('.reptTblUseInfo').css('display', 'none');
+                	$('#tabChart .reptTblUseInfo').css('display', 'block');
                 	goFurther = false;
                 } 
                 else if(_reptSaveFor === 'chart') {                	
                 	$('#tabChartBtn').trigger('click');
                 	initializeChart();
                 	redrawChartWithSaveObj(_PivotChart);
-                	$('.reptTblUseInfo').css('display', 'none');
+                	$('.reptTblUseInfo').css('display', 'none');                	
+                	$('#tabPivot .reptTblUseInfo').css('display', 'block');
                 	goFurther = false;
                 } 
 
@@ -909,7 +931,7 @@ function getPivotOrChartSavedContent(reptId) {
 		$('#renderer').parent().addClass('pivotCustHide');
        	var targeEle = $('#pivot-menu-container, #reptChartInstr');
        	targeEle.children('#reptOwner').remove();
-       	targeEle.append('<span id="reptOwner"> Only <span>'+G_userName+'</span> can edit</span>');
+       	targeEle.append('<span id="reptOwner"> Only <span>'+G_userName+'</span> can save changes to layout</span>');
 	}
 
 	return goFurther;
@@ -1192,11 +1214,8 @@ function addTrForShowingTotal() {
 				// indexOfTotalCols.push(i);
 				t =0;
 				for(var j=0; j<colDtLen; j++) {
-					toNum  = dataTblData[j][i];
-
-					if(toNum.length>0) 
-						t = +t + +toNum;
-
+					toNum  = reptReturnNumber( dataTblData[j][i] );
+					t = +t + +toNum; //it converts to number
 				}
 				t = Math.round(t);
 				td = '<td style="text-align:right;padding:3px 18px 3px 10px;min-width:60px;max-width:60px;" class="dtTotal'+fc+'">'+ t + '</td>';	
@@ -1214,6 +1233,23 @@ function addTrForShowingTotal() {
 
 	// setTimeout("moveReptTotalOutside();", 1000);
 	moveReptTotalOutside();
+}
+
+//return valid arithmatic number
+function reptReturnNumber(str) {
+	var tempNum = 0, tempStr='', strlen = str.length;
+	for(var i=0; i<strlen; i += 1) {
+		tempStr += reptReturnValidArithmaticChar(str.charAt(i)); 
+	}
+	return tempNum + tempStr;
+}
+//return valid character for arithmatic
+function reptReturnValidArithmaticChar(c) {
+	var code = c.charCodeAt(0);
+	if((code >= 48 && code <= 57) || code == 46) 
+		return c;
+	else
+		return '';
 }
 
 /* 

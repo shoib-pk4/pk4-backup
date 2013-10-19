@@ -40,10 +40,11 @@
 
 		//validate session
 		public function validateSession() {
+			// $url = "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid;
+			$url = "http://data.impelcrm.in/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid;
 
 			$curl = curl_init();
-		    curl_setopt ($curl, CURLOPT_URL, "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid); //dev
-		    //curl_setopt ($curl, CURLOPT_URL, "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid); //prod
+		    curl_setopt ($curl, CURLOPT_URL, $url); 
 		    curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt ($curl, CURLOPT_AUTOREFERER, true);
 			curl_setopt ($curl, CURLOPT_FRESH_CONNECT, true);
@@ -52,14 +53,15 @@
 		    $enttsResult1 = curl_exec ($curl);
 		    
 			if($enttsResult1 == "") {
-				$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty. = ';
+				$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty for user session = '.$url;
 				$this->logError($msg);
 				exit;
 			} else {
+				$url = "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
+				$url = "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
 				$usermq = $enttsResult1;
 				$curl = curl_init();
-				curl_setopt ($curl, CURLOPT_URL, "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq); //dev
-				//curl_setopt ($curl, CURLOPT_URL, "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq); //prod
+				curl_setopt ($curl, CURLOPT_URL, $url); 
 				curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt ($curl, CURLOPT_AUTOREFERER, true);
 				curl_setopt ($curl, CURLOPT_FRESH_CONNECT, true);
@@ -69,7 +71,7 @@
 				curl_close ($curl);	
 
 				if($enttsResult == "") {
-					$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty. = ';
+					$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty requester id = '.$url;
 					$this->logError($msg);
 					exit;
 				}	

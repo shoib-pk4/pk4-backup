@@ -848,7 +848,12 @@
 	function retrieveJSONdata(uri,objId,fromMnu,add2History,reloadFlag,listPopup)
 	{  
 
-
+		//#shoib 
+		var dd = $('#detailDataDiv');
+		if(dd.length > 0 ) {
+			$('#reptCanU, #l2_container, #listAddTblContainer').remove();			
+		}
+		
 		//console.log(uri,objId,fromMnu,add2History,reloadFlag,listPopup);
 		//var parURI=uri.search("custom/JSON/system/getParentMnuItmId.htm");
 		//if(parURI<0&&xhr_request)xhr_request.abort();
@@ -1022,11 +1027,7 @@
 
 				jsonPageType=doc.PageType;
 
-				//#shoib 
-				var dd = $('#detailDataDiv');
-				if(dd.length > 0 ) {
-					$('#reptCanU, #l2_container, #listAddTblContainer').remove();			
-				}
+				
 
 				switch(jsonPageType)
 				{

@@ -1,62 +1,18 @@
 <?php 
 	class uploadFile {
 
-		var $mq, $orig_filename, $filecontent, $guid, $requestorid, $filepath, $unique_filename, $entity_name;
+		var $mq, $orig_filename, $guid, $unique_filename, $entity_name, $master_connection, $org_id;
+		var $filepath = '/atCRM/appData/org_', $entity_list_id, $col_prikey, $col_prikey_val_for_entity;
 
 		//get the post values
-		public function __construct() {
+		public function __construct($m_con) {
 
-			$this->mq            = $_POST['mq']; //get mq
-			$this->orig_filename = $_POST['filename']; //get file name
-			$this->filecontent   = base64_decode($_POST['filecotents']); //decode to base 64 content
-			$this->guid          = $_POST['guid']; //get file name
-			$this->filepath      = $_POST['filepath']; //get file path
-			$this->entity_name   = $_POST['entity_name']; //get entity name
-		}
-
-		//validate session
-		public function validateSession() {
-			// $url = "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid;
-			$url = "http://data.impelcrm.in/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid;
-
-			$curl = curl_init();
-		    curl_setopt ($curl, CURLOPT_URL, $url); 
-		    curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt ($curl, CURLOPT_AUTOREFERER, true);
-			curl_setopt ($curl, CURLOPT_FRESH_CONNECT, true);
-			curl_setopt ($curl, CURLOPT_HEADER, false);	
-			
-		    $enttsResult1 = curl_exec ($curl);
-		    
-			if($enttsResult1 == "") {
-				$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty for user session = '.$url;
-				$this->logError($msg);
-				exit;
-			} else {
-				$usermq = $enttsResult1;
-				//$url = "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
-				$url = "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
-				$curl = curl_init();
-				curl_setopt ($curl, CURLOPT_URL, $url); 
-				curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt ($curl, CURLOPT_AUTOREFERER, true);
-				curl_setopt ($curl, CURLOPT_FRESH_CONNECT, true);
-				curl_setopt ($curl, CURLOPT_HEADER, false);	
-				
-				$enttsResult = curl_exec ($curl);
-				curl_close ($curl);	
-
-				if($enttsResult == "") {
-					$msg =  $this->dateTime . ' While validating session. EnttsResult came  empty requester id = '.$url;
-					$this->logError($msg);
-					exit;
-				}	
-				$json_entts = json_decode($enttsResult,true);
-				// $this->usrid = $json_entts[0]["usrid"]; 	
-				// $this->orgid = $json_entts[0]["orgid"]; 
-				$this->srvLoginName = $json_entts[0]["LoginName"]; 	
-			}		
-				
+			$this->mq            	 = $_POST['mq']; //get mq
+			$this->orig_filename 	 = $_POST['fileName']; //get file name
+			$this->guid          	 = $_POST['guid']; //get guid
+			$this->filepath      	 = $_POST['userName']; //get user name
+			$this->entity_name       = $_POST['entity']; //get entity name
+			$this->master_connection = $m_con;
 		}
 
 		//get tenanat connection
@@ -70,7 +26,7 @@
 				exit;
 			} 
 			
-			$querygetTenantDtsSQL = "SELECT tenant_master.org_name, tenant_master.jdbc_url FROM tenant_master WHERE tenant_master.name = '".$this->dbName."'";
+			$querygetTenantDtsSQL = "SELECT tenant_master.org_name, tenant_master.jdbc_url, mt_user_master.user_id FROM tenant_master,mt_user_master WHERE mt_user_master.tenant_id = tenant_master.tenant_id AND mt_user_master.user_name = '".$this->userName."'";
 			$getTenantDtsSQL = @pg_query($conn_db_master, $querygetTenantDtsSQL);
 			if($getTenantDtsSQL === FALSE) {
 				$msg =  $this->dateTime . ' Selecting tenant query failed. Query= '.$querygetTenantDtsSQL;
@@ -114,42 +70,29 @@
 		}
 
 		//this file take binary data and convert into file in to particular location
-		public function createFileInLocation() {
+		private function moveFile() {
 			//returns the extension
 			$arr = explode('.', $this->orig_filename);
 			$ext = array_pop($arr);
+			//returns unique name
+			$name = $this->generateFileName($ext); 	
 
-			$name = $this->generateFileName($ext); //returns unique name
-			
-			//create file with name
-			file_put_contents($name, $this->filecontent);
-		}	
+			//create dir if not exists and returns attachment path
+			$uploadPath = $this->checkDirIfExistElseRetPath();
 
-		//this will inserts record in lib tbl and linking tbl
-		public function insertRecord() {
-			//first insert record into lib tbl and get the primary key
-			$query = "insert into lib_item(lib_item_Id, Name, Description, Path, CreateDate, CreatedBy_Id, ItemOwner_Id, ContentType_Id, orig_file_name, orgname, download_status, size_in_bytes, data_source, created_by_portal_user)";
-			$query .= "values(nextval(), '','','',CURRENT_TIMESTAMP,'','','','$this->orig_filename','','','','','')";
-			//now execute query
-			$resource = pg_query($this->conn_db_tennant, $query);
-			//if failed to insert in lib_item, make a log entry & stop
-			if(!$resource) { 
-				$this->logError('Insert faile in lib_item query= '. $query);
-				exit;
+			//finally move file to directory
+			$file       = $_FILES['file']['tmp_name'];
+			$file_error = $_FILES['file']['error'];
+			$this->filesize = $_FILES['file']['size'];
+
+			if(!move_uploaded_file($name, "$uploadPath/$name")){
+				//log err
+				$msg = 'move_uploaded_file failed: ';
+				foreach ($_FILES["file"]["error"] as $key => $error) { 
+					$msg .= $key.'-->'.$error;					
+				}
+				$this->logError('File upload failed= '. $msg);
 			}
-			//returns primary key of inserted record
-			$pk_id = pg_fetch_array($resource); 
-			$pk_id = $pk_id['lib_item_Id'];
-
-			//now insert this primary key entry into lib_item_for_acct
-			$query = "insert into lib_item_for_acct(lib_item_for_acct_id, lib_item, account, added_by_user, added_on_date)";
-			$query .= "values($pk_id, '', '', '', CURRENT_TIMESTAMP)";
-			//if failed then make log entry & stop
-			if(!pg_query($this->conn_db_tennant, $query)) { 
-				$this->logError('Insert faile in lib_item_for_acct query= '. $query);
-				exit;
-			}
-			
 
 		}
 
@@ -167,6 +110,199 @@
 		}
 
 		/* 
+			* get org id
+		*/
+		private function getOrgid() {
+
+			//get the user id first from SBEUser tbl
+			$query    = "select User_Id from SBEUser where LoginName = '$thsi->userName'";
+			$resource = $this->execQueryAndReturnReso($query);
+
+			$result = pg_fetch_assoc($result);
+			$count  = pg_num_rows($result);
+			if($count == 0) {
+				//log issue
+				$this->logError('User_Id is null= '. $query);
+			}
+			$userid = $result['User_Id'];
+
+			//get org id from LnkUsrOrg tbl using user id
+			$query    = "select OrgName from LnkUsrOrg where User_Id = '$userid' limit 1";
+			$resource = $this->execQueryAndReturnReso($query);
+
+			$result   = pg_fetch_assoc($result);
+			$count  = pg_num_rows($result);
+			if($count == 0) {
+				//log issue
+				$this->logError('OrgName is null= '. $query);
+			}
+
+			//global to class
+			$this->org_id   = $result['OrgName'];
+			
+		}
+
+		/* 
+			* here it org dir and org_(any num)/attachment exist,
+			* if know then it creates
+		*/
+		private function checkDirIfExistElseRetPath() {
+			//final dir path ex: /atCRM/appData/org_(any num)
+			$org_path = $this->filepath.$this->org_id; 
+			//attachment dir where file is being uploaded
+			$attachment_path = '/'.$org_path.'/attachment';
+
+			//create dir if not exits
+			if(!file_exists($org_path)) {	
+				//create org recursive dir with full permission
+				if(!mkdir($org_path, 0777, true)) {
+					//log err
+					$this->logError('Org directory creation failed= '. $org_path);
+				}
+				//create attachment recursive dir with full permission
+				if(!mkdir($attachment_path, 0777, true)) {
+					//log err
+					$this->logError('Attachment directory creation failed= '. $attachment_path);
+				}
+
+				return $attachment_path; //dont go further just return
+			} 
+
+			//check whether attachment dir exists
+			if(!file_exists($attachment_path)) { 
+				//create recursive dir with full permission
+				if(!mkdir($attachment_path, 0777, true)) {
+					//log err
+					$this->logError('Attachment directory creation failed= '. $attachment_path);
+				}					
+
+				return $attachment_path; 
+			}
+			
+			return $attachment_path;
+		}	
+
+		/* 
+			* get entity id, if doesn't exist then create and get
+		*/
+		private function getEntityIdAndPriKey() {
+			//check first wheter it exists
+			$query = "select EntityList_Id, col_prikey from EntityList where EntityName='".$this->entity_name."' and orgname = '".$this->org_id."' and inactive='0'  ";
+			$resource = $this->execQueryAndReturnReso($query);
+
+			//returns primary key of inserted record
+			$result = pg_fetch_assoc($resource); 
+			$count  = pg_num_rows($result);
+			if($count > 0) {
+				$this->entity_list_id = $result['EntityList_Id'];
+				$this->col_prikey = $result['col_prikey'];
+			} else { //then create entit list id and return created entity list id
+				list($this->entity_list_id, $this->col_prikey) = $this->createEntity();
+			}
+
+		}
+
+		/* 
+			* insert record in LELI = lnk_entity_lib_items
+		*/
+		private function insertRecordInLELI() {
+			$query  = "insert into lnk_entity_lib_items(lnk_entity_lib_items_id, entitylist, lib_item, primay_key_value, orgname, inactive, created_date, created_by, modified_date, modified_by, type) ";
+			$query .= "values('', $this->entity_list_id, $this->lib_item, $this->lnk_entity_lib_items, $this->orgname, 0, CURRENT_TIMESTAMP, '', CURRENT_TIMESTAMP, '', '')";
+			$resource = $this->execQueryAndReturnReso($query);
+		}
+
+		/* 
+			* get col prikey value	
+		*/
+		private function getColPriKeyValFromEntity() {
+			$query = "select $this->col_prikey from $this->entity_name where guid = '$this->guid' ";
+			$resource = $this->execQueryAndReturnReso($query);
+
+			$result = pg_fetch_assoc($resource); 
+			$count  = pg_num_rows($result);
+			$col_prikey_val = '';
+			if($count > 0) {
+				$col_prikey_val_for_entity = $result[$this->col_prikey];
+			} 
+
+			$this->col_prikey_val_for_entity;
+		}
+
+		/* 
+			* get lib items id if exists else
+			* make entry in lnk_entity_lib_items and get insert lib id
+		*/
+		public function checkFileExistsElseCreate() {
+			//check entity list id exist, if then get lib item id and return
+			$query = "select lib_item_Id from lib_item where orig_file_name='".$this->orig_filename."' and orgname = ".$this->org_id;
+			$resource = $this->execQueryAndReturnReso($query);
+
+			$result = pg_fetch_assoc($resource); 
+			$count  = pg_num_rows($result);
+			if($count > 0) { 
+				// $this->lib_item = $result['lib_item_Id'];
+				exit; //stop execution
+			} 
+			
+			//create lib item
+			$this->createLibItem();
+			//get and set org id in a var
+			$this->getOrgid();
+			//move file
+			$this->moveFile();			
+
+		}
+
+		/* 
+			* creates a lib item
+		*/
+		private function createLibItem() {
+			$query  = "insert into lib_item(lib_item_Id, Name, lib_item, Description, Path, CreateDate, CreatedBy_Id, ItemOwner_Id, ContentType_Id, orig_file_name, orgname, download_status, size_in_bytes, data_source, created_by_portal_user) ";
+			$query .= "values('lib_item_Id', '$this->unique_filename', 'lib_item', '$this->unique_filename', ' $this->filepath.$this->org_id', CURRENT_TIMESTAMP, 'CreatedBy_Id', 'ItemOwner_Id', 'ContentType_Id', '$this->orig_filename', '$this->orgname', 'download_status', '$this->filesize', 'data_source', 'From Impel Touch')"; 
+
+			$resource = $this->execQueryAndReturnReso($query);
+
+			$lib_item = pg_fetch_assoc($resource); 
+
+			//set lib item, its global to class
+			$this->lib_item = $entity_id['lib_item'];
+
+		}
+
+		/* 
+			* create a entity , and return the created list id
+		*/
+		private function createEntity() {
+			$query = "insert into EntityList  select * from EntityList where EntityName='".$this->entity_name."' and orgname is null";
+			// $query .= "values(EntityList_Id, $this->entity_name, Description, Icon, 0, desc_name, is_custom_object, cust_obj_of_entt, $this->orgname, supports_udef, CURRENT_TIMESTAMP, api_name, include_on_impeltouch, renamed_plural, col_prikey, col_most_significant, col_orgname, col_inactive, col_territory, $this->guid, entt_usage_type, short_name, sync_order, related_entt_csv, detail_entity, impel_touch_driver_col_api_name, cols_for_search, col_created_by, col_created_date, col_modified_by, col_modified_date, col_recent_date, col_recent_date_reason, col_data_source, col_default_fk, col_additional_condition, col_addtl_cond_for_view, impel_touch_sync_immediate)";
+			$resource = $this->execQueryAndReturnReso($query);
+
+			//get the inserted record details
+			$result = pg_fetch_assoc($resource); 
+			$entity_id  = $result['EntityList_Id'];
+			$col_prikey = $result['col_prikey'];
+			//update the org id for the inserted record
+			$query = "update EntityList set orgname = $this->orgname";
+			$resource = $this->execQueryAndReturnReso($query);
+
+			return array($entity_id, $col_prikey);
+		}
+
+		//this will inserts record in lib tbl and linking tbl
+		public function recordDetails() {			
+			//get the entity id and col prikey
+			$this->getEntityIdAndPriKey();
+			
+			//get col pri value for particula entitey
+			$this->getColPriKeyValFromEntity();
+
+			//insert record in leli
+			$this->insertRecordInLELI();
+
+		}
+		
+
+		/* 
 			* log results in /tmp/destroy-session-debug.log
 		*/
 		private function logError($msg) {
@@ -178,18 +314,33 @@
 			file_put_contents($logFile, $str, FILE_APPEND);
 		}
 
+		/* 
+			* validate query execution if failed then log err
+		*/
+		private function execQueryAndReturnReso($query) {
+			//now execute query
+			$resource = pg_query($this->conn_db_tennant, $query);
+			//if failed to insert in lib_item, make a log entry & stop
+			if(!$resource) { 
+				$this->logError('Query Failed= '. $query);
+				exit;
+			}
+			return $resource;
+		}
+
 
 	}
+
+	//take connection string from constants file
+	require('../constants/php_config.cfg');	
 
 	//run the class functionalites 
 	//create the  obj first
 	$uploadObj = new uploadFile();
-	//validate sesssion
-	$uploadFile->validateSession();
 	//get tenant connection
-	$uploadFile->getTenantConnection();
-	//now create file
-	$uploadFile->createFileInLocation();
-	//insert record
-	$uploadFile->insertRecord();
+	$uploadObj->getTenantConnection();
+	//check if already exists if so then exit
+	$uploadObj->checkFileExistsElseCreate();
+	//record entries 
+	$uploadObj->recordDetails();
 ?>

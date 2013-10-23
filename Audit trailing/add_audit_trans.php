@@ -130,7 +130,7 @@
 			if($getTenantDtsrows > 0) {
 				$getTenantDtdata = pg_fetch_assoc($getTenantDtsSQL);
 				$tennantDB = $getTenantDtdata["org_name"];
-				$musrid = $getTenantDtdata["user_id"];
+				// $musrid = $getTenantDtdata["user_id"];
 				$jdbc_url = $getTenantDtdata["jdbc_url"];
 				$db_server = substr($jdbc_url,18);
 

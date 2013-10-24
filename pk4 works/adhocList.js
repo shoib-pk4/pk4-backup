@@ -1470,7 +1470,7 @@ function drawFilterTableOpt() {
 //draw filter row
 function drawFilterRow(cnt, toTbl, singleSelect) {
 	
-	var tr, col, opt, sel, n, inp, imgDiv, colSel, oprSel, textBoxClass, filterRowStatus=false;
+	var tr, col, opt, sel, n, inp, imgDiv, colSel, oprSel, textBoxClass, filterRowStatus=false, typ;
 	for(var i=1; i<=cnt; i++) {
 		tr = $('<tr id="filterTblRow_'+tblFilterIndx+'"></tr>');
 
@@ -1502,9 +1502,12 @@ function drawFilterRow(cnt, toTbl, singleSelect) {
 		sel = $('<select class="'+colSel+' toPostVal" id="filterCol_'+tblFilterIndx+'" ></select>');
 		sel.append('<option value="" type="">---</option>');
 		$.each(entityColumns,function(k,v) {
-			n = v['name'];
-			opt = "<option value="+v['id']+" type="+v['type']+">"+n+"</option>";
-			sel.append(opt);
+			typ = v['type'];
+			if(typ in rulesTriggerMappings['colMapName']) {
+				n = v['name'];
+				opt = "<option value="+v['id']+" type="+typ+">"+n+"</option>";
+				sel.append(opt);
+			}
 		});
 		col.append(sel);
 		tr.append(col);

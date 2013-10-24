@@ -492,4 +492,9 @@ span.title-select{
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffee5f5b',endColorstr='#ffbd362f',GradientType=0);
 	filter: progid:DXImageTransform.Microsoft.grad;	
 }
+
+.finTransMAdd_tbl tbody tr td {
+	text-align: center;
+}
+
 	

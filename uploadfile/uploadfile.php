@@ -41,8 +41,7 @@
 				$str = 'Post Params: '.implode(',', $_POST);
 				$str .= "\r\n File Upload Error: ".isset($this->fileUploadErrors[$fileErrNo])?$this->fileUploadErrors[$fileErrNo]:$fileErrNo;
 				$this->logError("\r\n\r\n $this->dateTime - New Process. \r\n\r\n".$str);
-				// echo ' -- File upload error number: '.$fileErrNo;
-				echo '1';
+				echo ' -- File upload error. Number: '.$fileErrNo;
 				exit;
 			} 
 
@@ -76,7 +75,7 @@
 			if($getTenantDtsSQL === FALSE) {
 				$msg =  $this->dateTime . ' Selecting tenant query failed. Query= '.$querygetTenantDtsSQL;
 				$this->logError($msg);
-				echo '2';
+				echo ' Selecting tennant failed';
 				exit;
 			}
 
@@ -105,7 +104,7 @@
 			} else {
 				$msg =  $this->dateTime . ' Empty results from tenant_master query= '.$querygetTenantDtsSQL;
 				$this->logError($msg);
-				echo '2';
+				echo 'Empty resoponse from tenant master';
 				exit;
 			}
 
@@ -114,7 +113,7 @@
 			if (!$this->conn_db_tennant) {
 				$msg =  $this->dateTime . ' Connecting tenant failed= '.$conn_string_tennant;
 				$this->logError($msg);
-				echo '2';
+				echo 'Connecting to tenant failed';
 				exit;
 			} else {
 				pg_close ($conn_db_master);
@@ -140,7 +139,7 @@
 				$msg = 'move_uploaded_file failed: '.$uploadPath.'/'.$this->unique_filename;
 				
 				$this->logError("File upload failed = $error ". $msg. ' File = '.$file. ' move ='.$move);
-				echo '1';
+				echo 'File moving failed';
 				exit;
 			}
 
@@ -175,7 +174,7 @@
 			if($count == 0) {
 				//log issue
 				$this->logError('User_Id is null= '. $query);
-				echo '2';
+				echo 'User id is null';
 				exit;
 			}
 			$result = pg_fetch_assoc($resource);
@@ -191,7 +190,7 @@
 			if($count == 0) {
 				//log issue
 				$this->logError('OrgName is null= '. $query);
-				echo '2';
+				echo 'OrgName is null';
 				exit;
 			}
 
@@ -219,7 +218,7 @@
 					$error = error_get_last();
 					$error =  $error['message'];	
 					$this->logError("Org directory creation failed, $error path =". $org_path);
-					echo '2';
+					echo 'Org directory creation failed';
 					exit;
 				}
 				//create attachment recursive dir with full permission
@@ -228,7 +227,7 @@
 					$error = error_get_last();
 					$error =  $error['message'];	
 					$this->logError("Attachment directory creation failed, $error path:". $attachment_path);
-					echo '2';
+					echo 'Attachment directory creation failed';
 					exit;
 				}
 
@@ -243,6 +242,8 @@
 					$error = error_get_last();
 					$error =  $error['message'];	
 					$this->logError("Attachment directory creation failed, $error path::". $attachment_path);
+					echo 'Attachment directory creation failed';
+					exit;
 				}					
 
 				return $attachment_path; 
@@ -320,7 +321,7 @@
 			$count  = pg_num_rows($resource);
 			if($count > 0) { 	
 				$this->logError('File already exists. '. $this->orig_filename);
-				echo '2';		
+				echo 'File already exists= '.$this->orig_filename;		
 				exit; //stop execution
 			} 
 			//generate unique file name
@@ -383,7 +384,7 @@
 			//insert record in leli
 			$this->insertRecordInLELI();
 
-			echo '0'; //means successfull completion of process
+			echo 'success'; //means successfull completion of process
 		}
 		
 
@@ -423,10 +424,10 @@
 			if(!$resource) { 
 				$this->logError('Query Failed= '. $query);
 				//log error in table
-				$this->loop_flag = '1';
+				$this->loop_flag = '1'; //it stops looping for entry in error table
 				$arr = array(0, pg_last_error($resource), $this->userName, '', '');
 				$this->logErrorInTbl($arr);
-				echo '2';
+				echo 'Query failed';
 				exit;
 			}
 			return $resource;

@@ -1,14 +1,14 @@
 <?php 
-
-		// $str = '';
-		// echo '<pre>';
-		// print_r($_FILES);
-		// echo '</pre>';
-		// foreach ($_FILES as $key => $value) {
-		// 	$str .= $key . '----'. implode(',', $value);
-		// }
-		// echo 'sucecss';
-		// file_put_contents('post.txt', $str);
+	/* 
+		Aim
+			* Image, or video is upload via impel touch, and move that particular file
+			  in user org directory, with proper entries in database.
+		Flow
+			* Params requested by post method.
+			* It checks whether the file name exists in lib_item, if yes then exit. else
+			* Generate unique file name, create lib item if everything goes proper then move file in a org dir.
+			* Then make an entry in lnk_entity_lib_items tbl
+	*/
 
 
 	class uploadFile {
@@ -16,16 +16,35 @@
 		var $mq, $orig_filename, $guid, $unique_filename, $entity_name, $master_connection, $org_id;
 		var $filepath = '/home/sridhar/jetty6/webapps/atCRM/appData/org_', $entity_list_id, $col_prikey, $col_prikey_val_for_entity;
 		var $user_id, $loop_flag='0';
+		//file upload status codes
+		var  $fileUploadErrors = array( 
+		        0=>"There is no error, the file uploaded with success", 
+		        1=>"The uploaded file exceeds the upload_max_filesize directive in php.ini", 
+		        2=>"The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form" ,
+		        3=>"The uploaded file was only partially uploaded", 
+		        4=>"No file was uploaded", 
+		        6=>"Missing a temporary folder" 
+			); 
 
 		//get the post values
 		public function __construct($m_con) {
 			
-			$str = implode(',', $_POST);
-			$str .= '---->';
-			foreach ($_FILES as $key => $value) {
-				$str .= $key.'---'.implode(',', $value).'---';
-			}
-			$this->logError($str);
+			//set time zone
+			ini_alter('date.timezone','Asia/Calcutta'); //set the timezone
+			$this->run_id = rand(1000000, 9999999);
+			$this->my_pid = getmypid ();
+			$this->dateTime = date('Y-m-d H:i:s'); //get the current date and time
+
+			$fileErrNo = $_FILES['file']['error'];
+			//make entry in log if file contains error
+			if($fileErrNo != 0) {
+				$str = 'Post Params: '.implode(',', $_POST);
+				$str .= "\r\n File Upload Error: ".isset($this->fileUploadErrors[$fileErrNo])?$this->fileUploadErrors[$fileErrNo]:$fileErrNo;
+				$this->logError("\r\n\r\n $this->dateTime - New Process. \r\n\r\n".$str);
+				// echo ' -- File upload error number: '.$fileErrNo;
+				echo '1';
+				exit;
+			} 
 
 			$this->mq            	 = $_POST['mq']; //get mq
 			$this->orig_filename 	 = $_POST['fileName']; //get file name
@@ -35,10 +54,7 @@
 			$this->filesize   	     = $_FILES['file']['size']; //file size
 			$this->tmp_name   	     = $_FILES['file']['tmp_name']; //file size
 			$this->master_connection = $m_con;			
-			ini_alter('date.timezone','Asia/Calcutta'); //set the timezone
-			$this->run_id = rand(1000000, 9999999);
-			$this->my_pid = getmypid ();
-			$this->dateTime = date('Y-m-d H:i:s'); //get the current date and time
+			
 
 
 		}
@@ -50,7 +66,8 @@
 			//connection check for db
 			if (!$conn_db_master) {	
 				$msg =  $this->dateTime . ' Connection to master db failed. Connection= '.$this->master_connection;
-				$this->logError($msg);								
+				$this->logError($msg);		
+				echo '2';						
 				exit;
 			} 
 			
@@ -59,6 +76,7 @@
 			if($getTenantDtsSQL === FALSE) {
 				$msg =  $this->dateTime . ' Selecting tenant query failed. Query= '.$querygetTenantDtsSQL;
 				$this->logError($msg);
+				echo '2';
 				exit;
 			}
 
@@ -87,6 +105,7 @@
 			} else {
 				$msg =  $this->dateTime . ' Empty results from tenant_master query= '.$querygetTenantDtsSQL;
 				$this->logError($msg);
+				echo '2';
 				exit;
 			}
 
@@ -95,6 +114,7 @@
 			if (!$this->conn_db_tennant) {
 				$msg =  $this->dateTime . ' Connecting tenant failed= '.$conn_string_tennant;
 				$this->logError($msg);
+				echo '2';
 				exit;
 			} else {
 				pg_close ($conn_db_master);
@@ -109,7 +129,9 @@
 
 			//finally move file to directory
 			// $file  = $_FILES['file']['tmp_name'];
+			ob_start();
 			$move  = move_uploaded_file($this->tmp_name, "$uploadPath/$this->unique_filename");
+			ob_flush();
 			if(!$move){
 				//log err
 				$error = error_get_last();
@@ -118,6 +140,7 @@
 				$msg = 'move_uploaded_file failed: '.$uploadPath.'/'.$this->unique_filename;
 				
 				$this->logError("File upload failed = $error ". $msg. ' File = '.$file. ' move ='.$move);
+				echo '1';
 				exit;
 			}
 
@@ -152,6 +175,7 @@
 			if($count == 0) {
 				//log issue
 				$this->logError('User_Id is null= '. $query);
+				echo '2';
 				exit;
 			}
 			$result = pg_fetch_assoc($resource);
@@ -167,6 +191,7 @@
 			if($count == 0) {
 				//log issue
 				$this->logError('OrgName is null= '. $query);
+				echo '2';
 				exit;
 			}
 
@@ -194,6 +219,7 @@
 					$error = error_get_last();
 					$error =  $error['message'];	
 					$this->logError("Org directory creation failed, $error path =". $org_path);
+					echo '2';
 					exit;
 				}
 				//create attachment recursive dir with full permission
@@ -202,6 +228,7 @@
 					$error = error_get_last();
 					$error =  $error['message'];	
 					$this->logError("Attachment directory creation failed, $error path:". $attachment_path);
+					echo '2';
 					exit;
 				}
 
@@ -235,7 +262,7 @@
 			//returns primary key of inserted record
 			$result = pg_fetch_assoc($resource); 
 			$count  = pg_num_rows($resource);
-			$this->logFile(implode(',', $result));
+			//$this->logFile(implode(',', $result));
 			if($count > 0) {
 				$this->entity_list_id = $result['entitylist_id'];
 				$this->col_prikey = $result['col_prikey'];
@@ -250,7 +277,7 @@
 		*/
 		private function insertRecordInLELI() {
 			$query  = "insert into lnk_entity_lib_items(lnk_entity_lib_items_id, entitylist, lib_item, primay_key_value, orgname, inactive, created_date, created_by,  type) ";
-			$query .= "values(nextval('seq_lnk_entity_lib_items_id'), $this->entity_list_id, $this->lib_item, $this->lib_item, $this->org_id, 0, '$this->dateTime', $this->org_id, 'Profile Picture')";
+			$query .= "values(((select max(lnk_entity_lib_items_id) from lnk_entity_lib_items )+1), $this->entity_list_id, $this->lib_item, $this->col_prikey_val_for_entity, $this->org_id, 0, '$this->dateTime', $this->userid, 'Profile Picture')";
 			$resource = $this->execQueryAndReturnReso($query);
 		}
 
@@ -258,6 +285,7 @@
 			* get col prikey value	
 		*/
 		private function getColPriKeyValFromEntity() {
+
 			$query = "select $this->col_prikey from $this->entity_name where guid = '$this->guid' ";
 			$resource = $this->execQueryAndReturnReso($query);
 
@@ -265,10 +293,15 @@
 			$count  = pg_num_rows($resource);
 			$col_prikey_val = '';
 			if($count > 0) {
-				$col_prikey_val_for_entity = $result[$this->col_prikey];
+				$this->col_prikey_val_for_entity = $result[$this->col_prikey];
 			} 
-
-			$this->col_prikey_val_for_entity;
+			else
+			{
+				$this->col_prikey_val_for_entity = "NULL";
+				$arr = array(0, "Could not find a record with the GUID passed.", $this->userName, '', '');
+				$this->logErrorInTbl($arr);
+			}
+			
 		}
 
 		/* 
@@ -287,7 +320,7 @@
 			$count  = pg_num_rows($resource);
 			if($count > 0) { 	
 				$this->logError('File already exists. '. $this->orig_filename);
-				echo json_encode('This file already exist!');			
+				echo '2';		
 				exit; //stop execution
 			} 
 			//generate unique file name
@@ -350,7 +383,7 @@
 			//insert record in leli
 			$this->insertRecordInLELI();
 
-			echo "Success full sync.";
+			echo '0'; //means successfull completion of process
 		}
 		
 
@@ -393,6 +426,7 @@
 				$this->loop_flag = '1';
 				$arr = array(0, pg_last_error($resource), $this->userName, '', '');
 				$this->logErrorInTbl($arr);
+				echo '2';
 				exit;
 			}
 			return $resource;
@@ -400,26 +434,25 @@
 
 
 
-		public function moveFileTest() {
+		// public function moveFileTest() {
 			
-			//create dir if not exists and returns attachment path
-			// $uploadPath = $this->checkDirIfExistElseRetPath();
+		// 	//create dir if not exists and returns attachment path
+		// 	// $uploadPath = $this->checkDirIfExistElseRetPath();
 
-			//finally move file to directory
-			// $file  = $_FILES['file']['tmp_name'];
-			$move  = move_uploaded_file($this->tmp_name, "$this->filepath6124/attachment/check.mp4");
-			if(!$move){
-				//log err
-				$error = error_get_last();
-				$error =  $error['message'];	
+		// 	//finally move file to directory
+		// 	$move  = move_uploaded_file($this->tmp_name, "$this->filepath6124/attachment/check.mp4");
+		// 	if(!$move){
+		// 		//log err
+		// 		$error = error_get_last();
+		// 		$error =  $error['message'];	
 
-				$msg = 'move_uploaded_file failed: '.$uploadPath.'/'.$this->unique_filename;
+		// 		$msg = 'move_uploaded_file failed: '.$uploadPath.'/'.$this->unique_filename;
 				
-				$this->logError("Upload check.mp4 failed -> $this->filepath6124/attachment/check.mp4");
-				exit;
-			}
+		// 		$this->logError("Upload check.mp4 failed -> $this->filepath6124/attachment/check.mp4");
+		// 		exit;
+		// 	}
 
-		}
+		// }
 
 
 	}
@@ -431,11 +464,10 @@
 	//create the  obj first
 	$uploadObj = new uploadFile($master_connection);
 	//get tenant connection
-	// $uploadObj->getTenantConnection();
-	// //check if already exists if so then exit
-	// $uploadObj->checkFileExistsElseCreate();
-	// //record entries 
-	// $uploadObj->recordDetails();
+	$uploadObj->getTenantConnection();
+	//check if already exists if so then exit
+	$uploadObj->checkFileExistsElseCreate();
+	//record entries 
+	$uploadObj->recordDetails();
 
-	$uploadObj->moveFileTest();
 ?>

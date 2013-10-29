@@ -145,6 +145,9 @@ function exec_rept (doc, into_div) {
 	//remove loading
 	$('#reptOnloadLoading').remove();
 
+	//show filter conditions
+	reptShowColumnsForSingleSelect();
+
 	/* end of exec_rept function */
 }
 
@@ -2229,6 +2232,114 @@ function returnColValues(ind)  {
 	return data;
 }
 
+var reptTblFilterIndx=0, reptEntityColumns, reptFilterRowStatus;
+//draw filter row
+function reptDrawFilterRow(cnt, toTbl, singleSelect) {
+	
+	var tr, col, opt, sel, n, inp, imgDiv, colSel, oprSel, textBoxClass, reptFilterRowStatus=false, typ;
+	for(var i=1; i<=cnt; i++) {
+		tr = $('<tr id="filterTblRow_'+reptTblFilterIndx+'"></tr>');
+
+		if(singleSelect == false) {
+			
+			//this shows and condition text for each row
+			col = $('<td style="width:40px;"></td>');		
+			if(reptFilterRowStatus == true) {
+				col.text('and');
+			}
+			else {
+				col.text('');
+				reptFilterRowStatus = true; 
+			}
+			
+			tr.append(col);
+
+			 colSel = 'filterEntityColsPopUp';
+			 oprSel = 'filterOprColsPopUp';
+			 textBoxClass = '';
+		} else {
+			 colSel = 'filterEntityCols';
+			 oprSel = 'filterEntityOpr';
+			 textBoxClass = 'addEditFilterTextBox';
+		}
+
+
+		col = $('<td class="toPostCol"></td>');
+		sel = $('<select class="'+colSel+' toPostVal" id="filterCol_'+reptTblFilterIndx+'" ></select>');
+		sel.append('<option value="" type="">---</option>');
+		$.each(reptDrawFilterRow,function(k,v) {
+			typ = v['type'];
+			if(typ in rulesTriggerMappings['colMapName']) {
+				n = v['name'];
+				opt = "<option value="+v['id']+" type="+typ+">"+n+"</option>";
+				sel.append(opt);
+			}
+		});
+		col.append(sel);
+		tr.append(col);
+
+		//second column of row
+		col = $('<td class="toPostCol"></td>');
+		sel = $('<select class="'+oprSel+' toPostVal" id="filterOpr_'+reptTblFilterIndx+'"></select>');
+		sel.append('<option value="" type="">---</option>');
+		col.append(sel);
+		tr.append(col);
+
+		//third  column
+		col = $('<td class="toPostCol"></td>');		
+		inp = "<input class='toPostVal "+textBoxClass+"' type='text' value='' name='' id='filterEntTxt_"+reptTblFilterIndx+"' />";
+		col.append(inp);
+		tr.append(col);
+
+		//fourth column, contains date list
+		col = $('<td style="width:25px;display:none;" id="filterDateCol_'+tblFilterIndx+'" ></td>');
+		tr.append(col);
+
+		if(singleSelect === false) {
+			col = $('<td style="width:35px;"></td>');
+			imgDiv = $('<div id="filterEntAddOrDel_'+reptTblFilterIndx+'"></div>');
+			if(i == cnt) {			
+				imgDiv.addClass('addNewCondForFilter');
+			} else {			
+				imgDiv.addClass('removeCondForFilter');
+			}
+			col.append(imgDiv);
+			tr.append(col);
+		}
+
+
+		//now add the row to table
+		toTbl.append(tr);
+		
+		reptTblFilterIndx++;
+		
+	}
+}
+
+
+//this will shows the filter columns for single select
+function reptShowColumnsForSingleSelect () {
+
+	//hit the url and get columns for entity id
+	var udm = '/atCRM/custom/metadata/eC.html?e=8892';
+	console.log('filters...');
+	//get  list of columns for particular entity
+	$.ajax({
+		url: udm,
+		dataType: 'JSON',
+		// async: false,
+		success: function(data) {	
+			reptEntityColumns = data['columns']; //colsForEntity is global var
+			var dest = $('#reptSingleCondFilter');
+			if(dest.children().length == 0)			
+				reptDrawFilterRow(1, dest, true);			
+		},
+		error: function(response) {
+			console.log('Error while getgin entity columns..');
+			console.log(response);
+		},
+	});
+}
 
 // function lAddIsDataTable ( nTable )
 // {

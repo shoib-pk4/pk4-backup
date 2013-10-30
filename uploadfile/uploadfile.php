@@ -66,7 +66,7 @@
 			if (!$conn_db_master) {	
 				$msg =  $this->dateTime . ' Connection to master db failed. Connection= '.$this->master_connection;
 				$this->logError($msg);		
-				echo '2';						
+				echo 'Connection to master db failed';						
 				exit;
 			} 
 			

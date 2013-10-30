@@ -3,7 +3,7 @@
 	Dont add any event listners in below function, becuase every time function is called 
 	and event is attached and this behaves differently
 */
-var reptCalInitIndx = 0, initReptDataTable=false;
+var reptCalInitIndx = 0, initReptDataTable=false, reptEntityName;
 function exec_rept (doc, into_div) {
 	
 	var tabsArr = doc.Tabs, params    = doc.Parameters, rptSubName = doc.ReportDesc;
@@ -19,13 +19,14 @@ function exec_rept (doc, into_div) {
 	totalColCntDt=true;
 	initReptDataTable = false
 	reptCreatedBy = doc.CreatedBy; //this is the id who created report
+	reptEntityName = (doc.EntityName)?doc.EntityName:'';
 
-	var cont = '<div id="reptCanU" style="width:100%;"><div id="reportElementHeader">  <table width="100%" class="reportHeaderCont" > <tr> <td align="left" class="pageTitle" style="width:240px;"> ' + rptName + ' </td><td style="width:300px;" align="left">' + rptSubName + '</td><td align="right" valign="bottom" > <table id="reptSingleCondFilter" border="1"></table> <input type="button" class="blueButton reptBtns" value="Parameters" style="width: 100px;" id="showParams" /> <input type="button" class="blueButton reptBtns expBtn" value="Export" style="width: 100px;border-radius: 4px 0px 0px 4px;" id="exportDataTbl" /><div id="reptMoreTblOptCont" ><input type="button" class="reptBtns reptMoreOpt" /> <div class="reptMoreSel" > <div id="reptDtMoreSelc" ></div> </div> </div> </div> </td> </tr> </table><div id="paramsContainer"> </div> </div> <div id="tabs-2" > <span id="dtRefreshedAt"></span> <div id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> <ul id="tabsContainer" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">  </ul> <div id="tabData"><div class="reptShowLoading" id="dtLoading"><p>Loading data..Wait</p><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <table id="reportData"> </table> </div><div id="tabChart" > <div class="highchartsHdr"><div class="reptShowLoading" id="reptChartLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div><span id="reptChartInstr"><span class="reptTblUseInfo">You can select the type of chart that you\'d like to see for each set of data here.</span> <input type="button" class="twitter-btn twitter-btn-warning saveChart" value="Save"  id="saveChart" title="Save Chart" /> <input type="button" class="twitter-btn twitter-btn-danger" value="Clear Save"  id="deleteChartSave" title="Clear chart save data" /> </span><div id="selectTypeChartCont"></div></div> <div id="tabChartArea" status="0"> <span style="margin-top: 60px;display:block;">Your chart will be displayed here. </span></div> </div><div id="tabMap" >show map here </div> <div id="tabPivot" width="auto"> <div id="pvtLoading" class="reptShowLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <div id="pivot-menu-container"><span class="reptTblUseInfo">Please select the appropriate columns below to create your own Pivot Report.</span> <input type="button" class="twitter-btn twitter-btn-danger" value="Clear Save"  id="deletePivotSave" title="Clear pivot save data" /> <input type="button" class="twitter-btn twitter-btn-warning" value="Customize"  id="editSavePivot" title="Customize Pivot" /><input type="button" class="twitter-btn twitter-btn-warning savePivot" value="Save"  id="savePivot" title="Save Pivot" /></div> <div id="k_results"></div><div id="results"> </div> </div> </div> </div><form method="post" action="/atCRM/custom/adhocReports/rXL.xls" id="exelDownloadForm"> <input type="hidden" name="rD" id="rD"  /> <input type="hidden" name="rN" id="rN"  /></form> </div>';
+	var cont = '<div id="reptCanU" style="width:100%;"><div id="reportElementHeader">  <table width="100%" class="reportHeaderCont" > <tr> <td align="left" class="pageTitle" style="width:240px;"> ' + rptName + ' </td><td style="width:300px;" align="left">' + rptSubName + '</td><td align="right" valign="bottom" > <table id="reptSingleCondFilter"></table> <input type="button" class="blueButton reptBtns" value="Parameters" style="width: 100px;" id="showParams" /> <input type="button" class="blueButton reptBtns expBtn" value="Export" style="width: 100px;border-radius: 4px 0px 0px 4px;" id="exportDataTbl" /><div id="reptMoreTblOptCont" ><input type="button" class="reptBtns reptMoreOpt" /> <div class="reptMoreSel" > <div id="reptDtMoreSelc" ></div> </div> </div> </div> </td> </tr> </table><div id="paramsContainer"> </div> </div> <div id="tabs-2" > <span id="dtRefreshedAt"></span> <div id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> <ul id="tabsContainer" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">  </ul> <div id="tabData"><div class="reptShowLoading" id="dtLoading"><p>Loading data..Wait</p><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <table id="reportData"> </table> </div><div id="tabChart" > <div class="highchartsHdr"><div class="reptShowLoading" id="reptChartLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div><span id="reptChartInstr"><span class="reptTblUseInfo">You can select the type of chart that you\'d like to see for each set of data here.</span> <input type="button" class="twitter-btn twitter-btn-warning saveChart" value="Save"  id="saveChart" title="Save Chart" /> <input type="button" class="twitter-btn twitter-btn-danger" value="Clear Save"  id="deleteChartSave" title="Clear chart save data" /> </span><div id="selectTypeChartCont"></div></div> <div id="tabChartArea" status="0"> <span style="margin-top: 60px;display:block;">Your chart will be displayed here. </span></div> </div><div id="tabMap" >show map here </div> <div id="tabPivot" width="auto"> <div id="pvtLoading" class="reptShowLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <div id="pivot-menu-container"><span class="reptTblUseInfo">Please select the appropriate columns below to create your own Pivot Report.</span> <input type="button" class="twitter-btn twitter-btn-danger" value="Clear Save"  id="deletePivotSave" title="Clear pivot save data" /> <input type="button" class="twitter-btn twitter-btn-warning" value="Customize"  id="editSavePivot" title="Customize Pivot" /><input type="button" class="twitter-btn twitter-btn-warning savePivot" value="Save"  id="savePivot" title="Save Pivot" /></div> <div id="k_results"></div><div id="results"> </div> </div> </div> </div><form method="post" action="/atCRM/custom/adhocReports/rXL.xls" id="exelDownloadForm"> <input type="hidden" name="rD" id="rD"  /> <input type="hidden" name="rN" id="rN"  /></form> </div>';
 	
 	// var scr = "<script type='text/javascript' src='/atCRM/javascript/JSON/rept-more.js'></script>";
 	var sty  = '<style type="text/css" id="reptStyle">';
 		sty += '.reptTblUseInfo {float:left;} .reptTblCondVar b {color:black;} .reptTblCondVar {color:grey;font-weight:normal;width: 60%; display:inline-block;} .table-bordered {border: solid 1px white !important; } .table-bordered td+td {border: solid 1px #ddd !important;} .pvtTdFullBorder {border: solid 1px #ddd !important;} #reptOwner {color:grey;font-size:12px;float:right;margin-right: 6px;} #reptOwner span {color:#F87777;}.pivotCustHide {display:none;} #reportElementHeader {min-width: 1000px;width:100%;} #reportData tr th,#reportData tr td  {word-wrap:break-word;min-width:60px;max-width:60px;} .dataTables_info {margin-bottom: 12px; color:grey;}  .dtHdrFixed {position:fixed;background-color:white;top:0;} #selectTypeOfHC, #chartSelXAxis {font-size: 12px;} .dtTotal {background-color: #014464; color: white;}  .dtTotal td {  border:none; border-right: solid 1px grey;border-left: solid 1px grey;} .ui-state-active-droppable {background-color: #DFEB5E !important; } #pivot-menu-container, #reptChartInstr {height:37px;} .savePivot, .saveChart, #deleteChartSave, #deletePivotSave, #deletingChartSave, #deletingPivotSave {float:right; display:none; margin-right: 4px;}  #editSavePivot, #cancelEditPivot { margin-right:4px; float:right;} .reptBtns:hover, .reptFrmBtns:hover {background-color:#014464 !important;color:white;} #filterCancel {cursor:pointer;visibility:hidden;} #reportData .Text {text-align: left !important;} #reportData .Integer, #reportData .Number {text-align: right !important;} #reportData tr td {text-align:left;} #hcTypeSelTbl {width: 100%;} #hcTypeSelTbl td { display: inline-block; font-size: 12px; font-weight:bold; } #reportData_wrapper .clear {clear:both;} .pageTitle {font-size: 20px; } .reportHeaderCont { text-align: left; border-radius: 4px; margin: 10px auto; color: white; padding: 5px; background: #014464;background: -moz-linear-gradient(top, #0272a7, #013953);background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0272a7), to(#013953));border: 1px solid #002232;-moz-box-shadow: inset 0px 0px 1px #edf9ff;-webkit-box-shadow: inset 0px 0px 1px #edf9ff;box-shadow: inset 0px 0px 1px #edf9ff; } .reptBtns {background-color: #fff !important;} #reptMoreTblOptCont {position:relative; width: 30px; height: 30px; float:right; } #reptMoreTblOptCont:hover .reptMoreSel {display:block;} .reptMoreSel a {width: 25px !important;}  .reptMoreSel {display: none; right:0; top:28px;border: solid 1px #F1F1F1; position: absolute; background-color:#DADADA; padding: 4px; border-radius: 2px; z-index:1; width: 42px; } .reptMoreOpt {width: 30px !important;height: 28px; border-radius: 0px 4px 4px 0px; background: url("/atCRM/images/imagesList.png") no-repeat -60px -35px; } #tabMapBtn {display:none !important;}  #tabs-min .ui-tabs-nav li {top: 1px !important;} #k_results #vals, #k_results #rows {width: 15%; }  #k_results #cols {width: 85%;} #reportTblContainer {width: 100%; overflow: auto; } #filterRow th {padding: 4px 0 !important;} .eachColFilterSelect {margin: auto; width: 50px; display: block; } .filterRowHide {display:none;} .reptShowLoading{ display:none;text-align:center;color:red;} .highchartsHdr { font-family: candara, "sans-serif"; text-align:left; font-size:16px;display:block;} #tabChartArea {border: solid 1px #9C9797; display:block; width: 900px;height:400px; margin:auto;} #pivot-menu-container {text-align:left; font-size:14px; font-family:candara; margin:4px 0px;} #selectTypeChartCont {width: 100%;display:block;margin:12px auto;} #tabChart {display:block; margin: auto; width: 90%;} #paramsTbl td input[type=text] { width: 80%; } #paramsTbl td { display: inline-block; vertical-align: top; margin-right: 1.5%; width: 18%; } #slideUpDwnCont {display:none;} .showParamsCondCont {font-size: 16px;font-weight:bold; text-align:left; height: 30px;display:block; } .showParamsCondCont #showParams {float:right;}   #paramsTbl .multiSelectBox {width:82%;} #paramsTbl .sf_suggestion {margin-top: -56px;} #tblDiv {display:inline-block;width:100%;} .reptFrmBtns {float:right;margin-right: 5px; } .reptParamsDesc {font-size: 12px;display: block; color:grey;} #dtRefreshedAt {position:absolute; right: 1%;top: 0; font-size: 12px;} .reptParamsLbl {font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;} #paramsTbl {width:100%; border-collapse: collapse;} #paramsContainer { padding: 0.5% 0; width: 99%; display: block; height:auto;} .filterApplied {background-color:palegreen;} .dpass {display: none;} #reportData tr th {position:relative;} #k_results {display:block;overflow:auto;} #reportData_wrapper {overflow:auto;} #tabs-2 {position:relative;min-width:1000px;width:100%;} #tabs-2 .dataTables_filter {width: 425px; } .removeCol {display:none;} .showOrHideColsActv { height: 250px !important; background-color: white;border: solid 2px white;border-radius: 3px; background-position:top left !important; overflow-x:hidden !important; overflow-y:auto !important; width:220px !important; margin-left: -12.5% !important;} #reportData {text-align:center;}   .toggleColName:hover {background-color:rgb(164, 198, 218);} .toggleColName { border:none; border-top:solid 1px rgba(10, 9, 9, 0.1);width: 100%; cursor: pointer; font-size: 12px; font-family: candara; display:block;margin: 2px 0;text-align:left;padding: 2px 0;} #reportData_filter input { display: inline;} #reportData_length label { width 260px; } #reportData_length select { display: inline-block; } #tabs-min { background: transparent; border: none; } #filterColsByCombo {background: url("/atCRM/images/imagesList.png") no-repeat 1px -2px;} #showOrHideCols, #filterColsByCombo { cursor: pointer; background-color: white; border: solid 1px white; transition: height all 1s; -webkit-transition: all 1s; -moz-transition: all 1s; -o-transition: all 1s; z-index:1; overflow: hidden; position:absolute; width:31px; margin: 0.5% 0 0 -1%; padding: 24px 4px 2px 4px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; height: 25px;  } #showOrHideCols {margin-left: 2.3%; background: white url("/atCRM/images/gearDown.png") no-repeat top right / 28px 24px;}  #tabs-min .ui-widget-header { margin:0 !important; padding:0 !important; background: transparent; border: none; border-bottom: 1px solid #c0c0c0; -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; } #tabs-min .ui-state-default { background: transparent; border: none; } #tabs-min .ui-state-active { border: none; } #tabs-min .ui-state-default a { color: #c0c0c0; } #tabs-min .ui-state-active a { color: #459E00; background: transparent url(/atCRM/stylesheets/style_h/images/uiTabsArrow.png) no-repeat bottom center; } .dataTables_wrapper { font-size: 9pt; } .flash{ padding-top:4px; padding-bottom:4px; background-color: #FFFF33; font-weight:bold; font-size:12px;-moz-border-radius: 6px;-webkit-border-radius: 6px; color: black; } .alignRight { text-align: right; } .ui-tabs .ui-tabs-nav { margin: 0; padding: 0 0 0 0.4em; border: 1px solid #d4ccb0; background: none !important;} .blkSdw {box-shadow: 1px 1px 4px black;-moz-box-shadow: 1px 1px 4px black;-webkit-box-shadow: 1px 1px 4px black;-o-box-shadow: 1px 1px 4px black;}  .showingParams {background-color: skyblue !important; color: black;} #slideUpDwnCont {border: solid 1px rgba(0,0,0,0.2); border-left: none;border-right:none;} table#reportData thead tr th {  padding-right:36px; } .filterColsByComboActv { border:solid 1px #FF0606; -webkit-box-shadow: 1px 1px 4px #111010; -moz-box-shadow: 1px 1px 4px #111010;box-shadow: 1px 1px 4px #111010; } .ui-tabs .ui-tabs-nav li { margin: 0 !important;}';
-		sty += '#reptSingleCondFilter {float:left;}';	
+		sty += '#reptMoreFilterCond {margin-left:2px;color:white;} #reptSingleCondFilter {float:left;} #reptSingleCondFilter select, #reptSingleCondFilter .reptAddEditFilterTextBox {width: 100px;height25px;} ';	
 		sty += '</style>';
 	
 	into_div.innerHTML = sty + cont;
@@ -793,6 +794,150 @@ $(document).ready(function () {
 		alert('Dude wait! Its working');
 	});
 
+
+	//show specific operator
+ 	$('body').on('change', '.reptFilterEntityCols', function() { 	
+
+ 		//remove filter if applied..
+ 		// $('#'+entityDiv+ ' #removeAddEditFilter').attr('id', 'singleFilterSub');
+
+ 		var t = $(this);
+ 		var type = $('option:selected', t).attr('type');
+ 		var id   = t.attr('id').split('_').pop();
+ 		
+ 		//get mapping key name...
+ 		var colsMap = reptRulesTriggerMappings['colMapName']; 
+ 		if(!(type in colsMap)) {
+ 			alert("Type not found for.. "+ '" '+type+' "');
+ 			return;
+ 		}
+
+ 		var mapKey = colsMap[type];
+ 		var properties = reptRulesTriggerMappings['colProperties'][mapKey];
+ 		var opt, sel=$('#reptCanU #filterOpr_'+id);
+ 		sel.children().remove();
+ 		sel.append('<option value="" type="">---</option>')
+ 		$.each(properties,function(k, v) {
+ 			opt = '<option value="'+k+'">'+v+'</option>';
+ 			sel.append(opt);
+ 		});
+
+ 		var td = $('#reptCanU #filterDateCol_'+id);
+ 		if(mapKey == 'date') {
+ 			if(td.children('img').length == 0) {
+	 			var img = $('<img src="/atCRM/images/calendar.gif" id="filterCalendar_'+id+'" />');
+	 			td.html(img).css('display','block');
+	 			new Calendar({
+	                inputField: 'filterEntTxt_'+id,
+	                dateFormat: "%d/%m/%Y", 
+	                trigger: 'filterCalendar_'+id,
+	                bottomBar: true,
+	                fdow:0,
+	                min: 19000101,
+	                max: 29991231,
+	                align: "BL",
+	                onSelect: function() {
+	                  this.hide();
+	                  //remove filter if applied..
+ 					  $('#reptCanU #removeAddEditFilter').attr('id', 'singleFilterSub');
+	                }
+	            });
+	            // $('#'+entityDiv+ ' .filtersLi').css('width', '420px');
+ 			} else { 			
+ 				td.css('display','block');
+ 				img = td.children('img');	
+ 				// $('#'+entityDiv+ ' .filtersLi').css('width', '420px');
+ 				$('#reptCanU #filterEntTxt_'+id).val(img.attr('alt'));
+ 			}
+ 		} else {
+ 			if(td.children('img').length > 0) {
+ 				var txtFld = $('#reptCanU #filterEntTxt_'+id);
+ 				td.children('img').attr('alt', txtFld.val());
+ 				td.css('display','none');
+ 				txtFld.val('');
+ 				// $('#'+entityDiv+ ' .filtersLi').css('width', '390px');
+ 			}
+ 		}
+ 	});
+
+	//submit the filters data
+	$('body').on('click', '#reptSingleFilterSub', function() {
+		//prepare url data
+		var urlData = '', rowData, flag,val;
+		$('#reptCanU #reptSingleCondFilter tr').each(function() {
+			rowData = '';
+			flag=true;
+			$(this).children('td.toPostCol').each(function() {
+				if($(this).css('visibility') !== 'hidden') {
+					val = $(this).children('.toPostVal').val();
+					rowData +=  val + '!!';
+					if(val == '')
+						flag = false;
+				} 
+			});
+			if(flag !== false)
+				urlData += rowData.substr(0, rowData.length - 2) + '!~~!';
+		});		
+
+		if(urlData.length > 0)
+			urlData = '&aw='+ urlData.substr(0, urlData.length - 4);
+
+		alert(urlData.length);
+
+		if(urlData.length > 0) {
+			$(this).attr('id', 'reptRemoveAddEditFilter'); //mark current clicked button as remove
+		} else {
+			alert('No "and" condtions selected. Please atleast 1 complete row.');
+		}		
+	});
+
+	//remove filters applied
+	//remove single select filter
+	$('body').on('click', '#reptRemoveAddEditFilter', function() {
+		$(this).attr('id', 'reptSingleFilterSub'); 	
+		$('#reptCanU #reptSingleCondFilter tr').each(function() {
+			$(this).children('td.toPostCol').each(function() { 
+				$(this).css('visibility','visible');
+				$(this).children('.toPostVal').val(' ');
+			});
+		});
+	});	
+
+	//pop up operator change action for multiple #and conditions
+	$('body').on('change', '.reptFilterOprColsPopUp', function() {
+		//add selected value to its selct attribute
+		var t = $(this);
+		t.attr('selct', t.val());
+
+		var v = t.val();
+		var id = t.attr('id').split('_').pop();
+		if(v == 'nu' || v == 'nn') {
+			$('#commonPopupDiv #filterEntTxt_'+id).parent().css('visibility', 'hidden');
+			$('#commonPopupDiv #filterDateCol_'+id + ' img').parent().css('visibility', 'hidden');
+		} else {
+			$('#commonPopupDiv #filterEntTxt_'+id).parent().css('visibility', 'visible');
+			$('#commonPopupDiv #filterDateCol_'+id+ ' img').parent().css('visibility', 'visible');
+		}
+
+	});
+
+	//show multiple filter popup
+	$('body').on('click', '#reptMoreFilterCond', function() {
+		reptShowFilterPopUp();
+	});
+
+	//remove this row from table
+ 	$('body').on('click', '.reptRemoveCondForFilter', function() {
+ 		var id = $(this).attr('id').split('_').pop();
+ 		$('#filterTblRow_'+id).remove();
+ 	});
+
+ 	//add new row, and make this col has remove
+ 	$('body').on('click', '.reptAddNewCondForFilter', function() {
+ 		$(this).addClass('reptRemoveCondForFilter').removeClass('reptAddNewCondForFilter'); 	
+ 		reptDrawFilterRow(1, $('#reptMoreFilterContainer table'), false);	
+ 	});
+
 	/* end of document ready */
 });
 
@@ -846,7 +991,6 @@ function reptReturnCommaSeparatedStrFromArr(arr) {
 	* Redraw chart with saved structure
 */
 function redrawChartWithSaveObj(obj) {
-	console.log(obj);
 	var axis = obj.axis, axisObj=$('#chartSelXAxis'), valueStr=''; //get the axis
 	//set axis type
 	axisObj.val(axis);
@@ -859,7 +1003,6 @@ function redrawChartWithSaveObj(obj) {
 		value = selVal[1];
 
 		$('#'+id).val(value).trigger('change');
-		console.log('#'+id+' option[value='+value+']');
 		valueStr += '<b>'+$('#'+id+' option[value='+value+']').text()+'</b>, ';
 	});
 	valueStr = '<span style="color:grey;">Showing for '+ '<b style="color:black">'+ $('#chartSelXAxis option[value='+axis+']').text() +'</b>'+ ', Chart types are ('+ '<b style="color:black">'+valueStr.substr(0, valueStr.length-2) + '</b>)</span>';
@@ -1310,7 +1453,6 @@ function addTrForShowingTotal() {
 			cls = dataTblHdr[i]['sClass'];			
 			if(cls === undefined)
 				cls = '';
-			console.log(cls);
 			if($.inArray(cls, colTotReq) != -1 ) {
 				// indexOfTotalCols.push(i);
 				t =0;
@@ -2254,22 +2396,22 @@ function reptDrawFilterRow(cnt, toTbl, singleSelect) {
 			
 			tr.append(col);
 
-			 colSel = 'filterEntityColsPopUp';
-			 oprSel = 'filterOprColsPopUp';
+			 colSel = 'reptFilterEntityColsPopUp';
+			 oprSel = 'reptFilterOprColsPopUp';
 			 textBoxClass = '';
 		} else {
-			 colSel = 'filterEntityCols';
-			 oprSel = 'filterEntityOpr';
-			 textBoxClass = 'addEditFilterTextBox';
+			 colSel = 'reptFilterEntityCols';
+			 oprSel = 'reptFilterEntityOpr';
+			 textBoxClass = 'reptAddEditFilterTextBox';
 		}
 
 
 		col = $('<td class="toPostCol"></td>');
 		sel = $('<select class="'+colSel+' toPostVal" id="filterCol_'+reptTblFilterIndx+'" ></select>');
 		sel.append('<option value="" type="">---</option>');
-		$.each(reptDrawFilterRow,function(k,v) {
+		$.each(reptEntityColumns,function(k,v) {
 			typ = v['type'];
-			if(typ in rulesTriggerMappings['colMapName']) {
+			if(typ in reptRulesTriggerMappings['colMapName']) {
 				n = v['name'];
 				opt = "<option value="+v['id']+" type="+typ+">"+n+"</option>";
 				sel.append(opt);
@@ -2292,16 +2434,22 @@ function reptDrawFilterRow(cnt, toTbl, singleSelect) {
 		tr.append(col);
 
 		//fourth column, contains date list
-		col = $('<td style="width:25px;display:none;" id="filterDateCol_'+tblFilterIndx+'" ></td>');
+		col = $('<td style="width:25px;display:none;" id="filterDateCol_'+reptTblFilterIndx+'" ></td>');
 		tr.append(col);
+
+		//fifth column, contains date list
+		if(singleSelect === true) {
+			col = $('<td style="width:100px;"><input type="button" value="" title="Go Quick-filter"  id="reptSingleFilterSub" /><input type="button" value="More" title="Add more Quick-filter conditions" id="reptMoreFilterCond" class="reptFilterOprColsPopUp" /></td>');
+			tr.append(col);
+		}
 
 		if(singleSelect === false) {
 			col = $('<td style="width:35px;"></td>');
 			imgDiv = $('<div id="filterEntAddOrDel_'+reptTblFilterIndx+'"></div>');
 			if(i == cnt) {			
-				imgDiv.addClass('addNewCondForFilter');
+				imgDiv.addClass('reptAddNewCondForFilter');
 			} else {			
-				imgDiv.addClass('removeCondForFilter');
+				imgDiv.addClass('reptRemoveCondForFilter');
 			}
 			col.append(imgDiv);
 			tr.append(col);
@@ -2319,9 +2467,13 @@ function reptDrawFilterRow(cnt, toTbl, singleSelect) {
 
 //this will shows the filter columns for single select
 function reptShowColumnsForSingleSelect () {
+	if(reptEntityName === '') {
+		alert('No entity list id or name');
+		return;
+	}
 
 	//hit the url and get columns for entity id
-	var udm = '/atCRM/custom/metadata/eC.html?e=8892';
+	var udm = '/atCRM/custom/metadata/eC.html?e=8892';//+reptEntityName;
 	console.log('filters...');
 	//get  list of columns for particular entity
 	$.ajax({
@@ -2332,13 +2484,96 @@ function reptShowColumnsForSingleSelect () {
 			reptEntityColumns = data['columns']; //colsForEntity is global var
 			var dest = $('#reptSingleCondFilter');
 			if(dest.children().length == 0)			
-				reptDrawFilterRow(1, dest, true);			
+				reptDrawFilterRow(1, dest, true);	
+				reptDrawFilterRow(5, $('#reptMoreFilterContainer table'), false);			
 		},
 		error: function(response) {
 			console.log('Error while getgin entity columns..');
 			console.log(response);
 		},
 	});
+}
+
+
+//contains different operators, for different column types
+//currently supporting, text, number, date
+var reptRulesTriggerMappings = {
+		"colMapName": {
+			"Text": "text",
+			"Textbox": "text",
+			"Multi": "text",
+			"Combo": "text",
+			"Decimal": "number",
+			"Number": "number",
+			"Integer": "number",
+			"Date": "date",
+			"DateTime": "date",
+		},
+		"colProperties": {
+            "number": {
+                "eq": "equal to",
+                "ne": "not equal to",
+                "lt": "less than",
+                "gt": "greater than",
+				"nu": "is null",
+				"nn": "is not null"
+		       },
+		       "numberpk": {
+		       "eq": "equal to",
+		       "ne": "not equal to",
+			   "nu": "is null",
+			   "nn": "is not null"
+		       },
+		       "date": {
+		       "eq": "equal to",
+		       "ne": "not equal to" ,
+		       "lt": "less than",
+		       "gt": "greater than",
+			   "nu": "is null",
+			   "nn": "is not null"
+		       },
+		       "text": {
+		       "eq": "equal to",
+		       "ne": "not equal to",
+		       "ct": "contains",
+		       "sw": "starts with",
+		       "ew": "ends with",
+			   "nu": "is null",
+			   "nn": "is not null"
+		       }
+       }
+   };
+
+
+function reptShowFilterPopUp() {	
+	//show pop up
+	$( "#commonPopupDiv" ).dialog({
+			resizable: false,
+			autoOpen:true,
+			modal: true,
+			title:"Add Filter",
+			width:800,
+			height:350,
+			closeOnEscape: false,
+			position: 'center'
+	});
+	var btn = $('#reptCanU #reptMoreFilterCond'); 
+	if(!btn.hasClass('reptMoreFilterCondApplied')) {
+		//prepare html contents first
+		var container = "<div><div id='filterShowLoading'><center><img src='/atCRM/images/JSON/loading.gif'><p>Loading filters..</p></center></div><div id='filterContainer'><form id='filterTblForm'><table id='filterTbl'></table></form><input type='button' value='Go' id='filterTblSubmit' style='float:right;width:40px;' /><input type='button' value='Clear' id='filterTblClear' style='float:right;margin-right:4px;' /></div></div>";
+		$('#commonPopupDiv').html(container);
+		reptDrawFilterTableOpt();
+		btn.addClass('reptMoreFilterCondApplied');
+	}
+	
+}
+
+function reptDrawFilterTableOpt() {	
+
+	reptDrawFilterRow(5, $('#commonPopupDiv #filterTbl'), false);
+
+	//hide loading 
+	$('#filterShowLoading').remove();
 }
 
 // function lAddIsDataTable ( nTable )

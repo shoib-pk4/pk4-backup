@@ -2576,6 +2576,20 @@ function reptDrawFilterTableOpt() {
 	$('#filterShowLoading').remove();
 }
 
+function formatNumbering(data, header) {
+	//store index of integer columns
+	var indexOfIntegers = [], sc;
+	$.each(header, function(k,v) {
+		sc = v['sClass'];
+		if(sc === 'Number' || sc === 'Integer' || sc === 'Decimal') {
+			indexOfIntegers.push(k);
+		}
+
+		
+
+	});
+}
+
 // function lAddIsDataTable ( nTable )
 // {
 //     var settings = $.fn.dataTableSettings;

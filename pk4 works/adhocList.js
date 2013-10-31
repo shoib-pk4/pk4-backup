@@ -303,6 +303,7 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 	xhr_request = $.ajax({		
 		type: "GET",
 		url: url2call,
+		async: false,
 		success: function (data) {
 			var loginPage = data.indexOf("<title>Impel login page</title>");
 			var errorPage = data.indexOf("<title>Something wrong!</title>");
@@ -1191,20 +1192,49 @@ function sortAdHocList(nodeId,columnHdg,hdr,type) {
 		prevThElem.title ="Sort ascending, by " + sortParms[1];
 		prevThElemDiv[0].innerHTML='<span style="cursor:pointer;" onclick=\'sortAdHocList("'+sortParms[0]+'","'+sortParms[1]+'","'+sortParms[2]+'","'+sortParms[3]+'")\'>'+sortParms[1]+'&nbsp;&nbsp;<span style="background-image: url(/atCRM/images/JSON/rt_arrow.gif);background-repeat:no-repeat;">&nbsp;&nbsp;</span></span>';
 	}
-	if(currentSort == nodeId) {
-		var nowSort='-'+nodeId;
-		thElemDiv[0].title ="Sort ascending, by " + columnHdg;
-		thElemDiv[0].innerHTML='<span style="cursor:pointer;" onclick=\'sortAdHocList("'+nodeId+'","'+columnHdg+'","'+hdr+'","'+type+'")\'>'+columnHdg+'&nbsp;&nbsp;<span style="background-image: url(/atCRM/images/JSON/drop-up.gif);background-repeat:no-repeat;">&nbsp;&nbsp;</span></span>';
-    } else {
-		var nowSort=nodeId;
-		thElemDiv[0].title ="Sort descending, by " + columnHdg;
-		thElemDiv[0].innerHTML='<span style="cursor:pointer;" onclick=\'sortAdHocList("'+nodeId+'","'+columnHdg+'","'+hdr+'","'+type+'")\'>'+columnHdg+'&nbsp;&nbsp;<span style="background-image: url(/atCRM/images/JSON/drop-down.gif);background-repeat:no-repeat;">&nbsp;&nbsp;</span></span>';
+	if(type !='Datetime') {
+		if(currentSort == nodeId ) {
+			var nowSort='-'+nodeId;
+			thElemDiv[0].title ="Sort ascending, by " + columnHdg;
+			thElemDiv[0].innerHTML='<span style="cursor:pointer;" onclick=\'sortAdHocList("'+nodeId+'","'+columnHdg+'","'+hdr+'","'+type+'")\'>'+columnHdg+'&nbsp;&nbsp;<span style="background-image: url(/atCRM/images/JSON/drop-up.gif);background-repeat:no-repeat;">&nbsp;&nbsp;</span></span>';
+	    } else {
+			var nowSort=nodeId;
+			thElemDiv[0].title ="Sort descending, by " + columnHdg;
+			thElemDiv[0].innerHTML='<span style="cursor:pointer;" onclick=\'sortAdHocList("'+nodeId+'","'+columnHdg+'","'+hdr+'","'+type+'")\'>'+columnHdg+'&nbsp;&nbsp;<span style="background-image: url(/atCRM/images/JSON/drop-down.gif);background-repeat:no-repeat;">&nbsp;&nbsp;</span></span>';
+		}
+	}
+
+	//this is for date time
+	if(type =='Datetime') {
+		if(currentSort == nodeId) {
+	    
+			var nowSort='-'+nodeId;
+			thElemDiv[0].title ="Sort descending, by " + columnHdg;
+			thElemDiv[0].innerHTML='<span style="cursor:pointer;" onclick=\'sortAdHocList("'+nodeId+'","'+columnHdg+'","'+hdr+'","'+type+'")\'>'+columnHdg+'&nbsp;&nbsp;<span style="background-image: url(/atCRM/images/JSON/drop-down.gif);background-repeat:no-repeat;">&nbsp;&nbsp;</span></span>';
+	    } else {
+	var nowSort=nodeId;
+			thElemDiv[0].title ="Sort ascending, by " + columnHdg;
+			thElemDiv[0].innerHTML='<span style="cursor:pointer;" onclick=\'sortAdHocList("'+nodeId+'","'+columnHdg+'","'+hdr+'","'+type+'")\'>'+columnHdg+'&nbsp;&nbsp;<span style="background-image: url(/atCRM/images/JSON/drop-up.gif);background-repeat:no-repeat;">&nbsp;&nbsp;</span></span>';
+			
+
+		}
 	}
 	
 	prevSortParams=nodeId+'--'+columnHdg+'--'+hdr+'--'+type;
-	document.getElementById(subMnuItmId+'-sortVal').value=nowSort;
-	if(type=="dd/MM/yyyy"){if(nowSort=='-'+nodeId)var order_by=nodeId+'--asc'; else var order_by=nodeId+'--desc';}else {if(nowSort=='-'+nodeId)var order_by=nodeId+'--desc'; else var order_by=nodeId+'--asc';}
+	if(type=="dd/MM/yyyy" || type=='Datetime'){
+		if(nowSort=='-'+nodeId)
+			var order_by=nodeId+'--asc'; 
+		else 
+			var order_by=nodeId+'--desc';
+	} else {
+		if(nowSort=='-'+nodeId)
+			var order_by=nodeId+'--desc'; 
+		else 
+			var order_by=nodeId+'--asc';
+	}
 	retrieveListData('orderBy',order_by);
+	//add sort value in hidden field
+	document.getElementById(subMnuItmId+'-sortVal').value=nowSort;
 }
 
 function click2ViewAdhocList(hdnFld) {

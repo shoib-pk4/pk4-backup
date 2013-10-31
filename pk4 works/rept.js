@@ -10,7 +10,7 @@ function exec_rept (doc, into_div) {
 
     //this are global vars
 	dataTblHdr  = doc.dataTblHdr;
-	dataTblData = doc.dataTblData;	
+	// dataTblData = formatNumbering(doc.dataTblData, dataTblHdr); //returns valid numbers	
 	rptName = doc.ReportName;		
 	paUrl = '';
 	rptName;
@@ -882,10 +882,11 @@ $(document).ready(function () {
 		if(urlData.length > 0)
 			urlData = '&aw='+ urlData.substr(0, urlData.length - 4);
 
-		alert(urlData.length);
-
 		if(urlData.length > 0) {
 			$(this).attr('id', 'reptRemoveAddEditFilter'); //mark current clicked button as remove
+			//hit the url
+			url = zcServletPrefix+"/custom/JSON/list/rAn.htm?rept_id=" + getValueFromUrl('i', true)+urlData;
+			getFilterForRan(url);			
 		} else {
 			alert('No "and" condtions selected. Please atleast 1 complete row.');
 		}		
@@ -935,8 +936,45 @@ $(document).ready(function () {
  	//add new row, and make this col has remove
  	$('body').on('click', '.reptAddNewCondForFilter', function() {
  		$(this).addClass('reptRemoveCondForFilter').removeClass('reptAddNewCondForFilter'); 	
- 		reptDrawFilterRow(1, $('#reptMoreFilterContainer table'), false);	
+ 		reptDrawFilterRow(1, $('#commonPopupDiv #filterTbl'), false);	
  	});
+
+ 	//get filters from pop up
+ 	$('body').on('click', '#reptFilterTblSubmit', function() {
+		//prepare url data
+		var urlData = '', rowData, flag,val;
+		$('#commonPopupDiv #filterTbl tr').each(function() {
+			rowData = '';
+			flag=true;
+			$(this).children('td.toPostCol').each(function() {
+				if($(this).css('visibility') !== 'hidden') {
+					val = $(this).children('.toPostVal').val();
+					rowData +=  val + '!!';
+					if(val == '')
+						flag = false;
+				} 	
+			});
+
+
+			if(flag !== false)
+				urlData += rowData.substr(0, rowData.length - 2) + '!~~!';
+
+		});		
+		if(urlData.length > 0)
+			urlData = '&aw='+ urlData.substr(0, urlData.length - 4);
+
+		if(urlData.length > 0) {
+			//hit the url
+			url = zcServletPrefix+"/custom/JSON/list/rAn.htm?rept_id=" + getValueFromUrl('i', true)+urlData;
+			getFilterForRan(url);	
+		} else {
+			alert('No "and" condtions selected. Please atleast 1 complete row.');
+		}
+
+		//change the color of more filter
+		$('#'+entityDiv+' #filterTab').addClass('addEditMoreFilterApplied');		
+
+	});
 
 	/* end of document ready */
 });
@@ -1362,8 +1400,8 @@ function reloadDataTable(data) {
 	* plot datatable
 */
 function plotDataTable(data) {
-	dataTblHdr = data['dataTblHdr'];
-	dataTblData = data['dataTblData'];
+	dataTblHdr = data.dataTblHdr;
+	dataTblData = formatNumbering(data.dataTblData, dataTblHdr); //returns valid numbers	;
 
 	oTable = $('#reportData').dataTable({
 			"aaData": dataTblData,	
@@ -1385,22 +1423,22 @@ function plotDataTable(data) {
 				"aButtons": [ "print"], //"xls","copy", "csv", "pdf"  
 				"sSwfPath": "/atCRM/javascript/jquery/swf/copy_csv_xls_pdf.swf"
 			},
-			"fnRowCallback": function( nRow, aData, iDisplayIndex ) { 
-				//this call back makes slow while filtering
-				var len = aData.length, cn, td, num, val;
-				for(var i=0;i<len; i++) {
-					td = $('td:eq('+i+')', nRow);
-					cn = td[0]['className']; //this is assumption that in zero will find class name
-					val = aData[i];
-					if(cn.match(/Integer/g)) {
-						td.html(Math.floor(val));
-					}
-					if(cn.match(/Number/g)) {
-						num = Math.round(val * 100) / 100;
-						td.html(val);
-					}
-				}
-			},
+			// "fnRowCallback": function( nRow, aData, iDisplayIndex ) { 
+			// 	//this call back makes slow while filtering
+			// 	var len = aData.length, cn, td, num, val;
+			// 	for(var i=0;i<len; i++) {
+			// 		td = $('td:eq('+i+')', nRow);
+			// 		cn = td[0]['className']; //this is assumption that in zero will find class name
+			// 		val = aData[i];
+			// 		if(cn.match(/Integer/g)) {
+			// 			td.html(Math.floor(val));
+			// 		}
+			// 		if(cn.match(/Number/g)) {
+			// 			num = Math.round(val * 100) / 100;
+			// 			td.html(val);
+			// 		}
+			// 	}
+			// },
 			"fnDrawCallback": function() {
 				//this is called when data table has been drawn completely 
 				addTrForShowingTotal();
@@ -1480,7 +1518,7 @@ function addTrForShowingTotal() {
 
 //return valid arithmatic number
 function reptReturnNumber(str) {
-	var tempNum = 0, tempStr='', strlen = str.length;
+	var tempNum = '', tempStr='', strlen = str.length;
 	for(var i=0; i<strlen; i += 1) {
 		tempStr += reptReturnValidArithmaticChar(str.charAt(i)); 
 	}
@@ -2263,7 +2301,10 @@ $("#k_results").children().remove(); //empty if any
 					var derivers = $.pivotUtilities.derivers;
 					var renderers = $.extend($.pivotUtilities.renderers, 
                     				$.pivotUtilities.gchart_renderers);
-					var piv_jason = data.piv_json;					
+					var piv_hdrs = data.pivot_fields;
+					piv_jason = formatNumbering(data.piv_json, piv_hdrs);
+					console.log(data);
+					// var piv_jason = data.piv_json;					
 					//send json to pivot init funct
 					$(function() {
 						$("#k_results").pivotUI(piv_jason, {
@@ -2474,7 +2515,7 @@ function reptShowColumnsForSingleSelect () {
 
 	//hit the url and get columns for entity id
 	var udm = '/atCRM/custom/metadata/eC.html?e=8892';//+reptEntityName;
-	console.log('filters...');
+	// console.log('filters...');
 	//get  list of columns for particular entity
 	$.ajax({
 		url: udm,
@@ -2485,7 +2526,7 @@ function reptShowColumnsForSingleSelect () {
 			var dest = $('#reptSingleCondFilter');
 			if(dest.children().length == 0)			
 				reptDrawFilterRow(1, dest, true);	
-				reptDrawFilterRow(5, $('#reptMoreFilterContainer table'), false);			
+				reptDrawFilterRow(5, $('#commonPopupDiv #filterTbl'), false);			
 		},
 		error: function(response) {
 			console.log('Error while getgin entity columns..');
@@ -2580,15 +2621,73 @@ function formatNumbering(data, header) {
 	//store index of integer columns
 	var indexOfIntegers = [], sc;
 	$.each(header, function(k,v) {
-		sc = v['sClass'];
-		if(sc === 'Number' || sc === 'Integer' || sc === 'Decimal') {
+		sc = v['sClass'].toLowerCase();
+		if(sc === 'number' || sc === 'integer' || sc === 'decimal') {
 			indexOfIntegers.push(k);
 		}
-
-		
-
 	});
+
+	var dataLen = data.length;
+	for (var i = 0; i < dataLen; i +=1) {
+		$.each(data[i], function(k,v) {
+			if($.inArray(k, indexOfIntegers) != -1) {
+				data[i][k] = reptGetFormatedNumber(v);
+			}
+		});		
+	};
+	console.log(data);
+	return data;
 }
+
+//returns the number in proper format
+//ex: 1.0002 will be 1.00, 100000 = 100, 000;
+function reptGetFormatedNumber(num) {
+	num = num.toString();
+	num = reptReturnNumber(num); //this will contain only numbers and dot
+	if(num.indexOf('.') > -1) {
+		num = (Math.round(num*100)/100).toString();
+		var arr = num.split('.');
+		num = reptGetCommaSeparatedNum(arr[0]) + '.' + arr[1];
+	} else {
+		num = reptGetCommaSeparatedNum(num);		
+	}
+
+	return num;
+}
+
+//reurns comma separated number
+function reptGetCommaSeparatedNum(num) {
+	var len = num.toString().length, temp='',digit;
+	for(var i=0; i<len; i +=1) {
+		digit = num.charAt(i);
+		if((i%3)==0 && i != 0 && len > 5){
+			temp = temp + ', ' + digit;	
+		} else {
+			temp = temp + '' + digit;
+		}		
+	}
+	return temp;
+}
+
+//get filter data from ran.htm
+function getFilterForRan(urlPath) {
+	$.ajax(
+		{
+			url: urlPath,
+			type: 'POST',
+			dataType: 'JSON',
+			success: function(data) {
+				alert('success');
+				console.log(data);
+			},
+			error: function(response) {
+				alert('Failed');
+				console.log(response);
+			}
+		}
+	);
+}
+
 
 // function lAddIsDataTable ( nTable )
 // {

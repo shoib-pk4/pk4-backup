@@ -1511,7 +1511,7 @@ span.cke_wrapper cke_ltr,table.cke_editor, td.cke_contents, span.cke_skin_kama, 
 	display: inline; float: left;
 	width: 100%;
 }
-.addNewCondForFilter, .removeCondForFilter {
+.addNewCondForFilter, .removeCondForFilter, .reptAddNewCondForFilter, .reptRemoveCondForFilter {
 	width:35px;
 	height:30px;
 }

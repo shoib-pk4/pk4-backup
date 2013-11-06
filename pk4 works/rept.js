@@ -3,7 +3,7 @@
 	Dont add any event listners in below function, becuase every time function is called 
 	and event is attached and this behaves differently
 */
-var reptCalInitIndx = 0, initReptDataTable=false, reptEntityName;
+var reptCalInitIndx = 0, _reptPaginationFlag=false, _reptPageSize, initReptDataTable=false, reptEntityName, _reptPagination=1, _reptTmpResultCnt=0, _reptCurrentResultCnt=0, _reptPaginatioArr=[''], _reptPaginationStatus;
 function exec_rept (doc, into_div) {
 	
 	var tabsArr = doc.Tabs, params    = doc.Parameters, rptSubName = doc.ReportDesc;
@@ -21,15 +21,26 @@ function exec_rept (doc, into_div) {
 	reptCreatedBy = doc.CreatedBy; //this is the id who created report
 	reptEntityName = (doc.EntityName)?doc.EntityName:'';
 
+	//pagination exist
+	var page = (doc.Paginate)?doc.Paginate:'No';
+	_reptPageSize = (doc.PageSize)?doc.PageSize:'';
+	//hide pagination buttons if it is set to no
+	if(page == 'Yes') {
+		_reptPaginationFlag = true;
+	}
+
+
 	var cont = '<div id="reptCanU" style="width:100%;"><div id="reportElementHeader">  <table width="100%" class="reportHeaderCont" > <tr> <td align="left" class="pageTitle" style="width:240px;"> ' + rptName + ' </td><td style="width:300px;" align="left">' + rptSubName + '</td><td align="right" valign="bottom" > <table id="reptSingleCondFilter"></table> <input type="button" class="blueButton reptBtns" value="Parameters" style="width: 100px;" id="showParams" /> <input type="button" class="blueButton reptBtns expBtn" value="Export" style="width: 100px;border-radius: 4px 0px 0px 4px;" id="exportDataTbl" /><div id="reptMoreTblOptCont" ><input type="button" class="reptBtns reptMoreOpt" /> <div class="reptMoreSel" > <div id="reptDtMoreSelc" ></div> </div> </div> </div> </td> </tr> </table><div id="paramsContainer"> </div> </div> <div id="tabs-2" > <span id="dtRefreshedAt"></span> <div id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all"> <ul id="tabsContainer" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">  </ul> <div id="tabData"><div class="reptShowLoading" id="dtLoading"><p>Loading data..Wait</p><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <table id="reportData"> </table> </div><div id="tabChart" > <div class="highchartsHdr"><div class="reptShowLoading" id="reptChartLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div><span id="reptChartInstr"><span class="reptTblUseInfo">You can select the type of chart that you\'d like to see for each set of data here.</span> <input type="button" class="twitter-btn twitter-btn-warning saveChart" value="Save"  id="saveChart" title="Save Chart" /> <input type="button" class="twitter-btn twitter-btn-danger" value="Clear Save"  id="deleteChartSave" title="Clear chart save data" /> </span><div id="selectTypeChartCont"></div></div> <div id="tabChartArea" status="0"> <span style="margin-top: 60px;display:block;">Your chart will be displayed here. </span></div> </div><div id="tabMap" >show map here </div> <div id="tabPivot" width="auto"> <div id="pvtLoading" class="reptShowLoading"><img src="/atCRM/images/loadingbar.gif" width="128" height="15" alt="loadingbar.gif" /></div> <div id="pivot-menu-container"><span class="reptTblUseInfo">Please select the appropriate columns below to create your own Pivot Report.</span> <input type="button" class="twitter-btn twitter-btn-danger" value="Clear Save"  id="deletePivotSave" title="Clear pivot save data" /> <input type="button" class="twitter-btn twitter-btn-warning" value="Customize"  id="editSavePivot" title="Customize Pivot" /><input type="button" class="twitter-btn twitter-btn-warning savePivot" value="Save"  id="savePivot" title="Save Pivot" /></div> <div id="k_results"></div><div id="results"> </div> </div> </div> </div><form method="post" action="/atCRM/custom/adhocReports/rXL.xls" id="exelDownloadForm"> <input type="hidden" name="rD" id="rD"  /> <input type="hidden" name="rN" id="rN"  /></form> </div>';
 	
 	// var scr = "<script type='text/javascript' src='/atCRM/javascript/JSON/rept-more.js'></script>";
 	var sty  = '<style type="text/css" id="reptStyle">';
-		sty += '.reptTblUseInfo {float:left;} .reptTblCondVar b {color:black;} .reptTblCondVar {color:grey;font-weight:normal;width: 60%; display:inline-block;} .table-bordered {border: solid 1px white !important; } .table-bordered td+td {border: solid 1px #ddd !important;} .pvtTdFullBorder {border: solid 1px #ddd !important;} #reptOwner {color:grey;font-size:12px;float:right;margin-right: 6px;} #reptOwner span {color:#F87777;}.pivotCustHide {display:none;} #reportElementHeader {min-width: 1000px;width:100%;} #reportData tr th,#reportData tr td  {word-wrap:break-word;min-width:60px;max-width:60px;} .dataTables_info {margin-bottom: 12px; color:grey;}  .dtHdrFixed {position:fixed;background-color:white;top:0;} #selectTypeOfHC, #chartSelXAxis {font-size: 12px;} .dtTotal {background-color: #014464; color: white;}  .dtTotal td {  border:none; border-right: solid 1px grey;border-left: solid 1px grey;} .ui-state-active-droppable {background-color: #DFEB5E !important; } #pivot-menu-container, #reptChartInstr {height:37px;} .savePivot, .saveChart, #deleteChartSave, #deletePivotSave, #deletingChartSave, #deletingPivotSave {float:right; display:none; margin-right: 4px;}  #editSavePivot, #cancelEditPivot { margin-right:4px; float:right;} .reptBtns:hover, .reptFrmBtns:hover {background-color:#014464 !important;color:white;} #filterCancel {cursor:pointer;visibility:hidden;} #reportData .Text {text-align: left !important;} #reportData .Integer, #reportData .Number {text-align: right !important;} #reportData tr td {text-align:left;} #hcTypeSelTbl {width: 100%;} #hcTypeSelTbl td { display: inline-block; font-size: 12px; font-weight:bold; } #reportData_wrapper .clear {clear:both;} .pageTitle {font-size: 20px; } .reportHeaderCont { text-align: left; border-radius: 4px; margin: 10px auto; color: white; padding: 5px; background: #014464;background: -moz-linear-gradient(top, #0272a7, #013953);background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0272a7), to(#013953));border: 1px solid #002232;-moz-box-shadow: inset 0px 0px 1px #edf9ff;-webkit-box-shadow: inset 0px 0px 1px #edf9ff;box-shadow: inset 0px 0px 1px #edf9ff; } .reptBtns {background-color: #fff !important;} #reptMoreTblOptCont {position:relative; width: 30px; height: 30px; float:right; } #reptMoreTblOptCont:hover .reptMoreSel {display:block;} .reptMoreSel a {width: 25px !important;}  .reptMoreSel {display: none; right:0; top:28px;border: solid 1px #F1F1F1; position: absolute; background-color:#DADADA; padding: 4px; border-radius: 2px; z-index:1; width: 42px; } .reptMoreOpt {width: 30px !important;height: 28px; border-radius: 0px 4px 4px 0px; background: url("/atCRM/images/imagesList.png") no-repeat -60px -35px; } #tabMapBtn {display:none !important;}  #tabs-min .ui-tabs-nav li {top: 1px !important;} #k_results #vals, #k_results #rows {width: 15%; }  #k_results #cols {width: 85%;} #reportTblContainer {width: 100%; overflow: auto; } #filterRow th {padding: 4px 0 !important;} .eachColFilterSelect {margin: auto; width: 50px; display: block; } .filterRowHide {display:none;} .reptShowLoading{ display:none;text-align:center;color:red;} .highchartsHdr { font-family: candara, "sans-serif"; text-align:left; font-size:16px;display:block;} #tabChartArea {border: solid 1px #9C9797; display:block; width: 900px;height:400px; margin:auto;} #pivot-menu-container {text-align:left; font-size:14px; font-family:candara; margin:4px 0px;} #selectTypeChartCont {width: 100%;display:block;margin:12px auto;} #tabChart {display:block; margin: auto; width: 90%;} #paramsTbl td input[type=text] { width: 80%; } #paramsTbl td { display: inline-block; vertical-align: top; margin-right: 1.5%; width: 18%; } #slideUpDwnCont {display:none;} .showParamsCondCont {font-size: 16px;font-weight:bold; text-align:left; height: 30px;display:block; } .showParamsCondCont #showParams {float:right;}   #paramsTbl .multiSelectBox {width:82%;} #paramsTbl .sf_suggestion {margin-top: -56px;} #tblDiv {display:inline-block;width:100%;} .reptFrmBtns {float:right;margin-right: 5px; } .reptParamsDesc {font-size: 12px;display: block; color:grey;} #dtRefreshedAt {position:absolute; right: 1%;top: 0; font-size: 12px;} .reptParamsLbl {font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;} #paramsTbl {width:100%; border-collapse: collapse;} #paramsContainer { padding: 0.5% 0; width: 99%; display: block; height:auto;} .filterApplied {background-color:palegreen;} .dpass {display: none;} #reportData tr th {position:relative;} #k_results {display:block;overflow:auto;} #reportData_wrapper {overflow:auto;} #tabs-2 {position:relative;min-width:1000px;width:100%;} #tabs-2 .dataTables_filter {width: 425px; } .removeCol {display:none;} .showOrHideColsActv { height: 250px !important; background-color: white;border: solid 2px white;border-radius: 3px; background-position:top left !important; overflow-x:hidden !important; overflow-y:auto !important; width:220px !important; margin-left: -12.5% !important;} #reportData {text-align:center;}   .toggleColName:hover {background-color:rgb(164, 198, 218);} .toggleColName { border:none; border-top:solid 1px rgba(10, 9, 9, 0.1);width: 100%; cursor: pointer; font-size: 12px; font-family: candara; display:block;margin: 2px 0;text-align:left;padding: 2px 0;} #reportData_filter input { display: inline;} #reportData_length label { width 260px; } #reportData_length select { display: inline-block; } #tabs-min { background: transparent; border: none; } #filterColsByCombo {background: url("/atCRM/images/imagesList.png") no-repeat 1px -2px;} #showOrHideCols, #filterColsByCombo { cursor: pointer; background-color: white; border: solid 1px white; transition: height all 1s; -webkit-transition: all 1s; -moz-transition: all 1s; -o-transition: all 1s; z-index:1; overflow: hidden; position:absolute; width:31px; margin: 0.5% 0 0 -1%; padding: 24px 4px 2px 4px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; height: 25px;  } #showOrHideCols {margin-left: 2.3%; background: white url("/atCRM/images/gearDown.png") no-repeat top right / 28px 24px;}  #tabs-min .ui-widget-header { margin:0 !important; padding:0 !important; background: transparent; border: none; border-bottom: 1px solid #c0c0c0; -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; } #tabs-min .ui-state-default { background: transparent; border: none; } #tabs-min .ui-state-active { border: none; } #tabs-min .ui-state-default a { color: #c0c0c0; } #tabs-min .ui-state-active a { color: #459E00; background: transparent url(/atCRM/stylesheets/style_h/images/uiTabsArrow.png) no-repeat bottom center; } .dataTables_wrapper { font-size: 9pt; } .flash{ padding-top:4px; padding-bottom:4px; background-color: #FFFF33; font-weight:bold; font-size:12px;-moz-border-radius: 6px;-webkit-border-radius: 6px; color: black; } .alignRight { text-align: right; } .ui-tabs .ui-tabs-nav { margin: 0; padding: 0 0 0 0.4em; border: 1px solid #d4ccb0; background: none !important;} .blkSdw {box-shadow: 1px 1px 4px black;-moz-box-shadow: 1px 1px 4px black;-webkit-box-shadow: 1px 1px 4px black;-o-box-shadow: 1px 1px 4px black;}  .showingParams {background-color: skyblue !important; color: black;} #slideUpDwnCont {border: solid 1px rgba(0,0,0,0.2); border-left: none;border-right:none;} table#reportData thead tr th {  padding-right:36px; } .filterColsByComboActv { border:solid 1px #FF0606; -webkit-box-shadow: 1px 1px 4px #111010; -moz-box-shadow: 1px 1px 4px #111010;box-shadow: 1px 1px 4px #111010; } .ui-tabs .ui-tabs-nav li { margin: 0 !important;}';
+		sty += '.reptTblUseInfo {float:left;} .reptTblCondVar b {color:black;} .reptTblCondVar {color:grey;font-weight:normal;width: 60%; display:inline-block;} .table-bordered {border: solid 1px white !important; } .table-bordered td+td {border: solid 1px #ddd !important;} .pvtTdFullBorder {border: solid 1px #ddd !important;} #reptOwner {color:grey;font-size:12px;float:right;margin-right: 6px;} #reptOwner span {color:#F87777;}.pivotCustHide {display:none;} #reportElementHeader {min-width: 1000px;width:100%;} #reportData tr th,#reportData tr td  {word-wrap:break-word;min-width:60px;max-width:60px;} .dataTables_info {margin-bottom: 12px; color:grey;}  .dtHdrFixed {position:fixed;background-color:white;top:0;} #selectTypeOfHC, #chartSelXAxis {font-size: 12px;} .dtTotal {background-color: #014464; color: white;}  .dtTotal td {  border:none; border-right: solid 1px grey;border-left: solid 1px grey;} .ui-state-active-droppable {background-color: #DFEB5E !important; } #pivot-menu-container, #reptChartInstr {height:37px;} .savePivot, .saveChart, #deleteChartSave, #deletePivotSave, #deletingChartSave, #deletingPivotSave {float:right; display:none; margin-right: 4px;}  #editSavePivot, #cancelEditPivot { margin-right:4px; float:right;} .reptBtns:hover, .reptFrmBtns:hover {background-color:#014464 !important;color:white;} #filterCancel {cursor:pointer;visibility:hidden;} #reportData .Text {text-align: left !important;} #reportData .Integer, #reportData .Number {text-align: right !important;} #reportData tr td {text-align:left;} #hcTypeSelTbl {width: 100%;} #hcTypeSelTbl td { display: inline-block; font-size: 12px; font-weight:bold; } #reportData_wrapper .clear {clear:both;} .pageTitle {font-size: 20px; } .reportHeaderCont { text-align: left; border-radius: 4px; margin: 10px auto; color: white; padding: 5px; background: #014464;background: -moz-linear-gradient(top, #0272a7, #013953);background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0272a7), to(#013953));border: 1px solid #002232;-moz-box-shadow: inset 0px 0px 1px #edf9ff;-webkit-box-shadow: inset 0px 0px 1px #edf9ff;box-shadow: inset 0px 0px 1px #edf9ff; } .reptBtns {background-color: #fff !important;} #reptMoreTblOptCont {position:relative; width: 30px; height: 30px; float:right; margin-left:-1px;} #reptMoreTblOptCont:hover .reptMoreSel {display:block;} .reptMoreSel a {width: 25px !important;}  .reptMoreSel {display: none; right:0; top:28px;border: solid 1px #F1F1F1; position: absolute; background-color:#DADADA; padding: 4px; border-radius: 2px; z-index:1; width: 42px; } .reptMoreOpt {width: 30px !important;height: 28px; border-radius: 0px 4px 4px 0px; background: url("/atCRM/images/imagesList.png") no-repeat -60px -35px; } #tabMapBtn {display:none !important;}  #tabs-min .ui-tabs-nav li {top: 1px !important;} #k_results #vals, #k_results #rows {width: 15%; }  #k_results #cols {width: 85%;} #reportTblContainer {width: 100%; overflow: auto; } #filterRow th {padding: 4px 0 !important;} .eachColFilterSelect {margin: auto; width: 50px; display: block; } .filterRowHide {display:none;} .reptShowLoading{ display:none;text-align:center;color:red;} .highchartsHdr { font-family: candara, "sans-serif"; text-align:left; font-size:16px;display:block;} #tabChartArea {border: solid 1px #9C9797; display:block; width: 900px;height:400px; margin:auto;} #pivot-menu-container {text-align:left; font-size:14px; font-family:candara; margin:4px 0px;} #selectTypeChartCont {width: 100%;display:block;margin:12px auto;} #tabChart {display:block; margin: auto; width: 90%;} #paramsTbl td input[type=text] { width: 80%; } #paramsTbl td { display: inline-block; vertical-align: top; margin-right: 1.5%; width: 18%; } #slideUpDwnCont {display:none;} .showParamsCondCont {font-size: 16px;font-weight:bold; text-align:left; height: 30px;display:block; } .showParamsCondCont #showParams {float:right;}   #paramsTbl .multiSelectBox {width:82%;} #paramsTbl .sf_suggestion {margin-top: -56px;} #tblDiv {display:inline-block;width:100%;} .reptFrmBtns {float:right;margin-right: 5px; } .reptParamsDesc {font-size: 12px;display: block; color:grey;} #dtRefreshedAt {z-index:1;position:absolute; right: 1%;top: 0; font-size: 12px;} .reptParamsLbl {font-weight: bold; font-family:candara, "sans-serif"; font-size: 14px; letter-spacing: 1px; margin: 4px 0;} #paramsTbl {width:100%; border-collapse: collapse;} #paramsContainer { padding: 0.5% 0; width: 99%; display: block; height:auto;} .filterApplied {background-color:palegreen;} .dpass {display: none;} #reportData tr th {position:relative;} #k_results {display:block;overflow:auto;} #reportData_wrapper {overflow:auto;} #tabs-2 {position:relative;min-width:1000px;width:100%;} #tabs-2 .dataTables_filter {width: 425px; } .removeCol {display:none;} .showOrHideColsActv { height: 250px !important; background-color: white;border: solid 2px white;border-radius: 3px; background-position:top left !important; overflow-x:hidden !important; overflow-y:auto !important; width:220px !important; margin-left: -12.5% !important;} #reportData {text-align:center;}   .toggleColName:hover {background-color:rgb(164, 198, 218);} .toggleColName { border:none; border-top:solid 1px rgba(10, 9, 9, 0.1);width: 100%; cursor: pointer; font-size: 12px; font-family: candara; display:block;margin: 2px 0;text-align:left;padding: 2px 0;} #reportData_filter input { display: inline;} #reportData_length label { width 260px; } #reportData_length select { display: inline-block; } #tabs-min { background: transparent; border: none; } #filterColsByCombo {background: url("/atCRM/images/imagesList.png") no-repeat 1px -2px;} #showOrHideCols, #filterColsByCombo { cursor: pointer; background-color: white; border: solid 1px white; transition: height all 1s; -webkit-transition: all 1s; -moz-transition: all 1s; -o-transition: all 1s; z-index:1; overflow: hidden; position:absolute; width:31px; margin: 0.5% 0 0 -1%; padding: 24px 4px 2px 4px; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; height: 25px;  } #showOrHideCols {margin-left: 2.3%; background: white url("/atCRM/images/gearDown.png") no-repeat top right / 28px 24px;}  #tabs-min .ui-widget-header { margin:0 !important; padding:0 !important; background: transparent; border: none; border-bottom: 1px solid #c0c0c0; -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; } #tabs-min .ui-state-default { background: transparent; border: none; } #tabs-min .ui-state-active { border: none; } #tabs-min .ui-state-default a { color: #c0c0c0; } #tabs-min .ui-state-active a { color: #459E00; background: transparent url(/atCRM/stylesheets/style_h/images/uiTabsArrow.png) no-repeat bottom center; } .dataTables_wrapper { font-size: 9pt; } .flash{ padding-top:4px; padding-bottom:4px; background-color: #FFFF33; font-weight:bold; font-size:12px;-moz-border-radius: 6px;-webkit-border-radius: 6px; color: black; } .alignRight { text-align: right; } .ui-tabs .ui-tabs-nav { margin: 0; padding: 0 0 0 0.4em; border: 1px solid #d4ccb0; background: none !important;} .blkSdw {box-shadow: 1px 1px 4px black;-moz-box-shadow: 1px 1px 4px black;-webkit-box-shadow: 1px 1px 4px black;-o-box-shadow: 1px 1px 4px black;}  .showingParams {background-color: skyblue !important; color: black;} #slideUpDwnCont {border: solid 1px rgba(0,0,0,0.2); border-left: none;border-right:none;} table#reportData thead tr th {  padding-right:36px; } .filterColsByComboActv { border:solid 1px #FF0606; -webkit-box-shadow: 1px 1px 4px #111010; -moz-box-shadow: 1px 1px 4px #111010;box-shadow: 1px 1px 4px #111010; } .ui-tabs .ui-tabs-nav li { margin: 0 !important;}';
 		sty += '#reptMoreFilterCond {margin-left:2px;color:white;} #reptSingleCondFilter {float:left;} #reptSingleCondFilter select, #reptSingleCondFilter .reptAddEditFilterTextBox {width: 100px;height25px;} ';	
+		sty += '.reptPaginationCont { padding: 4px 7px; background-repeat: no-repeat; background-image: url("/atCRM/images/imagesList.png"); background-position: -8px -33px; } #reptPageInc { background-position: -21px -34px;} ';
 		sty += '</style>';
 	
 	into_div.innerHTML = sty + cont;
+
 
 	//add tabs 
 	$.each(tabsArr, function(k, v) {
@@ -885,7 +896,7 @@ $(document).ready(function () {
 		if(urlData.length > 0) {
 			$(this).attr('id', 'reptRemoveAddEditFilter'); //mark current clicked button as remove
 			//hit the url
-			url = zcServletPrefix+"/custom/JSON/list/rAn.htm?rept_id=" + getValueFromUrl('i', true)+urlData;
+			url = zcServletPrefix+"/custom/adhocReports/rAn.htm?pa=ir" + getValueFromUrl('i', true)+urlData;
 			getFilterForRan(url);			
 		} else {
 			alert('No "and" condtions selected. Please atleast 1 complete row.');
@@ -902,6 +913,9 @@ $(document).ready(function () {
 				$(this).children('.toPostVal').val(' ');
 			});
 		});
+
+		//reload dt
+		reptRemoveFiltering();
 	});	
 
 	//pop up operator change action for multiple #and conditions
@@ -940,10 +954,106 @@ $(document).ready(function () {
  	});
 
  	//get filters from pop up
- 	$('body').on('click', '#reptFilterTblSubmit', function() {
+ // 	$('body').on('click', '#reptFilterTblSubmit', function() {
+	// 	//prepare url data
+	// 	var urlData = '', rowData, flag,val;
+	// 	$('#commonPopupDiv #filterTbl tr').each(function() {
+	// 		rowData = '';
+	// 		flag=true;
+	// 		$(this).children('td.toPostCol').each(function() {
+	// 			if($(this).css('visibility') !== 'hidden') {
+	// 				val = $(this).children('.toPostVal').val();
+	// 				rowData +=  val + '!!';
+	// 				if(val == '')
+	// 					flag = false;
+	// 			} 	
+	// 		});
+
+
+	// 		if(flag !== false)
+	// 			urlData += rowData.substr(0, rowData.length - 2) + '!~~!';
+
+	// 	});		
+	// 	if(urlData.length > 0)
+	// 		urlData = '&aw='+ urlData.substr(0, urlData.length - 4);
+
+	// 	if(urlData.length > 0) {
+	// 		//hit the url
+	// 		url = zcServletPrefix+"/custom/adhocReports/rAn.htm?rept_id=" + getValueFromUrl('i', true)+urlData;
+	// 		getFilterForRan(url);	
+	// 	} else {
+	// 		alert('No "and" condtions selected. Please atleast 1 complete row.');
+	// 	}
+
+	// 	//change the color of more filter
+	// 	$('#reptMoreFilterCond').addClass('addEditMoreFilterApplied');		
+
+	// });
+
+	//show specific operator
+ 	$('body').on('change', '.reptFilterEntityColsPopUp', function() { 	
+ 		
+ 		//add current selected val to its  attribute selct
+ 		// $(this).attr('selct', $(this).val());
+
+ 		var t = $(this);
+ 		var type = $('option:selected', t).attr('type');
+ 		var id   = t.attr('id').split('_').pop();
+ 			
+ 		//get mapping key name...
+ 		var mapKey = reptRulesTriggerMappings['colMapName'][type];
+ 		var properties = reptRulesTriggerMappings['colProperties'][mapKey];
+ 		var opt, sel=$('#commonPopupDiv #filterOpr_'+id);
+ 		sel.children().remove();
+ 		sel.append('<option value="" type="">---</option>')
+ 		$.each(properties,function(k, v) {
+ 			opt = '<option value="'+k+'">'+v+'</option>';
+ 			sel.append(opt);
+ 		});
+
+ 		var td = $('#commonPopupDiv #filterDateCol_'+id);
+ 		if(mapKey == 'date') {
+ 			if(td.children('img').length == 0) {
+	 			var img = $('<img src="/atCRM/images/calendar.gif" id="filterCalendar_'+id+'" />');
+	 			td.html(img).css('display','block');
+	 			new Calendar({
+	                inputField: 'filterEntTxt_'+id,
+	                dateFormat: "%d/%m/%Y", 
+	                trigger: 'filterCalendar_'+id,
+	                bottomBar: true,
+	                fdow:0,
+	                min: 19000101,
+	                max: 29991231,
+	                align: "BL",
+	                onSelect: function() {
+	                  this.hide();
+	                  //remove filter if applied..
+ 					  $('#reptRemoveAddEditFilter').attr('id', 'reptSingleFilterSub');
+	                }
+	            });
+	            // $('#commonPopupDiv .filtersLi').css('width', '420px');
+ 			} else { 			
+ 				td.css('display','block');
+ 				img = td.children('img');	
+ 				// $('#commonPopupDiv .filtersLi').css('width', '420px');
+ 				// $('#commonPopupDiv #filterEntTxt_'+id).val(img.attr('alt'));
+ 			}
+ 		} else {
+ 			if(td.children('img').length > 0) {
+ 				var txtFld = $('#commonPopupDiv #filterEntTxt_'+id);
+ 				td.children('img').attr('alt', txtFld.val());
+ 				td.css('display','none');
+ 				txtFld.val('');
+ 				// $('#commonPopupDiv  .filtersLi').css('width', '390px');
+ 			}
+ 		}
+ 	});
+
+//submit the filters dat
+	$('body').on('click', '#reptFilterTblSubmit', function() {
 		//prepare url data
 		var urlData = '', rowData, flag,val;
-		$('#commonPopupDiv #filterTbl tr').each(function() {
+		$('#commonPopupDiv #filterTblForm #filterTbl tr').each(function() {
 			rowData = '';
 			flag=true;
 			$(this).children('td.toPostCol').each(function() {
@@ -965,19 +1075,143 @@ $(document).ready(function () {
 
 		if(urlData.length > 0) {
 			//hit the url
-			url = zcServletPrefix+"/custom/JSON/list/rAn.htm?rept_id=" + getValueFromUrl('i', true)+urlData;
+			url = zcServletPrefix+"/custom/JSON/list/rAn.htm?pa=ir" + getValueFromUrl('i', true)+urlData;
 			getFilterForRan(url);	
 		} else {
 			alert('No "and" condtions selected. Please atleast 1 complete row.');
 		}
 
 		//change the color of more filter
-		$('#'+entityDiv+' #filterTab').addClass('addEditMoreFilterApplied');		
+		$('#reptMoreFilterCond').addClass('addEditMoreFilterApplied');		
 
+	});
+
+	$('body').on('click', '#reptFilterTblClear', function() { 
+		$('#commonPopupDiv #filterTblForm #filterTbl tr').each(function() {
+			$(this).children('td.toPostCol').each(function() { 
+				$(this).children('.toPostVal').val(' ');
+			});
+		});
+
+		//change the color of more filter
+		$('#reptMoreFilterCond').removeClass('addEditMoreFilterApplied');		
+		//update the state in div
+		// $('#'+entityDiv+' .addEditMorePopUpFiltersState').html('');
+
+		//reload dt with from start
+		reptRemoveFiltering();
+	});
+
+	//pagination for reports
+	$('body').on('click','.reptPaginationCont', function() {
+		var t=$(this),id=t.attr('id'), url = '/atCRM/custom/adhocReports/rAn.htm?';
+		
+		var ival = getValueFromUrl('i');
+		if(ival == '') {
+			return alert('Abort: i values is mission from url.');
+		}
+		url += '&i='+ival;
+		var getPParm = getValueFromUrl('pa');
+		if(getPParm != ''){
+			url += '&pa='+getPParm;
+		}
+
+		if(id == 'reptPageDec') {
+			_reptPagination -= 1;
+			url += '&pg='+_reptPagination;
+			_reptPaginationStatus = 'decrement';
+			if(_reptPagination != '0') {
+				_reptPaginatioArr.pop();
+			}
+			else {
+				_reptPagination = 1; //make 1 and return;
+				return;
+			}
+		} else { 
+			_reptPagination += 1;
+			url += '&pg='+_reptPagination;
+			_reptPaginationStatus = 'increment';
+		}
+
+		//show loading first
+		$('#dtLoading').css('display', 'block');
+		setTimeout(function() {
+			reptGetNextSetOfResults(url);	
+		}, 0);
+		
 	});
 
 	/* end of document ready */
 });
+
+//reload dt from start, cancel filtering
+function reptRemoveFiltering() {
+	var urlPath = '/atCRM/custom/adhocReports/rAn.htm?';
+		
+	var ival = getValueFromUrl('i');
+	if(ival == '') {
+		return alert('Abort: i values is mission from url.');
+	}
+	urlPath += '&i='+ival;
+	var getPParm = getValueFromUrl('pa');
+	if(getPParm != ''){
+		urlPath += '&pa='+getPParm;
+	}
+
+	//show loading of dt
+	setTimeout(function() {
+		$('#dtLoading').css('display', 'block');
+	}, 0);
+
+	$.ajax(
+	{
+		url: urlPath,
+		type: 'POST',
+		dataType: 'JSON',
+		success: function(data) {
+
+			//refresh dt
+			reloadDataTable(data);
+			//show time of refresh dt
+			showRefreshedDateTimeForDataTbl();
+
+			$('#dtLoading').css('display', 'none');
+		},
+		error:function(response) {
+			alert('Failed to get pagination result');
+			console.log(response);
+			$('#dtLoading').css('display', 'none');
+		}
+	}
+	);
+}
+
+/* 
+	gets next set of ran.htm results ex: 0-1000,1000-2000 ..
+*/
+function reptGetNextSetOfResults(urlPath) {
+	$.ajax(
+	{
+		url: urlPath,
+		type: 'POST',
+		dataType: 'JSON',
+		success: function(data) {
+
+			//refresh dt
+			reloadDataTable(data);
+			//show time of refresh dt
+			showRefreshedDateTimeForDataTbl();
+
+			$('#dtLoading').css('display', 'none');
+		},
+		error:function(response) {
+			alert('Failed to get pagination result');
+			console.log(response);
+			$('#dtLoading').css('display', 'none');
+		}
+	}
+	);
+} 
 
 /* 
 	* Redraw pivot with saved structure
@@ -1302,8 +1536,13 @@ function showRefreshedDateTimeForDataTbl() {
 	var now = new Date();
 	var d = now.format().split(' ');
 	var df = d[2] + ' ' + ' ' + d[1] + ' ' + d[3] + ', ' + d[4] + ' IST';
+	var htmlStr;
+	if(_reptPaginationFlag === true)
+		htmlStr =  '<span id="reptPageDec" class="reptPaginationCont"></span>' + 'Page '+ _reptPagination + ' ' + _reptPageSize +' recs per page, at '+ df+ '<span id="reptPageInc" class="reptPaginationCont"></span>';
+	else 
+		htmlStr = 'Refreshed: '+ df;
 
-	$('#dtRefreshedAt').text('Refreshed: '+ df);
+	$('#dtRefreshedAt').html(htmlStr);
 }
 
 /*
@@ -1423,7 +1662,7 @@ function plotDataTable(data) {
 				"aButtons": [ "print"], //"xls","copy", "csv", "pdf"  
 				"sSwfPath": "/atCRM/javascript/jquery/swf/copy_csv_xls_pdf.swf"
 			},
-			// "fnRowCallback": function( nRow, aData, iDisplayIndex ) { 
+			"fnRowCallback": function( nRow, aData, iDisplayIndex ) { 
 			// 	//this call back makes slow while filtering
 			// 	var len = aData.length, cn, td, num, val;
 			// 	for(var i=0;i<len; i++) {
@@ -1438,7 +1677,10 @@ function plotDataTable(data) {
 			// 			td.html(val);
 			// 		}
 			// 	}
-			// },
+			//add class for each row
+			$(nRow).addClass('reptRowLvlClick');
+			// console.log(nRow);
+			},
 			"fnDrawCallback": function() {
 				//this is called when data table has been drawn completely 
 				addTrForShowingTotal();
@@ -1449,9 +1691,21 @@ function plotDataTable(data) {
 	});
 
 		
-	//show total entries
-	var totEntries = dataTblData.length;
-	$('#reportData_length label').append( ' (Total '+ totEntries + ')');
+	//show total entries _reptPaginatioArr
+	var str;	
+	_reptTmpResultCnt  = _reptCurrentResultCnt;
+	_reptCurrentResultCnt = dataTblData.length;
+	if(_reptPaginationStatus == 'increment') {
+		str = ' (Showing '+ _reptTmpResultCnt + ' - ' +  _reptCurrentResultCnt + ')';
+		_reptPaginatioArr.push(str);
+		str = _reptPaginatioArr[_reptPagination];
+	} else if(_reptPaginationStatus == 'decrement') {
+		str = _reptPaginatioArr[_reptPagination];
+	} else {
+		str = ' (Showing 0 - ' +  _reptCurrentResultCnt + ')';
+		_reptPaginatioArr.push(str);
+	}
+	$('#reportData_length label').append( str );
 	
 }
 
@@ -2601,7 +2855,7 @@ function reptShowFilterPopUp() {
 	var btn = $('#reptCanU #reptMoreFilterCond'); 
 	if(!btn.hasClass('reptMoreFilterCondApplied')) {
 		//prepare html contents first
-		var container = "<div><div id='filterShowLoading'><center><img src='/atCRM/images/JSON/loading.gif'><p>Loading filters..</p></center></div><div id='filterContainer'><form id='filterTblForm'><table id='filterTbl'></table></form><input type='button' value='Go' id='filterTblSubmit' style='float:right;width:40px;' /><input type='button' value='Clear' id='filterTblClear' style='float:right;margin-right:4px;' /></div></div>";
+		var container = "<div><div id='filterShowLoading'><center><img src='/atCRM/images/JSON/loading.gif'><p>Loading filters..</p></center></div><div id='filterContainer'><form id='filterTblForm'><table id='filterTbl'></table></form><input type='button' value='Go' id='reptFilterTblSubmit' style='float:right;width:40px;' /><input type='button' value='Clear' id='reptFilterTblClear' style='float:right;margin-right:4px;' /></div></div>";
 		$('#commonPopupDiv').html(container);
 		reptDrawFilterTableOpt();
 		btn.addClass('reptMoreFilterCondApplied');
@@ -2677,7 +2931,7 @@ function getFilterForRan(urlPath) {
 			type: 'POST',
 			dataType: 'JSON',
 			success: function(data) {
-				alert('success');
+				alert(typeof data);
 				console.log(data);
 			},
 			error: function(response) {

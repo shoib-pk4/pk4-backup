@@ -1925,7 +1925,7 @@ var rulesTriggerMappings = {
 
 	$('body').on('mouseup', '.ui-state-default', function() {		
 		var tbl = $('#commonPopupDiv #filterTblForm #filterTbl');
-		if(tbl.length > 0) {
+		if(tbl.length > 0 && typeof entityDiv !== 'object') {
 			var trg = $('#'+entityDiv+' .addEditMorePopUpFiltersState');
 			if(trg.length > 0) {
 				//update the state in div

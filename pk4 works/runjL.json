@@ -1,0 +1,45 @@
+<assign displayString = ext__.evaluateUdm ("custom/find/getOrgPref_entt","custom/ki1/runj","'report'")>
+<function emitFieldType (colName,tblName,defaultType)><assign enttFieldList = displayString.getOrgPref.entt_column.findEntries ("entt_column", colName)><if enttFieldList><list enttFieldList as enttFieldLs><if enttFieldLs.entt_name==tblName>${enttFieldLs.field_type}</if></list><else>${defaultType}</if></function>
+<function emitLangString (text,desc,tblName)><assign langCount=0><assign enttlist = displayString.getOrgPref.entt_column.findEntries ("entt_column", text)><assign strlist = displayString.getOrgPref.findstring.findEntries ("base_string", text)><if stringLib.index (text, "udef")><list enttlist as entityList><if entityList.entt_name==tblName><if langCount==0>${entityList.desc_name}<assign langCount=1></if></if></list><else><list enttlist as entityList><if entityList.entt_name==tblName><if langCount==0>${entityList.desc_name}<assign langCount=1></if></if></list><list strlist as langStringList><if langCount==0>${langStringList.disp_string}<assign langCount=1></if></list><if langCount==0>${desc}<assign langCount=1></if></if></function>
+<function escapeSpecialChars (desc,tblName,colName,pkId,pkColumn,exType)>${stringLib.prefix (stringLib.removeHtmlTags (stringLib.replaceAll(stringLib.replaceAll(stringLib.replaceAll(desc,"\n\r", "\n"),"\\", "\\\\"),"\"", "&quot;")), 75)}<if tblName && exType=="text" && integerLib.compare (stringLib.length(desc), ">=", "75")><a style='float:right;font-size:10px;text-decoration:underline;cursor:pointer' onclick='showFullContent(this,event,&quot;${tblName}&quot;,&quot;${colName}&quot;,&quot;${pkId}&quot;,&quot;${pkColumn}&quot;);'>More</a></if></function>
+<transform blankLineRemover>{
+<assign viewUrl=servlet_prefix+"/custom/JSON/runj.json">
+"PageType":"List",
+"PageCaption":"<call emitLangString (runj.pageCaption,runj.pageCaption,"")>",
+"UDMName":"custom/JSON/runj",
+"ExpandUDMPath":"custom/JSON/runj",
+"PrefsId":"${runj.prefsData.viewprefs_Id}",
+"PrefsName":"${runj.prefsName}",
+"helpText":"${runj.helpText}",
+"NItem":"${runj.readReptRec__listCtl.count}",
+"PagingAmount":"${runj.readReptRec__listCtl.pagingAmount}",
+"OrderBy":"${runj.readReptRec__listCtl.orderBy}",
+"PageNumber":"${runj.readReptRec__listCtl.thisPage}",
+"LinkCount":"${runj.readReptRec__listCtl.pageList.size}",
+"AddUrl":"<if runj.addUrl>${servlet_prefix}/${runj.addUrl}<else>${servlet_prefix}/custom/JSON/add/report.json</if>",
+"EditUrl":"<if runj.editUrl>${servlet_prefix}/${runj.editUrl}<else>${servlet_prefix}/custom/JSON/add/report.json</if>",
+"ViewUrl":"<if runj.viewUrl>${servlet_prefix}/${runj.viewUrl}<else>${servlet_prefix}/custom/JSON/view/report360View.json</if>",
+"EntityName":"${runj.readReptRec.entityName}",
+"TableName":"report",
+"Reload":"${runj.reload}",
+"ShowFilter":"${runj.showFilter}",
+"ShowEdit":"${runj.showEdit}",
+"ShowAdd":"${runj.showAdd}",
+"FilterName":"${runj.filter.name}",
+"page_topMenu":[<assign len=runj.pageTopMenu__listCtl.count><if len!=0><list runj.pageTopMenu as page_topMenu>
+		{<assign len=len-1>"menu":["${page_topMenu.name}","${page_topMenu.description}","${page_topMenu.URI}","${page_topMenu.UsrSelDisplayOrder}"]}<if len!=0 >,</if></list></if>
+],
+"line_levelMenu":[<assign len=runj.lineLevelMenu__listCtl.count><if len!=0><list runj.lineLevelMenu as page_topMenu>
+	{<assign len=len-1>"menu":["${page_topMenu.name}","${page_topMenu.description}","${page_topMenu.URI}","${page_topMenu.UsrSelDisplayOrder}"]}<if len!=0 >,</if></list></if>
+],
+"page_bottomMenu":[<assign len=runj.pageBottomMenu__listCtl.count><if len!=0><list runj.pageBottomMenu as page_topMenu>
+	{<assign len=len-1>"menu":["${page_topMenu.name}","${page_topMenu.description}","${page_topMenu.URI}","${page_topMenu.UsrSelDisplayOrder}"]}<if len!=0 >,</if></list></if>
+],
+"ColumnHeaders":[
+],
+"RowData":[
+<assign rowCount=0>
+   ]		
+}</transform>
+
+

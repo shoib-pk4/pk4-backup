@@ -513,6 +513,8 @@ function builtListFields(data)
 	var recId;
 	invQtyArray = [];
 	dltDtlRowIndex = [];
+	dltDtlCSV ="";
+    qtyUdtDtlCSV = "";
 	if(data.PrimaryKeyValue) recId = data.PrimaryKeyValue;
 	var ListPanelHeaders=data.ListPanelHeaders; 
 	var ListPanelRows=data.ListPanelRows; 
@@ -596,7 +598,20 @@ function builtListFields(data)
 					 if(elemId == "0-1001:"+rows+"-1101-2201_add" && document.getElementById("0-1001:"+rows+"-1101-2201_add")) document.getElementById("0-1001:"+rows+"-1101-2201_add").style.display="none";
 					 if(cols==(colmns-1)){
 					 var dtlPriKey = document.getElementById("0-1001:"+rows+"-1101-1102").value;
-                     $(fieldLstTd).append("<span id='invDtl_spn_dlt_"+rows+"' style='position:absolute;float:right;z-index:20;right:-7px;'><img src='/atCRM/images/JSON/delete-icon.png' id='dlt_img_"+rows+"' title='Remove this row' onclick='javascript:deleteInvDtl(this,\""+recId+"\",\""+dtlPriKey+"\");' style='cursor:pointer;vertical-align:bottom;'/></span>");
+                     $(fieldLstTd).append("<span id='invDtl_spn_dlt_"+rows+"' style='position:absolute;float:right;z-index:20;right:-7px;'><img src='/atCRM/images/JSON/delete-icon.png' id='dlt_img_"+rows+"' title='Remove this row' onclick='javascript:deleteDtl(this,\""+recId+"\",\""+dtlPriKey+"\",\""+data.UDMName+"\");' style='cursor:pointer;vertical-align:bottom;'/></span>");
+				    }
+			      }
+				  /*If transaction edit page store qty values in an array 'invQtyArray' and create delete dtl image*/
+				  else if(data.UDMName=="custom/JSON/add/tranx_header"&& recId){
+                     if(elemId == "0-101:"+rows+"-601-621") invQtyArray.push(fldVal);
+					 //alert("rows--"+rows+"//elem--"+document.getElementById("0-101:"+rows+"-601-615txt"));
+					 if(document.getElementById("0-101:"+rows+"-601-615txt")&&!(document.getElementById("0-101:"+rows+"-601-615txt").disabled)&&document.getElementById("0-101:"+rows+"-601-615txt").value!='2 chars or **' && document.getElementById("0-101:"+rows+"-601-615txt").value !='') document.getElementById("0-101:"+rows+"-601-615txt").disabled=true;
+					 if(document.getElementById("0-101:"+rows+"-601-778")&&!(document.getElementById("0-101:"+rows+"-601-778").disabled)&&document.getElementById("0-101:"+rows+"-601-778").value!='2 chars or **' && document.getElementById("0-101:"+rows+"-601-778").value !='') document.getElementById("0-101:"+rows+"-601-778").disabled=true;
+					 if(elemId == "0-101:"+rows+"-601-615_add" && document.getElementById("0-101:"+rows+"-601-615_add")) document.getElementById("0-101:"+rows+"-601-615_add").style.display="none";
+					 if(document.getElementById("0-101:"+rows+"-601-615pck")) document.getElementById("0-101:"+rows+"-601-615pck").style.display="none";
+					 if(cols==(colmns-1)){
+					 var dtlPriKey = document.getElementById("0-101:"+rows+"-601-602").value;
+                     $(fieldLstTd).append("<span id='Dtl_spn_dlt_"+rows+"' style='position:absolute;float:right;z-index:20;right:-3px;'><img src='/atCRM/images/JSON/delete-icon.png' id='dlt_img_"+rows+"' title='Remove this row' onclick='javascript:deleteDtl(this,\""+recId+"\",\""+dtlPriKey+"\",\""+data.UDMName+"\");' style='cursor:pointer;vertical-align:bottom;'/></span>");
 				    }
 			      }
 			 }
@@ -2031,7 +2046,7 @@ function updateData(funOnsubmit,formSubmitPostFun,isAddNew)
 				//save first teritory details
 				$.ajax(
 					{
-						url: '/atCRM/custom/advancedAdd/addTerr.html',
+						url: '/atCRM/custom/advancedAdd/addTerritory.html',
 						type: 'POST',
 						data: '0-1-3='+$('#0-201-357').val()+'&0-1-17txt='+session_login, //session_login is global defined in homepage.html
 						async: false,
@@ -2264,6 +2279,7 @@ function validateFormFlds(formName,funOnsubmit)
 	else if(funOnsubmit)
 	{
 		var funct=funOnsubmit.split('~)');
+		var retnVal=true;
 		for(var i=0; i<funct.length; i++)
 		{
 			var q=funct[i].indexOf('('); 
@@ -2274,8 +2290,10 @@ function validateFormFlds(formName,funOnsubmit)
 				params=funct[i].substring(q+1,(funct[i].length)-1); 
 				funct[i]=funOnsubmit.substring(0,q); 
 			}
-			return dispatch(funct[i],[formName,params]);
+			retnVal = dispatch(funct[i],[formName,params]);
+			if(!retnVal) return retnVal;
 		}
+		return retnVal;
 	}
 	else
 	return true;
@@ -3588,7 +3606,7 @@ function hideSmartDialog(event)
 {
 $("#smartDialog").closest('.ui-dialog').hide();
 }
-function deleteInvDtl(dltElem,hdrPriKey,dtlPriKey)
+function deleteDtl(dltElem,hdrPriKey,dtlPriKey,udmName)
 {
    var r=confirm("Are you sure you want to delete?");
    if (r==true)
@@ -3603,24 +3621,32 @@ function deleteInvDtl(dltElem,hdrPriKey,dtlPriKey)
 		   $(this).find('input').each(function(){
 			   if(this.type !="hidden" && this.type == "text"){
 				   if(!(this.disabled)) this.disabled=true;
+				   $(this).val('');
 				   $(this).css({"text-decoration":"line-through"});
 			   }
 		   });
 	   });
 	   var rowIndex = dltElem.id.split("_")[2];
-	   document.getElementById("0-1001:"+rowIndex+"-1101-1103").value=0;
-	   document.getElementById("0-1001:"+rowIndex+"-1101-1104").value=0;
-       document.getElementById("0-1001:"+rowIndex+"-1101-1127").value=0;
-       document.getElementById("0-1001:"+rowIndex+"-1101-886").value=0;
-       document.getElementById("0-1001:"+rowIndex+"-1101-1125").value=0;
-       document.getElementById("0-1001:"+rowIndex+"-1101-2201").value="";
-       document.getElementById("0-1001:"+rowIndex+"-1101-2201hdn").value="";
+	   if(udmName == "custom/JSON/add/invoices"){
+	   if(document.getElementById("0-1001:"+rowIndex+"-1101-1103")) document.getElementById("0-1001:"+rowIndex+"-1101-1103").value=0;
+	   if(document.getElementById("0-1001:"+rowIndex+"-1101-1104")) document.getElementById("0-1001:"+rowIndex+"-1101-1104").value=0;
+       if(document.getElementById("0-1001:"+rowIndex+"-1101-1127")) document.getElementById("0-1001:"+rowIndex+"-1101-1127").value=0;
+       if(document.getElementById("0-1001:"+rowIndex+"-1101-886")) document.getElementById("0-1001:"+rowIndex+"-1101-886").value=0;
+       if(document.getElementById("0-1001:"+rowIndex+"-1101-1125")) document.getElementById("0-1001:"+rowIndex+"-1101-1125").value=0;
+       if(document.getElementById("0-1001:"+rowIndex+"-1101-2201")) document.getElementById("0-1001:"+rowIndex+"-1101-2201").value="";
+       if(document.getElementById("0-1001:"+rowIndex+"-1101-2201hdn")) document.getElementById("0-1001:"+rowIndex+"-1101-2201hdn").value="";
 	   dltElem.style.display ="none";
 	   var elem = document.getElementById("0-1001:"+rowIndex+"-1101-1103");
 	   parent.calculateTotForInv("addEditForm",elem,"1");
 	   document.getElementById("0-1001:"+rowIndex+"-1101-1102").value="";
 	   dltDtlRowIndex.push(rowIndex);
 	   calcInvExtTotal(rowIndex);
+	   }
+	   else if(udmName == "custom/JSON/add/tranx_header"){
+		   if(document.getElementById('0-101:'+rowIndex+'-601-615')) document.getElementById('0-101:'+rowIndex+'-601-615').value='';
+		   dltElem.style.display ="none";
+		   dltDtlRowIndex.push(rowIndex);
+	   }
 	}
 }
 function validateMonthYear(dateElem)
@@ -3797,13 +3823,8 @@ $(document).ready(function() {
 	//on blur of login name, show text in default teritory place
 	$('body').on('blur', '#0-201-203', function() {
 		var dterr = $('#showTeritoryName');
-		var v = $(this).val();
 		if(dterr.length > 0) {
-			dterr.text('| ' + v);
-		}
-		var cbx = $('.chooseDefaultTeritory');
-		if(cbx.prop('checked') === true && cbx.val() === 'fromTxtFld') {
-			$('#0-201-357').val(v);
+			dterr.text('| ' + $(this).val());
 		}
 	});
 

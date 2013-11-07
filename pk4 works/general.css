@@ -738,7 +738,7 @@ a.json,a.js,a.css,a.exe,a.php,a.xml{
 	cursor:pointer;
 }
 
-.lnkLstTab
+.lnkLstTab, .actLstTab
 {
 	float:left;
 	padding:3px;
@@ -767,7 +767,7 @@ a.json,a.js,a.css,a.exe,a.php,a.xml{
 	background-image: linear-gradient(left, #FFFFFF 20%, #6EA305 100%);/* Proposed W3C Markup */ 
 }
 
-.lnkLstTab:hover
+.lnkLstTab:hover, .actLstTab:hover
 {
      outline: none;
     -moz-box-shadow: 3px 3px 5px #000;
@@ -776,7 +776,7 @@ a.json,a.js,a.css,a.exe,a.php,a.xml{
 }
 
 
-.lnkLstTab:active
+.lnkLstTab:active, .actLstTab:active
 {
 	background: rgb(249,198,103); /* Old browsers */
 	/* IE9 SVG, needs conditional override of 'filter' to 'none' */

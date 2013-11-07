@@ -710,8 +710,7 @@
 			 // $div.detach();
 	         $div.load(uri);
 	         $parentElem.append($div);
-
-	         alert('came to dyna html parent!');
+	         console.log('dyna-' + uri);
 		}
 		else{
 

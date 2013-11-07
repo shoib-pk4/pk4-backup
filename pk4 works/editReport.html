@@ -1,0 +1,710 @@
+<assign JS_LIB_PATH  = "/atCRM/javascript">
+<assign CSS_LIB_PATH = "/atCRM/stylesheets">
+<assign IMG_LIB_PATH = "/atCRM/images">
+
+<html>
+<head>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+    <meta name="copyright" content="&copy; sfaFinity Inc, 2004"/>
+	<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="Public">
+<!--- Copyright (c) 2004 sfaFinity, Inc. All rights reserved. -->
+  <link rel="stylesheet" href="${CSS_LIB_PATH}/entityView.css">
+  <link rel="stylesheet" href="${CSS_LIB_PATH}/editReport.css">
+  <title>Edit report</title>
+</head>
+
+<comment>  Get the Ad Hoc Engine Structure first, so can be used anywhere in this template  </comment>
+<assign rels = ext__.evaluateUdm ("custom/metadata/adhocStruct", editReport.entityName)>
+
+<style>
+.treeHeader
+{
+	background-image:url('/atCRM/images/bluebg.gif');
+	border:1px solid #5FA8EB;
+	height:25px;
+	width: 200px;
+	font-size: 8pt;
+	cursor: pointer;
+}
+
+.treeSubHeader
+{
+	background-image:url('/atCRM/images/bluebg.gif');
+	border:1px solid #5FA8EB;
+	height:25px;
+	padding-left:20px;
+	width: 200px;
+	font-size: 8pt;
+	cursor: pointer;
+}
+
+.subLnkMouseover
+{
+	text-decoration:underline;
+	color:red;
+}
+
+.contentInside
+{
+	font-size:11px;
+	font-family:verdana, Arial;
+}
+</style>
+<script type="text/javascript">
+  var src = navigator.appName.indexOf ("Microsoft") >= 0 ? "calendar" : "calendar-moz";
+  document.write ('<script src="${JS_LIB_PATH}/' + src + '.js"></scr' +
+                  'ipt>');
+</script>
+
+
+<assign MAX_RECORDS_PER_QUERY = 10000>
+<script src="${JS_LIB_PATH}/appContext.js"></script>
+<script src="${JS_LIB_PATH}/stringUtils.js"></script>
+<script src="${JS_LIB_PATH}/validate.js"></script>
+<script src="${JS_LIB_PATH}/descriptor.js"></script>
+<script src="${JS_LIB_PATH}/dateUtils.js"></script>
+<script src="${JS_LIB_PATH}/sfcrmCommon.js"></script>
+<script src="${JS_LIB_PATH}/reportLayout.js"></script>
+<script src="${JS_LIB_PATH}/jquery.js"></script>
+<script src="${JS_LIB_PATH}/xmlExtras.js"></script>
+<script src="${servlet_prefix}/custom/adhocReports/valueRangeDefs.js"></script>
+<script src="${servlet_prefix}/custom/adhocReports/emd.js?entityName=${editReport.entityName}"></script>
+<comment>
+</comment>
+<script src="${JS_LIB_PATH}/filterSupport.js"></script> 
+<script src="${JS_LIB_PATH}/editReport.js"></script>
+
+<script type="text/javascript">
+var date_format="dd/MM/yyyy";
+var zcServletPrefix = "${servlet_prefix}";
+
+function entityNameBeingEdited() {
+    return "${editReport.entityName}";
+}
+
+
+function layoutDescriptor() {
+    return "${editReport.report.layoutDescriptor}";
+}
+
+function getMaxRecsPerQuery () {
+    return sfParseInteger ("${MAX_RECORDS_PER_QUERY}");
+}
+
+
+function resetCommonFun()
+{	
+	try
+	{
+	parent.hideLeftPannel(false);
+	}
+	catch(e){}
+}
+
+function initialize () 
+{
+
+	try
+	{
+	parent.hideLeftPannel(true);
+	}
+	catch(e)
+	{
+	}
+
+    var now = new Date ();
+    var nowYear = now.getFullYear();
+    var todaysDate = dateUtils__formatDate (now, "dd/MM/yyyy");
+    var timeNow = dateUtils__formatTime (now);
+    showTab ('outputs');
+
+    <list editReport.query.queryAttributes as e501>
+		<assign thisEn = rels.adhocStruct.list.findEntries("entityName",e501.extractEnttName)>
+	// Values: ${e501.name},  ${e501.description}; Entt: ${e501.extractEnttName}->${thisEn[0].getEnttListRec.desc_name}
+    addOutputAttribute ("${e501.dataSourceAttributeName}",
+                        <if e501.description>"${e501.description}"<else>"${e501.attributeProps.description}"</if>,
+                        <if e501.aggregateFunction && e501.aggregateFunction != "">"${e501.aggregateFunction}"<else>null</if>,
+                        <if e501.displayType && e501.displayType != "">"${e501.displayType}"<else>null</if>,
+                        "${e501.sortDescending}",
+						"${thisEn[0].getEnttListRec.desc_name}"
+                        );
+    </list>
+
+
+
+<comment> Dropped by Kishore, 13 Oct. 2010
+// Vertical bar chart options
+    var barChartLabelSel = document.getElementById ("vbarchart_label");
+    var barChartYAxisSel = document.getElementById ("vbarchart_y_axis");
+    <list editReport.query.queryAttributes as e501>
+    barChartLabelSel.options[barChartLabelSel.options.length] = new Option ("${e501.attributeProps.description}","${e501.dataSourceAttributeName}");
+    <if e501.attributeProps.dataType == "Number">
+    barChartYAxisSel.options[barChartYAxisSel.options.length] = new Option ("${e501.attributeProps.description}","${e501.dataSourceAttributeName}");
+      <if e501.dataSourceAttributeName == editReport.report.vBarChartYAxisAtr.value>
+    barChartYAxisSel.selectedIndex = barChartYAxisSel.options.length-1;
+      </if>
+    </if>
+    <if e501.dataSourceAttributeName == editReport.report.vBarChartLabelAtr.value>
+    barChartLabelSel.selectedIndex = barChartLabelSel.options.length-1;
+    </if>
+    </list>
+
+    
+    // Horizontal bar chart options
+    barChartLabelSel = document.getElementById ("hbarchart_label");
+    barChartYAxisSel = document.getElementById ("hbarchart_x_axis");
+    <list editReport.query.queryAttributes as e501>
+    barChartLabelSel.options[barChartLabelSel.options.length] = new Option ("${e501.attributeProps.description}","${e501.dataSourceAttributeName}");
+    <if e501.attributeProps.dataType == "Number">
+    barChartYAxisSel.options[barChartYAxisSel.options.length] = new Option ("${e501.attributeProps.description}","${e501.dataSourceAttributeName}");
+      <if e501.dataSourceAttributeName == editReport.report.hBarChartYAxisAtr.value>
+    barChartYAxisSel.selectedIndex = barChartYAxisSel.options.length-1;
+      </if>
+    </if>
+    <if e501.dataSourceAttributeName == editReport.report.hBarChartLabelAtr.value>
+    barChartLabelSel.selectedIndex = barChartLabelSel.options.length-1;
+    </if>
+    </list>
+</comment>
+
+//  Filter String: ${editReport.query.filter}, ${editReport.query.orTerm.filterName}, ${editReport.query.orTerm.stringForm}  	
+    <list editReport.query.orTerm.andTerms as e901>
+		<assign thisEn = rels.adhocStruct.list.findEntries("entityName",e901.extrEnttName)>
+		<list rels.adhocStruct.list as enList1>
+			<if enList1.entityName == e901.extrEnttName>
+				<assign thisCol = enList1.getEMDAttributes.findEntries("columnName",e901.extrColName)>
+			</if>
+		</list>
+    addFilterAttribute ("${e901.attributeName}", "${thisCol[0].colDescFinal}", "${e901.operator}", "${e901.value}", "${e901.aggregateModifier}", "${thisEn[0].getEnttListRec.desc_name}");
+    </list>
+}
+
+
+function edit(view, edit)
+{
+document.getElementById(view).style.display = "none";
+document.getElementById(edit).style.display = "block";
+if (edit == 'eName')
+	{
+		document.getElementById('nameValue').value = document.getElementById('editName').value;
+	}
+if (edit == 'eDescription')
+	{
+		if(document.getElementById('desValue')&&document.getElementById('editDecription'))
+		document.getElementById('desValue').value = document.getElementById('editDecription').value;
+	}
+
+}
+
+function cancel(view, edit)
+{
+document.getElementById(view).style.display = "block";
+document.getElementById(edit).style.display = "none";
+}
+
+function saveNameAndDescr(id, name, descr)
+{
+	if(name!='')
+	{
+		var reportName = document.getElementById(name).value;
+		document.getElementById("0-301-303").value=reportName;
+		document.getElementById("editName").value=reportName;
+		document.getElementById("vReportName").innerHTML='<a  style="font-weight:bold; font-size:14px; font-family:tahoma, verdana ;color:black; text-decoration:none;" id="viewName">'+reportName+'</a>';
+		document.getElementById("vName").style.display = "block";
+		document.getElementById("eName").style.display = "none";
+		
+		//alert(reportName)
+		$.ajax({
+
+				type: "GET",
+				url: "${servlet_prefix}/custom/adhocReports/editReportNameAndDescr/editAction?0-1-2="+id+"&0-1-3="+reportName,
+				dataType: "xml",
+				success: function(doc)
+				{	
+					//alert(doc);
+					var rName= doc.getElementsByTagName("rName");
+					name=rName[0]?rName[0].getAttribute("name") : null;
+					var rDescr= doc.getElementsByTagName("rDescr");
+					descr=rDescr[0]?rDescr[0].getAttribute("descr") : null;
+					if(reportName)
+					{
+						
+						document.getElementById('viewName').innerHTML = name;
+						document.getElementById('editName').value = name;
+						document.getElementById('vName').style.display = "block";
+						document.getElementById('eName').style.display = "none";
+						
+					}
+					else
+					{
+						alert("Report name cannot be blank.")
+					}
+					}
+				});
+
+	}
+	
+	if(descr!='')
+	{
+		var reportDescr = document.getElementById(descr).value;
+		document.getElementById("vReportDescription").innerHTML="<a onclick=\"javascript:edit('vDescription', 'eDescription')\" style='font-weight:normal; font-size:10px; font-family:tahoma, verdana; color:black; text-decoration:none;vertical-align:top' title='Edit description' id='viewDescription' wrap><i>"+reportDescr+"</i></a>";
+		document.getElementById("vDescription").style.display = "block";
+		document.getElementById("eDescription").style.display = "none";
+
+		$.ajax({
+
+				type: "GET",
+				url: "${servlet_prefix}/custom/adhocReports/editReportNameAndDescr/editAction?0-1-2="+id+"&0-1-4="+reportDescr,
+				dataType: "xml",
+				success: function(doc)
+				{	
+					//alert(doc);
+					var rName= doc.getElementsByTagName("rName");
+					name=rName[0]?rName[0].getAttribute("name") : null;
+					var rDescr= doc.getElementsByTagName("rDescr");
+					descr=rDescr[0]?rDescr[0].getAttribute("descr") : null;
+						document.getElementById('viewDescription').innerHTML = descr;
+						document.getElementById('editDecription').value = descr;
+						document.getElementById('vDescription').style.display = "block";
+						document.getElementById('eDescription').style.display = "none";
+					}
+				});
+	}
+}
+
+function changeColor(id)
+{
+	document.getElementById(id).style.background = "#DAEAB0";
+}
+
+function changeToNormal(id)
+{
+	document.getElementById(id).style.background = "";
+}
+
+function showRecords(id)
+{
+	if(parseInt(document.getElementById(id).value) > "10000")
+	{
+		alert("The Ad Hoc Query supports a maximum of 10,000 rows being retrieved at a time.");
+		document.getElementById(id).value = "10000";
+		document.getElementById(id).focus();
+	}
+}
+
+function saveValue()
+{
+	document.getElementById('0-301-319').value = document.getElementById('lastRec').value;
+}
+function backtoListPage() {
+	var bklistUrl = parent.document.getElementById(parent.mnuItmId+'-URL').value;
+	//parent.setUpPageParameters (zcServletPrefix+"custom/adhocReports/reportView.json");
+	parent.setUpPageParameters (bklistUrl);
+}
+</script>
+
+<body class="PageBody" onLoad="initialize()" style="margin-top:0px" onUnload="resetCommonFun();">
+
+<div id="pb"></div>
+<script type="text/javascript">
+$(document).ready(function () {
+//    $("#pb").progressbar({ value: 100 });
+//    IndeterminateProgressBar($("#pb"));
+});
+function IndeterminateProgressBar(pb) {
+    $(pb).css({ "padding-left": "0%", "padding-right": "90%" });
+    $(pb).progressbar("option", "value", 100);
+    $(pb).animate({ paddingLeft: "90%", paddingRight: "0%" }, 1000, "linear",
+        function () { IndeterminateProgressBar(pb); });
+}
+</script>
+ 
+  <div class="dragIndicator" id="dragIndicator"></div>
+  <form name="mainForm" method="post" action="${servlet_prefix}/custom/adhocReports/editReport/editAction"
+    onsubmit="return validate()">
+	<input type="hidden" name="0-301-319" id="0-301-319" value="${editReport.report.num_of_recs}">
+    <input type="hidden" name="0-301-302" id="0-301-302" value="${editReport.report.report_id}" />
+    <input type="hidden" name="0-301-305" id="0-301-305" value="${editReport.entityName}" />
+    <input type="hidden" name="0-301-306" id="0-301-306" value="" /> <comment>XML form of report</comment>
+    <input type="hidden" name="0-301-307" id="0-301-307" value="" /> <comment>XML form of report layout</comment>
+    <input type="hidden" name="0-301-334" id="0-301-334" value="" /> <comment>char_str_05, for whCl and hvCl</comment>
+    <input name="0-2001" type="hidden" value="0"><comment>For the action sequence</comment>
+    <input name="response__uri" type="hidden" value="${servlet_prefix}/custom/adhocReports/reportList.html">
+      <if editReport.report.report_id>
+				<table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding-top:10px">
+					<tr>
+						<td style="font-weight:normal; font-size:11px; font-family:tahoma, verdana;width:50%;height:50px"  > 
+							<div name="vName" id="vName">&nbsp;Edit report <img src="${IMG_LIB_PATH}/edit.gif" alt="Edit name" onClick="javascript:edit('vName','eName')" onMouseOver="changeColor('vReportName')" onMouseOut="changeToNormal('vReportName')" style="cursor:pointer;"/>
+							<span id="vReportName" onMouseOver="changeColor('vReportName')" style="cursor:pointer;padding:5px;" onMouseOut="changeToNormal('vReportName')" title="Edit name" onClick="javascript:edit('vName','eName')" ><a  style="font-weight:bold; font-size:14px; font-family:tahoma, verdana ;color:black; text-decoration:none;" id="viewName">
+							${editReport.report.name}</a></span> for ${editReport.mainEnttMaskedNameForDisplay}&nbsp;
+							</div>
+							<input  type="hidden"  id="editName" name="editName" value="${editReport.report.name}" />  
+							<div name="eName" id="eName" style="display:none">
+							<span style="font-weight:normal; font-size:11px; font-family:tahoma, verdana">Report Name:</span>
+							<input type="text" class="smallFontElement" size="50" maxlength="64" name="nameValue"  id="nameValue" value="${editReport.report.name}" style="cursor:text"/>
+							<a onClick="javascript:saveNameAndDescr('${editReport.report.report_id}', 'nameValue', '')" title="Save">Save</a> <a onClick="javascript:cancel('vName', 'eName')" title="Cancel">Cancel</a>
+							</div>
+						</td>
+						<td align="right">
+                        <if editReport.report.created_by != editReport.getAdhocPermissions.User_Id && editReport.getAdhocPermissions.user_can_edit_adhoc != 1>
+                        	<input type="button" class="blueButton" value="Run it!" style="width: 100px;" onClick="window.location.href='runReportJ.html?id=${editReport.report.report_id}'"> 
+							<input type="button" class="blueButton" value="Cancel" style="width:100px" onClick="backtoListPage();">
+                            <br><span style="font-weight:normal; font-size:10px; font-family:tahoma, verdana; color:#F00">You do not have permission to edit this report</span>							
+                         <else>
+                         	<input type="submit" class="blueButton" value="Save"  title="Save this report" style="width: 100px" onClick="saveValue()">
+							<input type="button" class="blueButton" value="Save and run" title="Save this report and run it" onClick="doSaveAndRun()" style="width: 100px" >
+                            <input type="button" class="blueButton" value="Run it!" style="width: 100px;" onClick="window.location.href='runReportJ.html?id=${editReport.report.report_id}'"> 
+							<input type="button" class="blueButton" value="Cancel" style="width:100px" onClick="backtoListPage();">
+                         </if>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div name="vDescription" id="vDescription" > <img src="${IMG_LIB_PATH}/edit.gif" alt="Edit description" onClick="javascript:edit('vDescription','eDescription')" onMouseOver="changeColor('vReportDescription')" onMouseOut="changeToNormal('vReportDescription')" style="cursor:pointer;"/>
+							<span id="vReportDescription" onMouseOver="changeColor('vReportDescription')" style="cursor:pointer;padding:5px;" onMouseOut="changeToNormal('vReportDescription')" title="Edit description">
+							<a onClick="javascript:edit('vDescription', 'eDescription')" style="font-weight:normal; font-size:10px; font-family:tahoma, verdana; color:black; text-decoration:none;vertical-align:top" title="Edit description" id="viewDescription" wrap>
+							<i>${editReport.report.description}</i>
+							</a>
+<!--						<input type="hidden" id="editDecription" name="editDecription" value="${editReport.report.description}">
+-->							</span>
+							</div>
+							<div style="display:none;" name="eDescription" id="eDescription">
+							<span style="font-weight:normal; font-size:11px; font-family:tahoma, verdana;vertical-align:top">Description:</span>
+							<textarea name="desValue" id="desValue" class="smallFontElement" style="overflow: auto;cursor:text" rows="2" cols="60" onKeyPress="textCounter(this.id,'256')" onKeyUp="textCounter(this.id,'256')" onBlur="textCounter(this.id,'256')" onKeyDown="textCounter(this.id,'256')" >${editReport.report.description}</textarea><a onClick="javascript:saveNameAndDescr('${editReport.report.report_id}','','desValue')" title="Save" style="vertical-align:top; font-family:tahoma,verdana; font-size:11px; font-weight:normal;">Save</a> <a onClick="javascript:cancel('vDescription', 'eDescription')" style="vertical-align:top; font-family:tahoma,verdana; font-size:11px; font-weight:normal;" title="Cancel">Cancel</a>
+							</div>
+						</td>
+						<td align="right" style="font-weight:normal; font-size:10px; font-family:tahoma, verdana;vertical-align:top">
+								Previously edited by ${editReport.report.modified_by__deref.derefValue} at ${editReport.report.getProperModifiedDate}
+						</td>
+					</tr>
+				</table>
+      <else>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding-top:10px">
+        <tr>
+        	<td style="font-weight:normal; font-size:11px; font-family:tahoma, verdana">
+			Create report for ${editReport.mainEnttMaskedNameForDisplay}
+			</td>
+				<td align="right">
+                <if editReport.getAdhocPermissions.user_can_add_adhoc != 1>
+                	<input type="button" class="blueButton" value="Cancel" style="width:100px" onClick="backtoListPage();">
+                	<br><span style="font-weight:normal; font-size:10px; font-family:tahoma, verdana; color:#F00">You do not have permission to create a report</span>
+                <else>
+						<input type="button" class="blueButton" value="Save and run" title="Save this report and run it" onClick="doSaveAndRun()" style="width: 100px" >
+						<input type="button" class="blueButton" value="Cancel" style="width:100px" onClick="backtoListPage();">	
+                </if>
+				</td>
+		</tr>
+        </table>
+						
+      </if>  
+
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0px">
+      <tr>
+        <td colspan="4" style="padding-bottom: 5px">
+			<table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding-top:10px">
+				<tr>
+					<td>
+						<if editReport.report.name>
+									<input type="hidden" class="inputFieldClass" name="0-301-303" id="0-301-303" size="30" maxlength="64" value="${editReport.report.name}" />
+						<else>
+							<input type="hidden" class="smallFontElement" name="0-301-303" id="0-301-303" size="30" maxlength="64" value="${editReport.getNameForReport}" />
+						</if>
+					</td>
+				</tr>
+				<tr>
+					<td >
+					<if editReport.report.description>
+					<else>
+						<input type="hidden" class="smallFontElement" name="0-301-304" size="30" maxlength="64" value="${editReport.getNameForReport}" />
+					</if>
+					</td>
+				</tr>
+		</table>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4">
+          <table cellpadding="0" cellspacing="0" width="100%" border="0">
+            <tr>
+              <td class="tabClass" style="background-repeat:no-repeat;width:130px;" id="tab_outputs" onClick="showTab('outputs')"><a style="padding-left:40px;text-decoration:none;color:black">Outputs</a></td>
+              <td class="tabClass" style="background-repeat:no-repeat;width:130px" id="tab_filters" onClick="showTab('filters')"><a style="padding-left:40px;text-decoration:none;color:black">Filters</a></td>
+              <comment>We don't show the variables tab for now, because it's not done yet.
+                <td class="tabClass" id="tab_variables" onClick="showTab('variables')"><a style="padding-left:40px;text-decoration:none;color:black">Variables</a></td>
+              </comment>
+              <td class="tabClass" style="background-repeat:no-repeat;width:130px" id="tab_layout" onClick="showTab('layout')"><a style="padding-left:40px;text-decoration:none;color:black">Layout</a></td>
+              <td class="noTabClass">&nbsp;</td>
+			  <if editReport.report.report_id>
+				<td style="border-bottom: 2px solid #83ACCA;font-size:11px;font-family:verdana" align="right">
+					<assign firstRec = 1>
+					<if editReport.query.firstRecord><assign firstRec = editReport.query.firstRecord+1></if>
+					<assign lastRec = MAX_RECORDS_PER_QUERY>
+					<if editReport.query.lastRecord && integerLib.compare(editReport.query.lastRecord, "<", MAX_RECORDS_PER_QUERY)>
+						<assign lastRec = editReport.query.lastRecord+1>
+					</if>
+					<input type="hidden" name="firstRec" id="firstRec" size="5" maxlength="5" style="text-align:right" class="smallFontElement" value="${firstRec}">
+					Show <input type="text" name="lastRec" id="lastRec" size="5" maxlength="5" style="text-align:right" class="smallFontElement" value="${lastRec}" onBlur="showRecords(this.id)" title="Max. 10,000 records"> records
+				</td>
+			  <else>
+				<td style="border-bottom: 2px solid #83ACCA;font-size:11px;font-family:verdana" align="right">
+					<assign firstRec = 1>
+					<if editReport.query.firstRecord><assign firstRec = editReport.query.firstRecord+1></if>
+					<assign lastRec = MAX_RECORDS_PER_QUERY>
+					<if editReport.query.lastRecord && integerLib.compare(editReport.query.lastRecord, "<", MAX_RECORDS_PER_QUERY)>
+						<assign lastRec = editReport.query.lastRecord+1>
+					</if>
+					<input type="hidden" name="firstRec" id="firstRec" size="5" maxlength="5" style="text-align:right" class="smallFontElement" value="${firstRec}">
+					Show <input type="text" name="lastRec" id="lastRec" size="5" maxlength="5" style="text-align:right" class="smallFontElement" value="1000" onBlur="showRecords(this.id)" title="Max 10,000 records"> records<!-- ${lastRec} -->
+					<input type="hidden" name="0-301-322" id="isPublic"  value="1"
+					<if editReport.report.is_public == "1">checked</if> >
+				</td>
+			  </if>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" >
+          <div class="lightColor chooserDiv" id="chooser_outputs" style="width:100%">
+            <div class="chooserBlurb">
+              Expand the entity names below (left) to see columns that you can use in your report. Click on a column to add it to your report. Select the manner you would like the column to be shown in - as a data value, as a count of items, etc. Uncheck a selected column on the right to exclude it from your report.<if editReport.entityName == "contacts"> <b>Select the Contact's Full Name if you'd like to apply Contact-related Special functions on your output data.Select the Opportuinty Name if you'd like to use Opportunity-related Special functions.</b></if>
+            </div>
+            <table id="outputColsContainer" width="100%" border="0" >
+              <tr valign="top">
+                <td width="25%">
+                  <div class="availableColumnsDiv">
+                    <call showAttributeList ("outputs")>
+                  </div>
+                </td>
+                <td>
+                  <table id="outputAtrsTable" class="ListNodeTableReports" cellspacing="0" cellpadding="8" border="1" bordercolor="#F4F4F4">
+                    <tr id="outputAtrsHeader" style="display: none">
+                      <th class="reportEditListHeader"></th>
+                      <th class="reportEditListHeader">Object</th>
+                      <th class="reportEditListHeader">Column</th>
+                      <th class="reportEditListHeader">Data fetched</th>
+                      <th class="reportEditListHeader">Label</th>
+                      <th class="reportEditListHeader">Display</th>
+                      <th class="reportEditListHeader">Sort</th>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>  
+
+          <div class="lightColor chooserDiv" id="chooser_filters" style="width:100%">
+            <div class="chooserBlurb">
+              Expand the entity names below (left) to see columns that you can use to filter data in your report. Click on a column to include it as a filtering column. Use the extended filtering capabilities to make finer choices. Uncheck a selected column on the right to remove it from filtering your report.
+            </div>
+            <table id="filterColsContainer" width="100%" border="0">
+              <tr valign="top">
+                <td width="25%">
+                  <div class="availableColumnsDiv">
+                    <call showAttributeList ("filters")>
+                  </div>
+                </td>
+                <td>
+                  <table id="filterAtrsTable" width="100%" class="ListNodeTableReports" cellspacing="0" cellpadding="8" border="1" bordercolor="#F4F4F4"	>
+                    <tr id="filterAtrsHeader" style="display: none">
+                      <th class="reportEditListHeader"></th>
+                      <th class="reportEditListHeader">Type</th>
+                      <th class="reportEditListHeader">Column</th>
+                      <th class="reportEditListHeader">Modifier</th>
+                      <th class="reportEditListHeader">Filter</th>
+                      <th class="reportEditListHeader">Value</th>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>  
+
+          <div class="lightColor chooserDiv" id="chooser_layout" style="width:100%">
+            <div class="chooserBlurb">
+              Choose the layout you want for your report. The Matrix format selection applies only in the case of an emailed report; on screen, you can use the Pivot tab to set up your pivot table.
+            </div>
+		<assign collapsedLayout=editReport.report.wantCollapsedLayout.value>
+		<assign matrixLayout=editReport.report.wantMatrixLayout.value>
+            <table align="center" width="95%" class="plainTable">
+              <tr align="center">
+                <td>
+                  <input type="checkbox" id="layout_tabular" name="layout_tabular"
+                    <if !editReport.report.report_id ||editReport.report.wantTabularLayout.value || !collapsedLayout || !matrixLayout>checked</if>
+                  >
+                  <label for="layout_tabular" class="contentInside">Tabular</label>
+                </td>
+                <td>
+                  <input type="checkbox" id="layout_collapsed" name="layout_collapsed"
+                    <if editReport.report.wantCollapsedLayout.value>checked</if>
+                  >
+                  <label for="layout_collapsed" class="contentInside">Collapsed tabular</label>
+                </td>
+                <td>
+                  <input type="checkbox" id="layout_matrix" name="layout_matrix"
+                    <if editReport.report.wantMatrixLayout.value>checked</if>
+                  >
+                  <label for="layout_matrix" class="contentInside">Matrix </label>
+                </td>
+                <td>
+<comment>  Commented by Kishore, 13 Oct. 2010 - looks terrible and not working well/at all
+                  <input type="checkbox" id="layout_vBarChart" name="layout_vBarChart"
+                    <if editReport.report.vBarChartLabelAtr.value>checked</if>
+                  >
+                  <label for="layout_vBarChart" class="contentInside">Vertical bar chart </label>
+                </td>
+                <td>
+                  <input type="checkbox" id="layout_hBarChart" name="layout_hBarChart"
+                    <if editReport.report.hBarChartLabelAtr.value>checked</if>
+                  >
+                  <label for="layout_hBarChart" class="contentInside">Horizontal bar chart </label>
+                </td>
+</comment>
+              </tr>
+              <tr valign="top" align="center">
+                <td style="padding: 5px">
+                  <img src="${IMG_LIB_PATH}/reportThumbnails/tabular.gif">
+                </td>
+                <td style="padding: 5px">
+                  <img src="${IMG_LIB_PATH}/reportThumbnails/collapsed.gif">
+                </td>
+                <td style="padding: 5px">
+                  <img src="${IMG_LIB_PATH}/reportThumbnails/matrix.gif">
+                </td>
+<comment>  Commented by Kishore, 13 Oct. 2010 - looks terrible and not working well/at all
+                <td style="padding: 5px" rowspan="2">
+                  <img src="${IMG_LIB_PATH}/reportThumbnails/chart.gif">
+                  <table cellpadding="0" cellspacing="0" style="margin-top: 5px">
+                    <tr>
+                      <td class="contentInside">Label:</td>
+                      <td><select id="vbarchart_label" class="smallFontElement"></select></td>
+                    </tr>
+                    <tr>
+                      <td class="contentInside">Y-axis:</td>
+                      <td><select id="vbarchart_y_axis" class="smallFontElement"></select></td>
+                    </tr>
+                    <tr>
+                      <td class="contentInside">Width:</td>
+                      <td class="contentInside" nowrap>
+                        <input id="vbarchart_width"
+                           type="text" size="3" maxlength="3" class="smallFontElement"
+                          <if editReport.report.vBarChartWidth.value>
+                            value="${editReport.report.vBarChartWidth.value}"
+                          <else>
+                            value="300"
+                          </if>
+                        >
+                        px
+                    </tr>
+                    <tr>
+                      <td class="contentInside">Height:</td>
+                      <td class="contentInside" nowrap>
+                        <input id="vbarchart_height"
+                          type="text" size="3" maxlength="3" class="smallFontElement"
+                          <if editReport.report.vBarChartHeight.value>
+                            value="${editReport.report.vBarChartHeight.value}"
+                          <else>
+                            value="300"
+                          </if>
+                        >
+                        px
+                    </tr>
+                  </table>
+                </td>
+                <td style="padding: 5px" rowspan="2">
+                  <img src="${IMG_LIB_PATH}/reportThumbnails/hBarChart.gif">
+                  <table cellpadding="0" cellspacing="0" style="margin-top: 5px">
+                    <tr>
+                      <td class="contentInside">Label:</td>
+                      <td><select id="hbarchart_label" class="smallFontElement"></select></td>
+                    </tr>
+                    <tr>
+                      <td class="contentInside">X-axis:</td>
+                      <td><select id="hbarchart_x_axis" class="smallFontElement"></select></td>
+                    </tr>
+                    <tr>
+                      <td class="contentInside">Width:</td>
+                      <td class="contentInside" nowrap>
+                        <input id="hbarchart_width"
+                           type="text" size="3" maxlength="3" class="smallFontElement"
+                          <if editReport.report.hBarChartWidth.value>
+                            value="${editReport.report.hBarChartWidth.value}"
+                          <else>
+                            value="300"
+                          </if>
+                        >
+                        px
+                    </tr>
+                    <tr>
+                      <td class="contentInside">Height:</td>
+                      <td class="contentInside" nowrap >
+                        <input id="hbarchart_height"
+                          type="text" size="3" maxlength="3" class="smallFontElement"
+                          <if editReport.report.hBarChartHeight.value>
+                            value="${editReport.report.hBarChartHeight.value}"
+                          <else>
+                            value="300"
+                          </if>
+                        >
+                        px
+</comment>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td colspan="2">
+                  <div id="columnWidthsDiv">
+                    <!-- Width spec will go here. -->
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>
+</html>
+
+
+<function showAttributeList (tabNameForList)>
+  <table style="margin-left: 2px;" border="0">
+    <list rels.adhocStruct.list as anEntity>
+	  <if anEntity.getEnttListRec.desc_name>
+		  <tr>
+		   <td class="<if anEntity.isMultiValue>treeSubHeader<else>treeHeader</if>" id="catLabel0_${anEntity.getEnttListRec.EntityName}"
+			  onclick="toggleOutputCategoryVisibility('items_${tabNameForList}_${anEntity.getEnttListRec.EntityName}')">
+			  <img src="${IMG_LIB_PATH}/expand.gif" id="toggleImage_${tabNameForList}_${anEntity.getEnttListRec.EntityName}"
+				style="cursor: pointer; cursor:hand; vertical-align:middle">        
+			  <a href="javascript:void(0)" class="<if anEntity.isMultiValue>clickableSub<else>clickableMain</if>" >
+			  ${anEntity.getEnttListRec.desc_name}</a>
+			</td>
+		  </tr>
+		  <tr id="items_${tabNameForList}_${anEntity.getEnttListRec.EntityName}" style="display: none">
+			<td style="padding-left: 2px;border:1px solid #5FA8EB" >
+			  <list anEntity.getEMDAttributes as ee1>
+			    <assign displayStr = "">
+				<if ee1.colDescFinal && ee1.enttColInactive != "1" && stringLib.prefix (ee1.colDescFinal,4) != "udef" && stringLib.prefix (ee1.colDescFinal,4) != "Udef">
+					<assign displayStr = ee1.colDescFinal>
+				</if>
+				<if displayStr>
+					<div style="padding-left:<if anEntity.isMultiValue>25px<else>20px</if>" >
+						  <a href="javascript:void(0)"  id="Sub_${ee1.internalName}" style="font-size:9px;color:black;text-decoration:none" 
+							<if tabNameForList == "outputs">
+								onclick="addOutputAttribute('${ee1.internalName}','${displayStr}','${ee1.aggregateFunction}',null,'false','${anEntity.getEnttListRec.desc_name}', '${anEntity.getEnttListRec.EntityName}')"
+							<else>
+								onclick="addFilterAttribute('${ee1.internalName}','${displayStr}','${anEntity.getEnttListRec.EntityName}',null,null,'${anEntity.getEnttListRec.desc_name}')"
+							</if>
+							>
+							${displayStr}
+						  </a>
+					</div>
+				</if>
+			  </list>
+			</td>
+		  </tr>
+      </if>
+    </list>
+  </table>
+</function>

@@ -76,7 +76,7 @@ function exec_rept (doc, into_div) {
 		}
 		if($(this).parent().hasClass('ui-state-active'))
 			$('#exportPvt').attr('id', 'exportDataTbl'); //changing the ids for dt
-		$('#showParams, #dtRefreshedAt, #exportDataTbl, #reptMoreTblOptCont').css('visibility', 'visible');			
+		$('#showParams, #dtRefreshedAt, #exportDataTbl, #reptMoreTblOptCont').css('display', 'inline-block');			
 		//show copy etc btns of data table
 		$('#reptDtMoreSelc .DTTT_container').css('display', 'block');
 		
@@ -86,11 +86,11 @@ function exec_rept (doc, into_div) {
 	document.getElementById('tabPivotBtn').addEventListener('click', function() {
 		
 		if($(this).parent().hasClass('ui-state-active'))
-			$('#showParams, #dtRefreshedAt').css('visibility', 'hidden');
+			$('#showParams, #dtRefreshedAt').css('display', 'none');
 
 		$('#slideUpDwnCont').slideUp(); //slide up if params body is open
 		$('#exportDataTbl').attr('id', 'exportPvt'); //changing the ids for pvtTable
-		$('#reptMoreTblOptCont, #exportPvt').css('visibility', 'visible');			
+		$('#reptMoreTblOptCont, #exportPvt').css('display', 'inline-block');			
 		$('#reptDtMoreSelc .DTTT_container').css('display', 'none'); //hide copy etc btns of data table
 
 		setTimeout(function() {
@@ -112,7 +112,7 @@ function exec_rept (doc, into_div) {
 	//show btns related to chart tab
 	document.getElementById('tabChartBtn').addEventListener('click', function() {
 		if($(this).parent().hasClass('ui-state-active'))
-			$('#showParams, #dtRefreshedAt, .expBtn, #reptMoreTblOptCont').css('visibility', 'hidden');
+			$('#showParams, #dtRefreshedAt, .expBtn, #reptMoreTblOptCont').css('display', 'none');
 
 		$('#reptDtMoreSelc .DTTT_container').css('display', 'none'); //hide copy etc btns of data table
 		$('#slideUpDwnCont').slideUp(); //slide up if params body is open
@@ -137,7 +137,7 @@ function exec_rept (doc, into_div) {
 	//show btns related to map tab
 	document.getElementById('tabMapBtn').addEventListener('click', function() {
 		if($(this).parent().hasClass('ui-state-active'))
-			$('#showParams, #dtRefreshedAt, .expBtn, #reptMoreTblOptCont').css('visibility', 'hidden');
+			$('#showParams, #dtRefreshedAt, .expBtn, #reptMoreTblOptCont').css('display', 'none');
 			$('#reptDtMoreSelc .DTTT_container').css('display', 'none'); //hide copy etc btns of data table
 			$('#slideUpDwnCont').slideUp(); //slide up if params body is open
 	}, false);

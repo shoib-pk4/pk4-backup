@@ -130,7 +130,7 @@
 			if($getTenantDtsrows > 0) {
 				$getTenantDtdata = pg_fetch_assoc($getTenantDtsSQL);
 				$tennantDB = $getTenantDtdata["org_name"];
-				// $musrid = $getTenantDtdata["user_id"];
+				//$musrid = $getTenantDtdata["user_id"];
 				$jdbc_url = $getTenantDtdata["jdbc_url"];
 				$db_server = substr($jdbc_url,18);
 
@@ -153,7 +153,7 @@
 			//tennant connection
 			$this->conn_db_tennant = @pg_connect($this->conn_string_tennant);
 			if (!$this->conn_db_tennant) {
-				$msg =  $this->dateTime . ' Tenant connection failed. Tennant= '.$jdbc_url;
+				$msg =  $this->dateTime . ' Tenant connection failed. Tennant= '.$querygetTenantDtsSQL;
 				$this->logError($msg);
 				exit;
 			} else {

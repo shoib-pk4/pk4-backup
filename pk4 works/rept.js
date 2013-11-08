@@ -3,10 +3,10 @@
 	Dont add any event listners in below function, becuase every time function is called 
 	and event is attached and this behaves differently
 */
-var reptCalInitIndx = 0, _reptPaginationFlag=false, _reptPageSize, initReptDataTable=false, reptEntityName, _reptPagination=1, _reptTmpResultCnt=0, _reptCurrentResultCnt=0, _reptPaginatioArr=[''], _reptPaginationStatus;
+var reptTabsArr=[], reptCalInitIndx = 0, _reptPaginationFlag=false, _reptPageSize, initReptDataTable=false, reptEntityName, _reptPagination=1, _reptTmpResultCnt=0, _reptCurrentResultCnt=0, _reptPaginatioArr=[''], _reptPaginationStatus;
 function exec_rept (doc, into_div) {
 	
-	var tabsArr = doc.Tabs, params    = doc.Parameters, rptSubName = doc.ReportDesc;
+	reptTabsArr = doc.Tabs, params    = doc.Parameters, rptSubName = doc.ReportDesc;
 
     //this are global vars
 	dataTblHdr  = doc.dataTblHdr;
@@ -43,7 +43,7 @@ function exec_rept (doc, into_div) {
 
 
 	//add tabs 
-	$.each(tabsArr, function(k, v) {
+	$.each(reptTabsArr, function(k, v) {
 		var li = $('<li></li>');
 		// if(k == 0) {
 		// 	li.addClass('ui-tabs-selected ui-state-active');
@@ -151,8 +151,17 @@ function exec_rept (doc, into_div) {
 	if(!goFurther) {		
 		return;
 	}
+
 	//load default tab
-	initDataTable(params, doc);
+	if($.inArray('Data', reptTabsArr) != -1){
+		initDataTable(params, doc);
+	} else 
+	if($.inArray('Pivot', reptTabsArr) != -1){
+		initializePivot();
+	} else
+	if($.inArray('Chart', reptTabsArr) != -1){
+		initializeChart();
+	}
 
 	//remove loading
 	$('#reptOnloadLoading').remove();
@@ -774,7 +783,7 @@ $(document).ready(function () {
 
 	//clear pivot data
 	$('body').on('click', '#deletePivotSave', function() {
-		if(_reptSaveFor === 'pivot') {
+		if(_reptSaveFor === 'pivot' && ($.inArray(_reptSaveFor, reptTabsArr) != -1)) {
 			$(this).attr('id', 'deletingPivotSave').val('Clearing..');
 			var reptId = 'report_option_' + getValueFromUrl('i', true);
 
@@ -791,7 +800,7 @@ $(document).ready(function () {
 
 	//clear chart data
 	$('body').on('click', '#deleteChartSave', function() {
-		if(_reptSaveFor === 'chart') {
+		if(_reptSaveFor === 'chart' && ($.inArray(_reptSaveFor, reptTabsArr) != -1)) {
 			$(this).attr('id', 'deletingChartSave').val('Clearing..');
 			var reptId = 'report_option_' + getValueFromUrl('i', true);
 			clearReptUiStatus(' ', reptId, '', $('#deletingChartSave'), 'deleteChartSave')
@@ -1382,7 +1391,7 @@ function getPivotOrChartSavedContent(reptId) {
 	                _pivot_chart_status=true;
                 }   
                 
-                if(_reptSaveFor === 'pivot') {                	
+                if(_reptSaveFor === 'pivot' && ($.inArray(_reptSaveFor, reptTabsArr) != -1)) {                	
                 	$('#tabPivotBtn').trigger('click');
                 	initializePivot();
                 	redrawPivotWithSaveObj(_PivotChart);
@@ -1390,7 +1399,7 @@ function getPivotOrChartSavedContent(reptId) {
                 	$('#tabChart .reptTblUseInfo').css('display', 'block');
                 	goFurther = false;
                 } 
-                else if(_reptSaveFor === 'chart') {                	
+                else if(_reptSaveFor === 'chart' && ($.inArray(_reptSaveFor, reptTabsArr) != -1)) {                	
                 	$('#tabChartBtn').trigger('click');
                 	initializeChart();
                 	redrawChartWithSaveObj(_PivotChart);

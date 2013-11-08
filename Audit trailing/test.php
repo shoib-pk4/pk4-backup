@@ -37,7 +37,7 @@
 
 	class audit_and_wfw {
 
-		var $conn_db_tennant, $srvLoginName, $ovArr, $nvArr, $requestorid = "kishore@pk4.in";
+		var $conn_db_tennant, $srvLoginName, $ovArr, $nvArr, $requestorid = "kishore@impelcrm.in";
 		var $tbl, $pk, $oper, $user, $dateTime, $org,   $startDate, $conn_string_tennant, $run_id, $my_pid, $orgname, $entity_name;
 		var $old_values, $column_details=array(), $changedColDetails=array(), $count_column_details=0, $columns=array();
 
@@ -61,14 +61,18 @@
 			$this->my_pid = getmypid ();
 			$this->dateTime = date('Y-m-d H:i:s'); //get the current date and time
 
-						
+			// //validate session
+			// $this->validateSession();
+			// //get tennant connection
+			// $this->getTenantConnection();
+			
 		}
 
 		//validate session
 		public function validateSession() {
 
-			// $url = "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid;
-			$url = "http://data.impelcrm.in/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid;
+			$url = "http://192.168.11.11:9090/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid;
+			// $url = "http://data.impelcrm.in/impelMobile/custom/giveMQForGivenLogin.html?loginName=".$this->requestorid;
 
 			$curl = curl_init();
 		    curl_setopt ($curl, CURLOPT_URL, $url); 
@@ -85,8 +89,8 @@
 				exit;
 			} else {
 				$usermq = $enttsResult1;
-				//$url = "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
-				 $url = "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
+				$url = "http://192.168.11.11:9090/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
+				// $url = "http://data.impelcrm.in/atCRM/custom/soapAPI/readServers.html?sessionId=".$this->mq."&mq=".$usermq;
 				$curl = curl_init();
 				curl_setopt ($curl, CURLOPT_URL, $url); 
 				curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -112,7 +116,7 @@
 
 		//get tenanat connection
 		public function getTenantConnection() {
-			$conn_db_master = pg_connect($this->mc);
+			$conn_db_master = @pg_connect($this->mc);
 
 			// $this->logError($conn_db_master);
 			// $this->logError(implode('----', $_POST));
@@ -151,7 +155,7 @@
 
 				$db_server = substr($db_server, 0,strlen($db_server) - 5);
 
-				// $this->conn_string_tennant = "hostaddr=$db_server port=$db_port dbname=$db_name user=postgres password=postgres";	 //dev
+				//$this->conn_string_tennant = "hostaddr=$db_server port=$db_port dbname=$db_name user=postgres password=postgres";	 //dev
 				$this->conn_string_tennant = "hostaddr=$db_server port=$db_port dbname=$db_name user=impelapi password=impel_2013";	 //prod
 				
 				//free results to free memory
@@ -159,7 +163,7 @@
 			}
 
 			//tennant connection
-			$this->conn_db_tennant = pg_connect($this->conn_string_tennant);
+			$this->conn_db_tennant = @pg_connect($this->conn_string_tennant);
 			if (!$this->conn_db_tennant) {
 				$msg =  $this->dateTime . ' Tenant connection failed. Tennant= '.$querygetTenantDtsSQL;
 				$this->logError($msg);
@@ -167,6 +171,18 @@
 			} else {
 				pg_close ($conn_db_master);
 			}
+		}
+
+		/* 
+			* log results in /tmp/destroy-session-debug.log
+		*/
+		protected function logError($msg) {
+			$logFile = '/tmp/audit_trans.log';
+
+			$str = $msg. "\n\r";
+
+			//append str to file
+			file_put_contents($logFile, $str, FILE_APPEND);
 		}
 
 
@@ -180,14 +196,13 @@
 		$query .= "wfw_rule.orgname = orgname.orgname_id and ";
 		$query .= "orgname.licexpirydate > '".$this->dateTime."'";
 
+		// $result = pg_query($this->conn_db_tennant, $query);
+		// if(!$result) {
+		// 	$this->writeLogFile ("wfw", "wfw related", " ERROR", 'Query failed: '.$query, "Connection String: " . $this->conn_string_tennant, "");
+		// 	$this->closeTenantConnection(); //close connection if failed
+		// 	exit;
+		// }
 
-		$result = pg_query($this->conn_db_tennant, $query);
-
-
-
-		if(!$result) {
-			$this->writeLogFile ("wfw", "wfw related", " ERROR", 'Query failed: '.$query, "Connection String: " . $this->conn_string_tennant, "");
-		}
 		$cnt = pg_num_rows($result);
 		if($cnt > 0) {
 			//if rule found then insert into wfw queue, 1st param is status, 2nd is error msg if query failed				
@@ -195,10 +210,9 @@
 		} 
 		else {	
 			//if no rule found then select org name
-			$query = "select orgname from org_flag where org_flag.orgname=$this->orgname and (org_flag.name = 'Lead_mapping') and (org_flag.inactive != '1')";
+			$query = "select orgname from org_flag where org_flag.orgname=$org and (org_flag.name = 'Lead_mapping') and (org_flag.inactive != '1')";
 			$result = pg_query($this->conn_db_tennant, $query);
 			
-			$cnt = 0;
 			if(!$result) {
 				$this->writeLogFile ("wfw", "wfw related", " ERROR", 'Query failed: '.$query, "Connection String: " . $this->conn_string_tennant, "");
 			}
@@ -238,19 +252,19 @@
 
 		
 	//inserts row into wfw_query
-	private function makeEntryInWfwQueue($status, $errMsg) {
+	protected function makeEntryInWfwQueue($status, $errMsg) {
 		//insert entry for entt_column_id found
 		$query = "insert into wfw_queue(wfw_queue_id, table_affected, pri_key_value, change_operation, change_by_user, change_time, wfw_status, orgname, notes, hash_str)";
 		$query .= " values(nextval('seq_wfw_queue'),'".$this->entity_name."', ".$this->pk.", '".$this->oper."', ".$this->user.", '".$this->dateTime."', 'Pending', ".$this->orgname.", '".$status."',  '".$this->old_values."')";
 		if(!pg_query($this->conn_db_tennant, $query)){
-			$this->writeLogFile ("wfw", "wfw related", " ERROR", $errMsg.' Query: '.$query, "Connection String: " . $this->conn_string_tennant, "");
+			$this->writeLogFile ("wfw", "wfw related", " ERROR", $errMsg, "Connection String: " . $this->conn_string_tennant, "");
 		}		
 	}
 
-	private function writeLogFile ($val01, $val02 = "", $val03 = "", $val04 = "", $val05 = "", $val06 = "") {
+	protected function writeLogFile ($val01, $val02 = "", $val03 = "", $val04 = "", $val05 = "", $val06 = "") {
 		
 		$logFile = "/tmp/wfw_queue_debug.log";
-		$stringData = "\r\n". date('Y-m-d H:i:s T') . " | Run: $this->run_id, Org $this->orgname, User $this->user, Proc $this->my_pid |  " . $val01 . " | " . $val02 . " | " . $val03 . " | " . $val04 . " | " . $val05 . " | " . $val06  . "\r\n";
+		$stringData = "\r\n". date('Y-m-d H:i:s T') . " | Run: $this->run_id, Org $this->orgid, User $this->usrid, Proc $this->my_pid |  " . $val01 . " | " . $val02 . " | " . $val03 . " | " . $val04 . " | " . $val05 . " | " . $val06  . "\r\n";
 
 		//append str to file
 		file_put_contents($logFile, $stringData, FILE_APPEND);
@@ -427,7 +441,7 @@
 		/* 
 			* log results in /tmp/destroy-session-debug.log
 		*/
-		private function logError($msg) {
+		protected function logError($msg) {
 			$logFile = '/tmp/audit_trans.log';
 
 			$str = $msg. "\n\r";
@@ -469,18 +483,19 @@
 		include('../constants/php_config.cfg');
 
 		//get the data base connection
-		$audit_and_queue_obj = new audit_and_wfw($master_connection);
-		$audit_and_queue_obj->validateSession();
-		$audit_and_queue_obj->getTenantConnection();
+		$audit_and_queue = new audit_and_wfw($master_connection);
+		$audit_and_queue->validateSession();
+		$audit_and_queue->getTenantConnection();
 
 		//add entry in wfw queue
-		$audit_and_queue_obj->addWfwQueueRecToDb();
+		$audit_and_queue->addWfwQueueRecToDb();
+
 
 		//audit trans operations here
 		//these are public functions triggerd one after other
-		$audit_and_queue_obj->getAuditColumns();
-		$audit_and_queue_obj->matchOldAndNewValues();
-		$audit_and_queue_obj->addEntryInAuditTrans();
+		$audit_and_queue->getAuditColumns();
+		$audit_and_queue->matchOldAndNewValues();
+		$audit_and_queue->addEntryInAuditTrans();
 
 	}
 ?>

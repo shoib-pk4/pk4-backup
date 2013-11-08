@@ -145,7 +145,7 @@ span.title-select{
 	min-width:35px;	
     color: white;
     font-family:trebuchet MS;
-    font-size: 12px;
+    font-size: 12px;	
 	text-align:center;
 	font-weight:bold;
 	cursor:pointer;
@@ -500,20 +500,20 @@ span.title-select{
 	
 .actions-pop-up {
 	background-color: white;
-	max-height: 500px;
+	display: block;
 }
 .actions-pop-up  table {
 	border-collapse: collapse;
 	text-align: left;
 }
 .actions-pop-up table td {
-	border:  solid 1px transparent;
 	margin: 2px;
-	border-spacing: 4px;
-	width: 300px;
+	border-spacing: 2px;
+	width: 200px;
+	overflow: hidden;
 }
 .actions-tit {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: bold;
 }
 
@@ -522,3 +522,8 @@ span.title-select{
 	color: gray;
 }
 
+.act-pop-up-instr {
+	display: inline;
+	font-size: 12px;
+	margin: 4px 2px;
+}

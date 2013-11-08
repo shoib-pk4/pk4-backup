@@ -422,11 +422,11 @@ function createPageMenuItms(data)
 				adHocReportMnuName = adHocReportMnuNames[adHocRepi];
 				adHocReportEnttUrl = adHocReportMnuUrl+adHocReportEnttName[adHocRepi];
 				// adHocReportMnuUL.innerHTML+= "<li onclick='createAdHocReport(\""+adHocReportEnttUrl+"\");' title='"+adHocReportMnuNames[adHocRepi]+"'><img border='0' style='vertical-align: middle;' width='16px' height='16px' src='"+adHocReportEnttImg[adHocRepi]+"'/>&nbsp;<a href='javascript:void(0)'>"+adHocReportMnuName+"</a></li>";
-				tmpTr = "<td class='actLstTab' onclick='createAdHocReport(\""+adHocReportEnttUrl+"\");' title='"+adHocReportMnuNames[adHocRepi]+"'><table><tr><th><img border='0' style='vertical-align: middle;' width='60px' height='60px' src='"+adHocReportEnttImg[adHocRepi]+"'/></th><th><p class='actions-tit'><a href='javascript:void(0)'>"+adHocReportMnuName+"</a></p><p class='action-desc'>Desc</p></th></tr></table></td>";
+				tmpTr = "<td class='actLstTab' onclick='createAdHocReport(\""+adHocReportEnttUrl+"\");' title='"+adHocReportMnuNames[adHocRepi]+"'><table><tr><th><img border='0' style='vertical-align: middle;width:30px;height:30px;' src='"+adHocReportEnttImg[adHocRepi]+"'/></th><th><p class='actions-tit'><a href='javascript:void(0)'>"+adHocReportMnuName+"</a></p></th></tr></table></td>";
 				if(tmpi == 1) {
-					tr += '<tr>';
+					tr += '<tr class="act-rows">';
 					tr += tmpTr;
-				} else if(tmpi ==3) {
+				} else if(tmpi ==4) {
 					tr += tmpTr + '</tr>';
 					tmpi = 0;
 				} else {
@@ -434,7 +434,8 @@ function createPageMenuItms(data)
 				}
 				tmpi++;
 			}
-			tmpStr = '<table>'+ tr +'</table>';
+			tmpStr = '<div class="act-pop-up-instr">Please select the object that you want to base your report on. Related objects will be shown in the next step.</div>';
+			tmpStr += '<table id="actions-pop-up-tbl">'+ tr +'</table>';
 			adHocReportMnuUL.innerHTML += tmpStr;
 
 			$(document).ready(function() {
@@ -1698,13 +1699,32 @@ function writeDTbl (daTblHdr, daTblData) {
 $(document).ready(function() {
 
 	$('body').on('click', '.show-actions-list', function() {
+		//get the width and height of screen
+		var w = screen.width;
+		var h = screen.height;
+		var td = $('#actions-pop-up-tbl .act-rows .actLstTab:first-child');
+		//get the rows length
+		var rh = $('#actions-pop-up-tbl .act-rows').length * (10+ +td.css('height').replace('px',''));
+		if(rh >= h) {
+			sh = (h-50); //set to max screen height
+		} else {
+			sh = rh + 100; //set to rows height
+		}
+		//now set the width
+		var cw = $('#actions-pop-up-tbl .act-rows:first-child td').length * (10+ +td.css('width').replace('px','')); //get he columns width
+		if((cw > w)) {
+			sw = w - 50; //set to screen size
+		} else {
+			sw = cw + 50;
+		}
+
 		$('#actions-pop-up').dialog({
 			resizable: true,
 			autoOpen:true,
 			modal: false,
-			title:'Actions List',
-			width:1000,
-			height: 500
+			title:'Select Base Object',
+			width:sw,
+			height: sh
 		});
 	});
 

@@ -767,6 +767,19 @@ a.json,a.js,a.css,a.exe,a.php,a.xml{
 	background-image: linear-gradient(left, #FFFFFF 20%, #6EA305 100%);/* Proposed W3C Markup */ 
 }
 
+
+.actLstTab {
+	height: 35px;
+	border-radius: 2px;
+	-moz-border-radius:10px;
+	background-image: -ms-linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* IE10 */ 
+	background-image: -moz-linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* Mozilla Firefox */ 
+	background-image: -o-linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* Opera */ 
+	background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #F3F2F2), color-stop(1, #DFE0DC));/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* Webkit (Chrome 11+) */ 
+	background-image: linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* Proposed W3C Markup */ 
+
+}
 .lnkLstTab:hover, .actLstTab:hover
 {
      outline: none;

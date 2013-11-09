@@ -129,7 +129,7 @@ function addOutputAttribute (atrName, atrCaption, agFn, displayType, sortDescend
     //validation for header and details, any one is allowed
     var status = allowHeaderOrDetail(origEntName);
     if(!status) {
-        alert('Abort. You cannot perform this action, only you can eiter select header object field or detail object field but not both!');
+        alert('You cannot perform this action. You can either choose a field from header object or a field from detail object!');
         return;
     }
 
@@ -838,6 +838,8 @@ function doRun (reportId) {
     * shoib 2013 11 07
 */
 var mappings = {
+    'order_header':'order_detail',
+    'order_detail':'order_header',
     'invoice_header':'invoice_detail',
     'invoice_detail':'invoice_header',
     'tranx_header':'tranx_detail',
@@ -876,7 +878,7 @@ $(document).ready(function() {
         var t = $(this), name = t.attr('for');
         if(t.is(':checked') === true) {
             if(!allowHeaderOrDetail(name)){
-                alert('Abort. You cannot perform this action, only you can eiter select header object field or detail object field but not both!');
+                alert('You cannot perform this action. You can either choose a field from header object or a field from detail object!');
                 return false;
             }
         } else {

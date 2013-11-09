@@ -738,7 +738,7 @@ a.json,a.js,a.css,a.exe,a.php,a.xml{
 	cursor:pointer;
 }
 
-.lnkLstTab, .actLstTab
+.lnkLstTab
 {
 	float:left;
 	padding:3px;
@@ -768,18 +768,6 @@ a.json,a.js,a.css,a.exe,a.php,a.xml{
 }
 
 
-.actLstTab {
-	height: 35px;
-	border-radius: 2px;
-	-moz-border-radius:10px;
-	background-image: -ms-linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* IE10 */ 
-	background-image: -moz-linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* Mozilla Firefox */ 
-	background-image: -o-linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* Opera */ 
-	background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #F3F2F2), color-stop(1, #DFE0DC));/* Webkit (Safari/Chrome 10) */ 
-	background-image: -webkit-linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* Webkit (Chrome 11+) */ 
-	background-image: linear-gradient(left, #F3F2F2 20%, #DFE0DC 100%);/* Proposed W3C Markup */ 
-
-}
 .lnkLstTab:hover, .actLstTab:hover
 {
      outline: none;
@@ -1586,3 +1574,55 @@ span.cke_wrapper cke_ltr,table.cke_editor, td.cke_contents, span.cke_skin_kama, 
 	color: rgb(177, 28, 28) !important;
 }
 /* for filters ends here */
+
+
+
+
+/* pop up actions */
+
+.actLstTab {
+	float:left;
+	padding:3px;
+	height: 35px;
+	border-radius: 2px;
+	-moz-border-radius:10px;
+	background-image: -ms-linear-gradient(left, #9ACBDF 20%, rgba(41, 56, 12, 0) 100%);/* IE10 */ 
+	background-image: -moz-linear-gradient(left, #9ACBDF 20%, rgba(41, 56, 12, 0) 100%);/* Mozilla Firefox */ 
+	background-image: -o-linear-gradient(left, #9ACBDF 20%, rgba(41, 56, 12, 0) 100%);/* Opera */ 
+	background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #9ACBDF), color-stop(1, rgba(41, 56, 12, 0)));/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-linear-gradient(left, #9ACBDF 20%, rgba(41, 56, 12, 0) 100%);/* Webkit (Chrome 11+) */ 
+	background-image: linear-gradient(left, #9ACBDF 20%, rgba(41, 56, 12, 0) 100%);/* Proposed W3C Markup */ 
+
+}
+	
+.actions-pop-up {
+	background-color: white;
+	display: block;
+}
+.actions-pop-up  table {
+	border-collapse: collapse;
+	text-align: left;
+}
+.actions-pop-up table td {
+	margin: 2px;
+	border-spacing: 2px;
+	width: 200px;
+	overflow: hidden;
+}
+.actions-tit {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.actions-desc {
+	font-size: 12px;
+	color: gray;
+}
+
+.act-pop-up-instr {
+	display: inline;
+	font-size: 12px;
+	margin: 4px 2px;
+}
+
+/* pop up ends here */

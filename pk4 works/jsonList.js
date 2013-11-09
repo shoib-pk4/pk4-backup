@@ -422,7 +422,7 @@ function createPageMenuItms(data)
 				adHocReportMnuName = adHocReportMnuNames[adHocRepi];
 				adHocReportEnttUrl = adHocReportMnuUrl+adHocReportEnttName[adHocRepi];
 				// adHocReportMnuUL.innerHTML+= "<li onclick='createAdHocReport(\""+adHocReportEnttUrl+"\");' title='"+adHocReportMnuNames[adHocRepi]+"'><img border='0' style='vertical-align: middle;' width='16px' height='16px' src='"+adHocReportEnttImg[adHocRepi]+"'/>&nbsp;<a href='javascript:void(0)'>"+adHocReportMnuName+"</a></li>";
-				tmpTr = "<td class='actLstTab' onclick='createAdHocReport(\""+adHocReportEnttUrl+"\");' title='"+adHocReportMnuNames[adHocRepi]+"'><table><tr><th><img border='0' style='vertical-align: middle;width:30px;height:30px;' src='"+adHocReportEnttImg[adHocRepi]+"'/></th><th><p class='actions-tit'><a href='javascript:void(0)'>"+adHocReportMnuName+"</a></p></th></tr></table></td>";
+				tmpTr = "<td class='actLstTab' goto='createAdHocReport(\""+adHocReportEnttUrl+"\");' title='"+adHocReportMnuNames[adHocRepi]+"'><table><tr><th><img border='0' style='vertical-align: middle;width:25px;height:25px;' src='"+adHocReportEnttImg[adHocRepi]+"'/></th><th><p class='actions-tit'><a href='javascript:void(0)'>"+adHocReportMnuName+"</a></p></th></tr></table></td>";
 				if(tmpi == 1) {
 					tr += '<tr class="act-rows">';
 					tr += tmpTr;
@@ -1726,6 +1726,13 @@ $(document).ready(function() {
 			width:sw,
 			height: sh
 		});
+	});
+
+	//go to actions
+	$('body').on('click', '.actLstTab', function() {
+		var func = $(this).attr('goto');
+		$('#actions-pop-up').dialog('close');
+		eval(func);
 	});
 
 	//end of document ready

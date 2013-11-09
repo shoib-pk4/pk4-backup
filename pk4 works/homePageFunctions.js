@@ -1092,7 +1092,7 @@
 								var d = document;
 								entityDiv = d.getElementById('detailDataDiv');								
 								document.title = "Parsing...";
-								exec_rept(doc,entityDiv);							
+								exec_rept(doc,entityDiv, uri);							
 								
 							}, 0);
 							// break;

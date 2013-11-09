@@ -496,34 +496,3 @@ span.title-select{
 .finTransMAdd_tbl tbody tr td {
 	text-align: center;
 }
-
-	
-.actions-pop-up {
-	background-color: white;
-	display: block;
-}
-.actions-pop-up  table {
-	border-collapse: collapse;
-	text-align: left;
-}
-.actions-pop-up table td {
-	margin: 2px;
-	border-spacing: 2px;
-	width: 200px;
-	overflow: hidden;
-}
-.actions-tit {
-	font-size: 14px;
-	font-weight: bold;
-}
-
-.actions-desc {
-	font-size: 12px;
-	color: gray;
-}
-
-.act-pop-up-instr {
-	display: inline;
-	font-size: 12px;
-	margin: 4px 2px;
-}

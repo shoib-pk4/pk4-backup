@@ -3,9 +3,11 @@
 	Dont add any event listners in below function, becuase every time function is called 
 	and event is attached and this behaves differently
 */
-var reptTabsArr=[], reptCalInitIndx = 0, _reptPaginationFlag=false, _reptPageSize, initReptDataTable=false, reptEntityName, _reptPagination=1, _reptTmpResultCnt=0, _reptCurrentResultCnt=0, _reptPaginatioArr=[''], _reptPaginationStatus;
-function exec_rept (doc, into_div) {
-	
+var reptTabsArr=[], _reptrAnUri='', reptCalInitIndx = 0, _reptPaginationFlag=false, _reptPageSize, initReptDataTable=false, reptEntityName, _reptPagination=1, _reptTmpResultCnt=0, _reptCurrentResultCnt=0, _reptPaginatioArr=[''], _reptPaginationStatus;
+function exec_rept (doc, into_div, uri) {
+	_reptrAnUri = uri; //this uri is used when pa or i values not found in current uri
+	console.log(uri);
+
 	reptTabsArr = doc.Tabs, params    = doc.Parameters, rptSubName = doc.ReportDesc;
 
     //this are global vars
@@ -1573,6 +1575,14 @@ function showRefreshedDateTimeForDataTbl() {
  */
  function getValueFromUrl(name, forSave) {
  	var query = $('.subMnuSpan_current').parent().attr('href'); //document.URL;
+ 	if(query.indexOf(name) == -1 && _reptrAnUri.indexOf(name) != -1){
+ 		query = _reptrAnUri
+ 	} else {
+ 		var docurl = document.location;
+ 		if(query.indexOf(name) == -1 && docurl.indexOf(name) != -1){ 
+ 			query = docurl;
+ 		}
+ 	}
  	//get ir value
  	if(name === 'i' && forSave !== undefined) { 
  		return getValueForIrFromUrl(query);
@@ -2579,7 +2589,7 @@ $("#k_results").children().remove(); //empty if any
                     				$.pivotUtilities.gchart_renderers);
 					var piv_hdrs = data.pivot_fields;
 					piv_jason = formatNumbering(data.piv_json, piv_hdrs);
-					console.log(data);
+					//console.log(data);
 					// var piv_jason = data.piv_json;					
 					//send json to pivot init funct
 					$(function() {

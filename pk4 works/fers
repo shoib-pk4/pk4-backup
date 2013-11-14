@@ -1,0 +1,130 @@
+var fin_trans_brch_id = currentRecIdsJSON['brch_id'];
+if (fin_trans_brch_id !== undefined) {
+    var cred_acc_ind, debt_acc_ind, brnc_ind, particulars, debAmt=false;
+    $('.sectionDivHdr').each(function () {
+        particulars = $(this);
+        if (particulars.text() == 'Particulars') {
+            particulars.parent().remove();
+        }
+    });
+    $('#tab_Prefs').css('display', 'none');
+    $('.finTransMAdd_tbl thead tr').append('<th class=\"TblHead\" align=\"center\">Balance</th>');
+    $('.finTransMAdd_tbl tbody#listItemsTableBody tr').each(function (k, v) {
+            var brnc_id = '0-1:' + '' + k + '' + '-101-127',
+                cred_acc = '0-1:' + '' + k + '' + '-101-119',
+                debt_acc = '0-1:' + '' + k + '' + '-101-112';
+            var pay_type = '0-1:' + '' + k + '' + '-101-104',
+                busi_acc = '0-1:' + '' + k + '' + '-101-2811txt',
+                pt = $(this);
+            var pcklist = '0-1:' + '' + k + '' + '-101-2811txt',
+                amtid = '0-1:' + '' + k + '' + '-101-125';
+            var desc = '0-1:' + '' + k + '' + '-101-126', debtAmt = '0-1:' + '' + k + '' + '-101-118';
+            pt.find('.inputFieldClass').each(function (k1, v1) {
+                var t = $(this),
+                    id = t.attr('id');
+                if (id == brnc_id) {
+                    t.val(fin_trans_brch_id).attr('disabled', 'disabled').parent().css('display', 'none');
+                    brnc_ind = k1 + 1;
+                } else if (id == cred_acc) {
+                    t.parent().css('display', 'none');
+                    cred_acc_ind = k1 + 1;
+                } else if (id == debt_acc) {
+                    t.addClass(\"fin_trans_debt_acc\").parent().css('display','none'); debt_acc_ind = k1+1; 
+                } else if(id == amtid) {
+                    t.addClass('fin_amount');
+                } else if(id == pay_type) {
+                 t.children().remove(); t.attr('for', debt_acc).attr('pcklistid', pcklist).attr('amtid', amtid); 
+                 t.addClass(\"fin_trans_payment_type\").html('<option value=\"2\">Payment</opntion><option value=\"3\">Reciepts</option>'); 
+                } else if(id == desc) {
+                    t.css('width', '300px');
+                } else if(id == debtAmt) {
+                    t.addClass('inputFieldClass');
+                    t.parent().css('display', 'none');
+                    if(debAmt === false) {
+                        debAmt = t.parent().index();
+                    }
+                }
+         });
+          pt.append('<td class=\"fn_trans_row_total\" align=\"center\">0</td>'); 
+    }); 
+
+    if(debAmt !== false) {
+        $('.finTransMAdd_tbl thead tr th:eq('+debAmt+')').remove();
+    }
+    if (cred_acc_ind) {
+        $('.finTransMAdd_tbl thead tr th:eq(' + cred_acc_ind + ')').css('display', 'none');
+    }
+    if (debt_acc_ind) {
+        $('.finTransMAdd_tbl thead tr th:eq(' + debt_acc_ind + ')').css('display', 'none');
+    }
+    if (brnc_ind) {
+        $('.finTransMAdd_tbl thead tr th:eq(' + brnc_ind + ')').css('display', 'none');
+    }
+
+    $('body').on('change', '.fin_trans_payment_type', function () {
+        var doc = document, pt = $(this), debit_id = pt.attr('for'),
+            txt, ct, v = '', id, c1t, trInd = -1, pv = pt.val(),
+            pcklist = pt.attr('pcklistid');
+        var pl = doc.getElementById(pcklist),
+            pl = $(pl),
+            old_attr_val = pl.attr('onkeyup'),
+            amtid = pt.attr('amtid');
+        var amt = doc.getElementById(amtid),
+            amt_ele = $(amt),
+            rowinx = pt.parent().parent().index();
+        var totObj = pt.parent().parent().children('td:last-child'),
+            tot = parseInt(totObj.text());
+        if (pv == '2') {
+            $('.finTransMAdd_tbl tbody#listItemsTableBody .fin_trans_debt_acc').each(function (ind, obj) {
+                ct = $(this);
+                trInd = ind;
+                id = ct.attr('id');
+                if (id == debit_id) {
+                    ct.children('option').each(function () {
+                        c1t = $(this);
+                        txt = c1t.text().toLowerCase();
+                        if (txt.indexOf('cash') !== -1) {
+                            v = c1t.val();
+                            return false;
+                        }
+                    });
+                }
+                if (v !== '') return false;
+            });
+            $('.finTransMAdd_tbl tbody#listItemsTableBody tr:eq(' + (trInd) + ') .fin_trans_debt_acc').val(v);
+            if (pl.attr('old_attr_val') !== '') pl.attr('old_attr_val', old_attr_val);
+            var newUrl = old_attr_val.replace(/pckListId=[0-9]+&/, 'pckListId=13686&');
+            pl.attr('onkeyup', newUrl);
+            totObj.text(eval(+tot - +amt_ele.val()));
+        } else {
+            var old_val = pl.attr('old_attr_val');
+            if (old_val !== '') {
+                pl.attr('onkeyup', old_val);
+            }
+            totObj.text(eval(+tot + +amt_ele.val()));
+        }
+    }); 
+
+    $('body').on('blur', '.fin_amount', function() {
+        var t=$(this), v = t.val();
+        if(v.indexOf('.') != -1) {
+            v = Math.round(v * 100) / 100;
+        } else {
+            v += '.00';
+        }
+        t.val(v);
+    });
+
+    $('body').on('keyup', '.fin_amount', function() {
+        var t=$(this), v = t.val();       
+        var fin_type = t.parent().parent().find('.fin_trans_payment_type');
+        var pay_type = fin_type.val(), tot = t.parent().parent().children('td:last-child');
+        var tot_val = parseInt(tot.text());
+        if(pay_type == 2) {
+            tot.text(eval(+tot_val - +v));
+        } else {
+             tot.text(eval(+tot_val + +v));
+        }
+    });
+
+}

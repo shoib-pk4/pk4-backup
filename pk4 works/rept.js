@@ -3,7 +3,7 @@
 	Dont add any event listners in below function, becuase every time function is called 
 	and event is attached and this behaves differently
 */
-var reptTabsArr=[], _reptrAnUri='', reptCalInitIndx = 0, _reptPaginationFlag=false, _reptPageSize, initReptDataTable=false, reptEntityName, _reptPagination=1, _reptTmpResultCnt=0, _reptCurrentResultCnt=0, _reptPaginatioArr=[''], _reptPaginationStatus;
+var paramsStatus=true, reptTabsArr=[], _reptrAnUri='', reptCalInitIndx = 0, _reptPaginationFlag=false, _reptPageSize, initReptDataTable=false, reptEntityName, _reptPagination=1, _reptTmpResultCnt=0, _reptCurrentResultCnt=0, _reptPaginatioArr=[''], _reptPaginationStatus;
 function exec_rept (doc, into_div, uri) {
 	_reptrAnUri = uri; //this uri is used when pa or i values not found in current uri
 	console.log(uri);
@@ -84,7 +84,9 @@ function exec_rept (doc, into_div, uri) {
 			}
 			if($(this).parent().hasClass('ui-state-active'))
 				$('#exportPvt').attr('id', 'exportDataTbl'); //changing the ids for dt
-			$('#showParams, #dtRefreshedAt, #exportDataTbl, #reptMoreTblOptCont').css('display', 'inline-block');			
+			$('#dtRefreshedAt, #exportDataTbl, #reptMoreTblOptCont').css('display', 'inline-block');
+			if(paramsStatus == true)
+				$('#showParams').css('display', 'inline-block');			
 			//show copy etc btns of data table
 			$('#reptDtMoreSelc .DTTT_container').css('display', 'block');
 			
@@ -1131,10 +1133,12 @@ $(document).ready(function () {
 		var t=$(this),id=t.attr('id'), url = '/atCRM/custom/adhocReports/rAn.htm?';
 		
 		var ival = getValueFromUrl('i');
-		if(ival == '') {
-			return alert('Abort: i values is mission from url.');
-		}
-		url += '&i='+ival;
+		// if(ival == '') {
+		// 	return alert('Abort: i values is mission from url.');
+		// }
+		if(ival !== undefined && ival.length > 0)
+			url += '&i='+ival;
+
 		var getPParm = getValueFromUrl('pa');
 		if(getPParm != ''){
 			url += '&pa='+getPParm;
@@ -1575,7 +1579,8 @@ function showRefreshedDateTimeForDataTbl() {
  */
  function getValueFromUrl(name, forSave) {
  	var query = $('.subMnuSpan_current').parent().attr('href'); //document.URL;
- 	if(query.indexOf(name) == -1 && _reptrAnUri.indexOf(name) != -1){
+
+ 	if(query.indexOf(name+'=') == -1 && _reptrAnUri.indexOf(name+'=') != -1){
  		query = _reptrAnUri
  	} else {
  		var docurl = document.location;
@@ -1602,6 +1607,13 @@ function showRefreshedDateTimeForDataTbl() {
 	//get ir value
 	if(nameVar === '')
 		return getValueForIrFromUrl(query);
+
+	//remove apha allow only integer and dot, dot usually doesnt appear
+	// var tmpVal='', len = nameVar.length;
+	// for(var i=0; i<len;i++) {
+	// 	tmpVal += reptReturnValidArithmaticChar(nameVar.charAt(i));
+	// }
+ // 	return tmpVal;
 
  	return nameVar;
  }
@@ -1882,6 +1894,7 @@ function drawParamsConditions(paramsData, reptFeture) {
 	//hide the params button if length is 0
 	if(!paramsData || reptFeture == 'QuickFilter') {
 		$('#showParams').css('display', 'none');
+		paramsStatus = false;
 		return;
 	}		
 	var desc, lbl, picklistId='', name, td, name,type;
@@ -2575,9 +2588,14 @@ $("#k_results").children().remove(); //empty if any
  }
 
 
+var args = 'i='+id+paUrl+'&t=p';
+if(id === undefined || id.length == 0){
+	args = paUrl+'&t=p';
+}
+
  $.ajax({
 		url: '/atCRM/custom/adhocReports/rAn.htm',
-		data: 'i='+id+paUrl+'&t=p',
+		data: args,
 		type: 'GET',
 		dataType: 'JSON',
 		async: false,
@@ -2652,10 +2670,15 @@ $("#k_results").children().remove(); //empty if any
 		paUrl = '&pa='+getPParm+'!~~!'+paUrl;					
 	 }
 
+	var args = 'i='+id+paUrl+'&t=c';
+	if(id === undefined || id.length == 0){
+		args = paUrl+'&t=c';
+	}
+
 
  	$.ajax({
 		url: '/atCRM/custom/adhocReports/rAn.htm',
-		data: 'i='+id+paUrl+'&t=c',
+		data: args,
 		type: 'GET',
 		dataType: 'JSON',
 		async: false,

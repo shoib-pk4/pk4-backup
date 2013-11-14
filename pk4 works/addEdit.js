@@ -1855,7 +1855,7 @@ function createFormFields(fieldElemTd,fldData,formName,data,hideDropBox)
 		case "defaultTeritory":
 
 					if(fieldType!='None' && fieldType!='none')
-					createDefaultTeritory(fieldElemTd, "inputFieldClass", elemId);
+					createDefaultTeritory(fieldElemTd, "inputFieldClass", elemId, data);
 					if(nullableFld=="0")mandatoryFldElem.push(elemId);
 					break;
 
@@ -2041,18 +2041,34 @@ function updateData(funOnsubmit,formSubmitPostFun,isAddNew)
 			document.getElementById("cancelButton").disabled='true';
 			if(document.getElementById("addNnewButton")) document.getElementById("addNnewButton").disabled='true';
 			document.getElementById("addEditForm").style.cursor="wait";
-
-			if(funOnsubmit == 'validateAddSBEUser') {
+			var newTer;
+			if($('#createDefTer').prop('checked')) {
+				newTer = true;
+			} else {
+				newTer = false;
+			}
+			if(funOnsubmit == 'validateAddSBEUser' && priKeyVal == '' && newTer === true) {
 				//save first teritory details
 				$.ajax(
 					{
-						url: '/atCRM/custom/advancedAdd/addTerritory.html',
+						url: '/atCRM/custom/advancedAdd/Territory/editAction',
 						type: 'POST',
-						data: '0-1-3='+$('#0-201-357').val()+'&0-1-17txt='+session_login, //session_login is global defined in homepage.html
+						data: '0-1-3='+$('#0-201-357').val()+'&0-1-5='+$('#chooseExistingTer').val(),
 						async: false,
-						success: function(data) {
-							console.log('teritory saved..');
-							console.log(data);
+						success: function(terId) {
+						  //add ter id to 357 and 2601 fields
+						  var defTer = $('#0-201-357'), multiTxt = $('#0-201-2601');
+						  if(defTer.length > 0) {
+						  	defTer.val(terId);
+						  }
+						  if(multiTxt.length > 0) {
+						  	var v = multiTxt.val();
+						  	if(v.length > 0) {
+						  		terId += ','+v;					  		
+						  	} 
+						  	multiTxt.val(terId);
+						  }
+						  submitAddEditForm(formSubmitPostFun,isAddNew);
 						},
 						error: function(response) {
 							alert('Teritory not created..');
@@ -2060,9 +2076,15 @@ function updateData(funOnsubmit,formSubmitPostFun,isAddNew)
 						}
 					}
 				);
-				
-				submitAddEditForm(formSubmitPostFun,isAddNew);	
+					
 			} else {
+				if(priKeyVal == '' && newTer === false) {
+					var multiTxt = $('#0-201-2601'), arr = multiTxt.val().split(','), val=$('#defaultSelTerr').val();
+					if($.inArray(val, arr) == -1) {
+						arr.push(val)
+						multiTxt.val(arr.toString());
+					}
+				}
 				submitAddEditForm(formSubmitPostFun,isAddNew);	
 			}
 			
@@ -3787,10 +3809,25 @@ $(document).ready(function() {
 
 		if(v == 'fromTxtFld') { //take from login name			
 			var ln = $('#0-201-203').val();
+			//show pop up
+			if(!$(this).hasClass('havingTerr')) {
+				showUserDefinedDefaultTerritories($('#chooseExistingTer'));
+				$(this).addClass('havingTerr');
+			}
+
+			//show pop up
+			$('#defaultTerrCont').dialog(
+				{
+					title: 'Create Territory',
+					width: '250',
+					height: '250',
+
+			});
+
 			//add ln to hidden fild and txt fld
-			$('.defaultTeritoryFldValHdn, #defaultTeritoryName').val(ln);
-			if(ln !== '') 
-				$('.defaultTeritoryFldValHdn').parent().css('border', 'solid 1px white');
+			// $('.defaultTeritoryFldValHdn, #defaultTeritoryName').val(ln);
+			// if(ln !== '') 
+			// 	$('.defaultTeritoryFldValHdn').parent().css('border', 'solid 1px white');
 
 			//hide other block
 			$('#defaultTeritories').css('display', 'none');
@@ -3808,7 +3845,8 @@ $(document).ready(function() {
 				dterr.val($('#defaultSelTerr').val());
 			}
 
-			
+			//make the pop up field empty
+			$('#userDefinedTerName, #chooseExistingTer').val('');			
 			if(dterr.val() !== '')
 				$('.defaultTeritoryFldValHdn').parent().css('border', 'solid 1px white');
 		}
@@ -3821,11 +3859,34 @@ $(document).ready(function() {
 	});
 
 	//on blur of login name, show text in default teritory place
-	$('body').on('blur', '#0-201-203', function() {
-		var dterr = $('#showTeritoryName');
-		if(dterr.length > 0) {
-			dterr.text('| ' + $(this).val());
+	// $('body').on('blur', '#0-201-203', function() {
+	// 	var dterr = $('#showTeritoryName'), v=$(this).val();
+	// 	if(v.length > 6){
+	// 		tempV = v.substr(0, 6) + '...';
+	// 	}
+	// 	if(dterr.length > 0) {
+	// 		dterr.text(tempV).attr('title', v);
+	// 	}
+	// 	$('#0-201-357').val(v);
+	// });
+
+	//user defined teritory name
+	$('body').on('click', '#selectedUserDefinedTer', function() {
+		var n = $('#userDefinedTerName'), v = n.val();
+		if(v.length == 0 ) {
+			alert('Fields marked with star cannot be empty');
+			return;
 		}
+		//show name selected to user
+		var dterr = $('#showTeritoryName'), tempV=v;
+		if(v.length > 6){
+			tempV = v.substr(0, 6) + '...';
+		}
+		if(dterr.length > 0) {
+			dterr.text(' - '+ tempV).attr('title', v);
+		}
+		$('#0-201-357').val(v); //add to hidden field
+		$('#defaultTerrCont').dialog('close');
 	});
 
 	//end of document ready
@@ -3909,24 +3970,61 @@ function validateThreeDigitMonth(m) {
 
 
 //function creates default territories user input
-function createDefaultTeritory(target, className, id) {
-	var c = '<div>'; //this is main container for below elements
-	//create radio btns with container
-	c += '<table style="text-align:right;font-weight:normal;"><tr><td><input type="radio" value="fromTxtFld" name="defaultTeritory" class="chooseDefaultTeritory inputFieldClass" /></td><td style="text-align:left;">Create my teritory </td><td id="showTeritoryName" style="font-size: 12px; color: grey;" ></td></tr><tr><td><input type="radio" value="frmCmbo" name="defaultTeritory" class="chooseDefaultTeritory inputFieldClass" /></td><td style="text-align:left;">Use existing teritory </td><td></td></tr></table>';
+function createDefaultTeritory(target, className, id, fullData) {
 	
-	//create form with one text field
-	 c += '<p> <div id="defaultTeritories" style="display:none;"></div></p></div>';
+	//this is add case
+	var c = '',selVal='';
+	if(priKeyVal === '') {
+		c += '<div>'; //this is main container for below elements
+		//create radio btns with container
+		c += '<table style="text-align:right;font-weight:normal;"><tr><td><div id="defaultTerrCont" style="text-align:left;display:none;width:250px;height:150px;background-color:white;"><p>Territory Name<span style="color:red;">*</span></p><input typ="text" id="userDefinedTerName" /><p>Parent Teritory</p><select id="chooseExistingTer"></select><input type="button" value="Ok" id="selectedUserDefinedTer" style="display:block;margin:auto;" class="twitter-btn-warning" /></div><input type="radio" value="fromTxtFld" name="defaultTeritory" class="chooseDefaultTeritory inputFieldClass" id="createDefTer" /></td><td style="text-align:left;"><label for="createDefTer" style="float:left;">Create my teritory </label> <span id="showTeritoryName" style="color:gray;font-size:12px;float:left;width:80px;height:20px;overflow:hidden;"></span></td><td  style="font-size: 12px; color: grey;" ></td></tr><tr><td><input type="radio" value="frmCmbo" name="defaultTeritory" class="chooseDefaultTeritory inputFieldClass" id="showDefTer" /></td><td style="text-align:left;"><label for="showDefTer">Use existing teritory</label> </td><td></td></tr></table>';
+		//create form with one text field
+		c += '<p> <div id="defaultTeritories" style="display:none;"></div></p></div>';
+	} else { //this is edit case
+		//get the teritory obj
+		var ter = false, cnt=0;
+		$.each(fullData['TopPanel'], function(k, v) {
+			$.each(v['dataColumn'], function(k1, v1) {
+				if(v1 == '0-201-2601-multi') {
+					ter = v['dataColumn'][12];
+					//because i need one more col value i.e default teritory val,when i get that i will break;
+					cnt++; 
+				}	
+				if(v1 == '0-201-357'){
+					selVal = v['dataColumn'][6];
+					cnt++;
+				}
+				if(cnt == 2) {
+					return;
+				}
+			}); 			
+		});
+		c += '<p> <div id="defaultTeritories"><select class="inputFieldClassDrop" id="selected-teritory">';
+		var opt = '', tmpOpt, tempVal;
+		if(ter !== false) {
+			ter = ter.split('~)');
+			$.each(ter,function(k,v) {
+				if(v.indexOf('--') != -1) {
+					tmpOpt = v.split('--');
+					tempVal = tmpOpt[0];
+					opt += '<option value="'+tempVal+'">'+tmpOpt[1]+'</option>';
+				}
+			});
+		}
 
-	 c += '<input type="hidden" id ="'+id+'" name="'+id+'" class="defaultTeritoryFldValHdn" />';
+		c += opt + '</select></div></p>';
+	}
+	c += '<input type="hidden" id ="'+id+'" name="'+id+'" class="defaultTeritoryFldValHdn" value="'+selVal+'"/>';
 	
 	//finally add it to td
 	target.innerHTML = c; 
+	$('#selected-teritory').val(selVal);
 }
 
 //this shows default teritories
 function showDefaultTerritories() {
 	
-	var fldVal= "", elemId='defaultSelTerr';
+	var fldVal= "", elemId = 'defaultSelTerr';
 	fldObj=CreateSelectBox(document.getElementById('defaultTeritories'), "inputFieldClassDrop", elemId, fldVal);
 						var dispVal="";
 						
@@ -3995,6 +4093,30 @@ function showDefaultTerritories() {
 						// makeComboSearchable(dispVal,false,'','dropDown-terr');										
 						// $(".inputFieldClassDrop").combobox();						
 						// if(nullableFld=="0")mandatoryFldElem.push('combo_'+elemId);
+
+}
+
+
+function showUserDefinedDefaultTerritories(targetId) {
+	//L_cmb_quick_add.style.width='100px';
+	var terrUrl=zcServletPrefix+"/custom/JSON/system/territoriesInSession.htm";
+	$.ajax(
+	{
+		type: "GET",
+		url:terrUrl,
+		dataType: "json",
+		async:false,
+		success: function (data)
+		{   
+			var ter = data['allTerrs'];
+			$.each(ter, function(k,v) {
+				targetId.append('<option value="'+v['terrId']+'">'+v['territories']+'</option>');
+			});
+		}, 
+		error: function(resp) {
+			console.log(resp);
+		}
+	});
 
 }
 

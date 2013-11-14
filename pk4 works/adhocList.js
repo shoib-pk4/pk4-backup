@@ -700,7 +700,7 @@ function listPageMenuItems(data) {
 	var srchBoxDispTxt='Search for '+data.EntityName;
 	
 	// //entity list id
-	// var entityListId = (data.EntityList_Id !== undefined)?data.EntityList_Id:0;
+	var entityListId = (data.EntityList_Id !== undefined)?data.EntityList_Id:0;
 
 	topMenuDiv.innerHTML+='<li style="width:390px;" class="filtersLi"><div class="singleFilterCont" id="singleFilterCont"><table for="'+subMnuItmId+'topMenuDiv"></table><input type="button" value="" title="Go Quick-filte" for="'+subMnuItmId+'topMenuDiv" id="singleFilterSub" style="float:right;padding:2px 3px 3px 3px;" class="listPageButtons" entityListId="'+entityListId+'" /></div></li><li class="listPageButtons addEditMorePopUpFilters" id="filterTab"  onclick="showFilterPopUp('+entityListId+')" title="Add more Quick-filter conditions">More<div class="addEditMorePopUpFiltersState" style="display:none;"></div></li><li style="width:140px;"><input type="text" class="searchBox" id="'+subMnuItmId+'searchTxt"  name="'+subMnuItmId+'searchTxt" style="margin: 0px;width:120px;" value="'+srchBoxDispTxt+'" onfocus="if(this.value==\''+srchBoxDispTxt+'\')this.value=\'\'" onblur="if(this.value==\'\'){this.value=\''+srchBoxDispTxt+'\'}" onkeypress="{var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==13&&this.value!=\'\')retrieveListData(\'search\',this.value);}"><img  id="'+subMnuItmId+'searchImg" src="/atCRM/images/JSON/close_gray.png" style="z-index: 1; position: absolute; margin-left: -12px;padding: 7px 0 0 0;cursor:pointer;visibility:hidden" onclick="javascript:retrieveListData(\'search\',\'\',\''+srchBoxDispTxt+'\');" title="Clear Search"></li>';
 

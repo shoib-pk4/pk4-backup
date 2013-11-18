@@ -5,9 +5,9 @@ var container_json;
 var data_json;
 var reptId = 0;
 var data_view_id_string;
+var adhoccnt_param_glb='';
 
 function handleCommonList(data) {
-
 	container_json = data;
 	if (reptId == 0) reptId = container_json.report_id;
 	closeLoadingDiv();	
@@ -21,6 +21,7 @@ function handleCommonList(data) {
 	}
 	var field=getParameterValue(pagUrl,'field');
 	var userEnt=getParameterValue(pagUrl,'userEnt');
+	adhoccnt_param_glb = '&userEnt='+userEnt+'&field='+field+'&c=1'; //used to send params for adhoclistcount.htm needed
 	if(!document.getElementById(subMnuItmId+'-reportId'))CreateHIDDEN(adListDiv, '', subMnuItmId+'-reportId',reportId); 
 	else document.getElementById(subMnuItmId+'-reportId').value = reportId;
 	if(!document.getElementById(subMnuItmId+'-reportField'))CreateHIDDEN(adListDiv, '', subMnuItmId+'-reportField',field); 
@@ -43,7 +44,7 @@ function handleCommonList(data) {
 		var listTitleDiv=CreateDIV(listTitleTd,'title-div',subMnuItmId+"-lstHdr",'','100%');
 		var listDescDiv=CreateDIV(listTitleTd,'grayTxt',subMnuItmId+'-desc');
 		currEntt = data.EntityName;
-		fillViewsInMenu("",data);
+		
 
 		//Create area for page top menu items
 		var topMenuTableTD=CreateTD(listTitleTr);
@@ -69,13 +70,15 @@ function handleCommonList(data) {
 	
 		listPageMenuItems(data);
 
+		openLoadingDiv();
+		fillViewsInMenu("",data); //shoib: moved from above to bottom, otherwise causing error
+		
 		// Get the actual data
 		if (data.addl_options == "anyList") {
 			retrieveListData(data.addl_options,data.report_id);
 		}
 		
 	} else {
-		
 		document.getElementById(subMnuItmId+"-adList").style.display="block";
 		if(reportId!=document.getElementById(subMnuItmId+'-reportId') || document.getElementById(subMnuItmId+'-reportField') != field || document.getElementById(subMnuItmId+'-reportUserEnt') != userEnt) {
 			retrieveListData();
@@ -94,34 +97,54 @@ function fillViewsInMenu(action,data) {
 	if (container_json.addl_options != 'anyList') {
 		var url=zcServletPrefix+"/custom/JSON/list/viewsForEntity.htm?entityName="+currEntt;
 		var optns="";
-		$.getJSON(url, function(doc) {
-				var viewsList=doc.views;
+		 // $.getJSON(url, function(doc) { //shoib: commented taking from container.htm
+				var viewsList= (data.views !== undefined)?data.views:[];
 				var orgOpt=0;
 				var nonorgOpt=0;
 				var myOpt=0;
+				var curViewId = data.curr_view;
+				var myView = '', sharedView='', defaultView='';
+
 				for (var i=0; i<viewsList.length; i++) {
 					var viewId=viewsList[i].viewId;
 					var forOrg=viewsList[i].forOrg;
 					var forUser=viewsList[i].forUser;
 					var crtdUser=viewsList[i].crtdUser;
 					var adQuery=viewsList[i].query;
-					if(viewId == reptId) var sltd="selected";
-					else var sltd="";
-					if(forUser == session_login) {	
-						if(myOpt==0) optns+='<optgroup label="My Data Views">';
-						myOpt++;
-						optns += "<option value='"+viewId+"--"+crtdUser+"--"+adQuery+"' "+sltd+">" + viewsList[i].viewName + "</option>";
-					} else if(forOrg) {	
-						if(nonorgOpt==0)optns+='<optgroup label="Shared Data Views">';nonorgOpt++;
-						if(crtdUser==session_login)
-							optns+="<option value='"+viewId+"--"+crtdUser+"--"+adQuery+"' "+sltd+" style='color:green'>"+viewsList[i].viewName+"</option>";
-						else
-							optns+="<option value='"+viewId+"--"+crtdUser+"--"+adQuery+"' "+sltd+" style='color:#4e4e4e'>"+viewsList[i].viewName+"</option>";
+					if(viewId == reptId){
+						var sltd="selected";
+					}
+					else {
+						var sltd="";
+					}
+					
+					//this is to make focus color on option of viewing id
+					var isFocus = '';
+					if(curViewId == viewId) {
+						isFocus = 'list-view-focused';
 					} else {
-						if(orgOpt==0)optns+='<optgroup label="Default Data Views">';orgOpt++;
-						optns+="<option value='"+viewId+"--"+crtdUser+"--"+adQuery+"' "+sltd+">"+viewsList[i].viewName+"</option>";
+						isFocus = '';
+					}
+
+
+					if(forUser == session_login) {	
+						if(myOpt==0) myView+='<optgroup label="My Data Views">';
+						myOpt++;
+						myView += "<option class='"+isFocus+"' value='"+viewId+"--"+crtdUser+"--"+adQuery+"' "+sltd+">" + viewsList[i].viewName + "</option>";
+					} else if(forOrg) {	
+						if(nonorgOpt==0)sharedView+='<optgroup label="Shared Data Views">';nonorgOpt++;
+						if(crtdUser==session_login)
+							sharedView+="<option class='"+isFocus+"' value='"+viewId+"--"+crtdUser+"--"+adQuery+"' "+sltd+" style='color:green'>"+viewsList[i].viewName+"</option>";
+						else
+							sharedView+="<option class='"+isFocus+"' value='"+viewId+"--"+crtdUser+"--"+adQuery+"' "+sltd+" style='color:#4e4e4e'>"+viewsList[i].viewName+"</option>";
+					} else {
+						if(orgOpt==0)defaultView+='<optgroup label="Default Data Views">';orgOpt++;
+						defaultView+="<option class='"+isFocus+"' value='"+viewId+"--"+crtdUser+"--"+adQuery+"' "+sltd+">"+viewsList[i].viewName+"</option>";
 					}
 				}
+
+				optns += myView + sharedView + defaultView;
+
 				if(reptId4MnuItm){
 					elem.innerHTML='<select id="'+subMnuItmId+'-Title" class="title-select_wtDfltCrs" style="padding-right:55px;display:none !important;">'+optns+'</select><label id="'+subMnuItmId+'-dataCount" class="descTxt"></label><label id="'+subMnuItmId+'-byTypeStage" class="altrTitleLabel"></label><div id="'+subMnuItmId+'-titleLinks" style="position:;margin-top:-10px"></div>';
 					$('#'+subMnuItmId+'-Title').each(function() {
@@ -155,14 +178,14 @@ function fillViewsInMenu(action,data) {
 				}
 				retrieveListData(action);
 				populateTitleLinks();
-		})
-		.fail(function() { 
-			alert("Error getting list of Data Views" ); 
-			})
-		.always(function() {
+		// })
+		// .fail(function() { 
+		// 	alert("Error getting list of Data Views" ); 
+		// 	})
+		// .always(function() {
 			if(reptId4MnuItm && action!='changeView')
 				document.getElementById(subMnuItmId+'-Title').disabled = true;
-			});
+		// 	});
 	} else {
 		elem.innerHTML='<label id="'+subMnuItmId+'-Title" style="padding-right:55px"></label><label id="' + subMnuItmId + '-dataCount" class="descTxt" style="vertical-align:bottom"></label><label id="'+subMnuItmId+'-byTypeStage" class="altrTitleLabel"></label><span style="padding-right:55px" id="' + subMnuItmId + '-TitleSpan">' + container_json.PageCaption + '</span>';
 	}
@@ -187,10 +210,7 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 			var adQuery = data_view_id_string.split('--')[2];
 		}
 	}
-	
 	var url = zcServletPrefix+"/custom/JSON/list/adhocList.htm?rept_id=" + reptId;
-
-	
 	if (container_json.addl_options == 'anyList') {
 		url += '&aL=1';
 	}
@@ -300,10 +320,11 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 		$('#'+entityDiv+' .addEditMoreFilterApplied').removeClass('addEditMoreFilterApplied');
 	}	 
 
+	openLoadingDiv();
 	xhr_request = $.ajax({		
 		type: "GET",
 		url: url2call,
-		async: false,
+		// async: false,
 		success: function (data) {
 			var loginPage = data.indexOf("<title>Impel login page</title>");
 			var errorPage = data.indexOf("<title>Something wrong!</title>");
@@ -331,7 +352,25 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 				json_data_response = doc;
 				listPageData(doc);
 				listPagination(doc.PagingAmount,doc.PageNumber,doc.RowData.length,action,doc.AddUrl,doc.TableName,url2call);	
-				closeLoadingDiv();
+				
+
+				//shoib if only one row exists, then show the view of first row
+				try {
+					var _row = doc['RowData'];
+					var tbl= subMnuItmId+'-listDataTbl';
+					if( _row !== undefined && _row.length == 1) {
+						var v = $('table#'+tbl + ' .'+ tbl+'-view-0');
+						if(v.length > 0) {
+							v.trigger('click'); //got to view page
+						}
+					} else {
+						closeLoadingDiv();
+					}
+				} 
+				catch(e){
+					console.log('Failed to show view, of single row.'+ e);
+				}
+
 			}
 		},
 		error: function(response) {
@@ -471,7 +510,7 @@ function delete_adhoc_view(id)
 					}
 	});
 			
-			var urltxtMenuItem=zcServletPrefix+"/custom/JSON/system/getParentMenuItems.htm?userId="+session_login;
+	var urltxtMenuItem=zcServletPrefix+"/custom/JSON/system/getParentMenuItems.htm?userId="+session_login;
 	$.ajax({
 			type: "GET",		
 			url:urltxtMenuItem,
@@ -695,6 +734,7 @@ function listPageMenuItems(data) {
 	//Create tabs at the top the list page
 	var page_topMenu=data.page_topMenu;
 	var topMenuDiv=document.getElementById(subMnuItmId+'topMenuDiv');
+	$('#'+subMnuItmId+'topMenuDiv').addClass('list-menu-ul');
 
 	//Text box for search	
 	var srchBoxDispTxt='Search for '+data.EntityName;
@@ -702,10 +742,10 @@ function listPageMenuItems(data) {
 	// //entity list id
 	var entityListId = (data.EntityList_Id !== undefined)?data.EntityList_Id:0;
 
-	topMenuDiv.innerHTML+='<li style="width:390px;" class="filtersLi"><div class="singleFilterCont" id="singleFilterCont"><table for="'+subMnuItmId+'topMenuDiv"></table><input type="button" value="" title="Go Quick-filte" for="'+subMnuItmId+'topMenuDiv" id="singleFilterSub" style="float:right;padding:2px 3px 3px 3px;" class="listPageButtons" entityListId="'+entityListId+'" /></div></li><li class="listPageButtons addEditMorePopUpFilters" id="filterTab"  onclick="showFilterPopUp('+entityListId+')" title="Add more Quick-filter conditions">More<div class="addEditMorePopUpFiltersState" style="display:none;"></div></li><li style="width:140px;"><input type="text" class="searchBox" id="'+subMnuItmId+'searchTxt"  name="'+subMnuItmId+'searchTxt" style="margin: 0px;width:120px;" value="'+srchBoxDispTxt+'" onfocus="if(this.value==\''+srchBoxDispTxt+'\')this.value=\'\'" onblur="if(this.value==\'\'){this.value=\''+srchBoxDispTxt+'\'}" onkeypress="{var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==13&&this.value!=\'\')retrieveListData(\'search\',this.value);}"><img  id="'+subMnuItmId+'searchImg" src="/atCRM/images/JSON/close_gray.png" style="z-index: 1; position: absolute; margin-left: -12px;padding: 7px 0 0 0;cursor:pointer;visibility:hidden" onclick="javascript:retrieveListData(\'search\',\'\',\''+srchBoxDispTxt+'\');" title="Clear Search"></li>';
+	topMenuDiv.innerHTML+='<li style="width:340px;" class="filtersLi list-menu-li"><div class="singleFilterCont" id="singleFilterCont"><table for="'+subMnuItmId+'topMenuDiv"></table><input type="button" value="" title="Go Quick-filte" for="'+subMnuItmId+'topMenuDiv" id="singleFilterSub" style="float:right;padding:2px 3px 3px 3px;" class="listPageButtons" entityListId="'+entityListId+'" /></div></li><li class="listPageButtons addEditMorePopUpFilters list-menu-li" id="filterTab"  onclick="showFilterPopUp('+entityListId+')" title="Add more Quick-filter conditions">More<div class="addEditMorePopUpFiltersState" style="display:none;"></div></li><li style="width:140px;" class="list-menu-li"><input type="text" class="searchBox" id="'+subMnuItmId+'searchTxt"  name="'+subMnuItmId+'searchTxt" style="margin: 0px;width:120px;" value="'+srchBoxDispTxt+'" onfocus="if(this.value==\''+srchBoxDispTxt+'\')this.value=\'\'" onblur="if(this.value==\'\'){this.value=\''+srchBoxDispTxt+'\'}" onkeypress="{var charCode = event.keyCode ? event.keyCode :event.which ? event.which : event.charCode; if (charCode==13&&this.value!=\'\')retrieveListData(\'search\',this.value);}"><img  id="'+subMnuItmId+'searchImg" src="/atCRM/images/JSON/close_gray.png" style="z-index: 1; position: absolute; margin-left: -12px;padding: 7px 0 0 0;cursor:pointer;visibility:hidden" onclick="javascript:retrieveListData(\'search\',\'\',\''+srchBoxDispTxt+'\');" title="Clear Search"></li>';
 
 	//Refresh button
-	topMenuDiv.innerHTML+="<li class=\"listPageButtons refreshButton\" onclick='retrieveListData(\"reload\");' title='Reload'>&nbsp;</li>";
+	topMenuDiv.innerHTML+="<li class=\"listPageButtons refreshButton list-menu-li\" onclick='retrieveListData(\"reload\");' title='Reload'>&nbsp;</li>";
 
 	//Create Third level menu items
 	for(var topMenu=0; topMenu<page_topMenu.length; topMenu++)
@@ -716,24 +756,70 @@ function listPageMenuItems(data) {
 		
 		if(mnuLink) {
 			var linkIsfunction=mnuLink.indexOf('javascript');
-			if(linkIsfunction==0)var topMnuAncTxt=mnuLink;
-			else var topMnuAncTxt="javascript:setUpPageParameters('"+zcServletPrefix+"/"+mnuLink+"')";
-			topMenuDiv.innerHTML+="<li class=\"listPageButtons noIcon\" onclick=\""+topMnuAncTxt+"\" title=\""+mnuDesc+"\">"+mnuName+"</li>"
+			if(linkIsfunction==0){
+				var topMnuAncTxt=mnuLink;
+			}
+			else {
+				var topMnuAncTxt="javascript:setUpPageParameters('"+zcServletPrefix+"/"+mnuLink+"')";
+			}
+			
+			topMenuDiv.innerHTML+="<li class=\"listPageButtons list-menu-btns noIcon list-menu-li\" onclick=\""+topMnuAncTxt+"\" title=\""+mnuDesc+"\">"+mnuName+"</li>"
 		}
 	}
 	if(data.AddUrl) {
 		var addUrl = data.AddUrl;
 		var addIsfunction=addUrl.indexOf('javascript');
-		if(addIsfunction==0)
+		if(addIsfunction==0){
 			var addAncTxt=addUrl;
+		}
 		else {
 			if(data.EntityName=="contacts"||data.EntityName=="accounts"||data.EntityName=="opportunities")
 			var addAncTxt="javascript:getAddDataFrmCache('"+data.AddUrl+"','"+data.EntityName+"')";
 			else{var addAncTxt="javascript:setUpPageParameters('"+addUrl+"');";}
 		}
-		topMenuDiv.innerHTML+='<li class="listPageButtons addButton" title="Add '+data.EntityName+'" onclick="'+addAncTxt+'">Add</li>'
+		topMenuDiv.innerHTML+='<li class="listPageButtons list-menu-btns addButton list-menu-li" title="Add '+data.EntityName+'" onclick="'+addAncTxt+'">Add</li>'
 	}
 	listPageToolsMenu(data,topMenuDiv);
+
+
+	//fix for button scattering, if more buttons exists
+	topMenuDiv.innerHTML += '<li class="overflow-list-btns listPageButtons"  style="position:relative;"> Functions <div class="functions-popup-cont" ></div></li>';
+}
+
+
+//check for size container and decide
+function makeListDropDown() {
+	
+	var menuUlId = subMnuItmId+'topMenuDiv';
+
+	//if already configured, then return back
+	if($('#'+menuUlId).hasClass('list-menu-drop-down-configured')) {
+		return;
+	}
+
+	var tdw = $('#'+menuUlId).parent().css('width').replace('px', '');
+	// var ulw = parseInt($('#'+menuUlId).css('width').replace('px', '')) + 10;
+	
+	//get li length
+	var ulw = 0;
+	$('#'+menuUlId + ' li').each(function() {
+		ulw += parseInt($(this).css('width').replace('px', ''));
+	});
+	ulw += 10;
+
+	//if container is bigger than parent td, then make it popup	
+	if(ulw > tdw) {
+		$('#'+menuUlId).addClass('list-menu-drop-down-configured');
+		$('.overflow-list-btns').css('display', 'inline');
+		var btns = $('.list-menu-btns');
+		btns.removeClass('listPageButtons').removeClass('addButton');
+		btns.addClass('list-btns-actv');
+		//first remove previous btns
+		$('.functions-popup-cont').children().remove();
+		//now add buttons
+		btns.appendTo('.functions-popup-cont');
+	}
+
 }
 
 function listPageToolsMenu(data,topMenuTr) {
@@ -924,7 +1010,7 @@ function listPageData(data,popupdiv,popUpWidth,popUpHeight) {
 					//Contextual menu for View
 					if(showView==true && viewUrl) {
 						var lineMenuLi=CreateLI(lineMenuUL,'lineMnuLi');	
-						var lineMnuAnc=CreateA(lineMenuLi, "lineMnuLiAnc", "", '#setUpPageParameters?viewUrl='+buildEncodedUrl(viewUrl)+'&entityDiv='+entityDiv+'&shownSubMenu='+shownSubMenu+'&sid='+(Math.random()*9), null, "View","View "+data.EntityName);
+						var lineMnuAnc=CreateA(lineMenuLi, "lineMnuLiAnc "+tblName+'-view-'+rows, "", '#setUpPageParameters?viewUrl='+buildEncodedUrl(viewUrl)+'&entityDiv='+entityDiv+'&shownSubMenu='+shownSubMenu+'&sid='+(Math.random()*9), null, "View","View "+data.EntityName);
 					}						
 					//Contextual menu for Edit
 					if(showEdit==true && editURL) {
@@ -1082,7 +1168,7 @@ function listPageData(data,popupdiv,popUpWidth,popUpHeight) {
 						//Contextual menu for View
 						if(showView==true && viewUrl) {
 							var lineMenuLi=CreateLI(lineMenuUL,'lineMnuLi');	
-							var lineMnuAnc=CreateA(lineMenuLi, "lineMnuLiAnc", "", '#setUpPageParameters?viewUrl='+buildEncodedUrl(viewUrl)+'&entityDiv='+entityDiv+'&shownSubMenu='+shownSubMenu+'&sid='+(Math.random()*9), null, "View","View "+data.EntityName);
+							var lineMnuAnc=CreateA(lineMenuLi, "lineMnuLiAnc "+tblName+'-view-'+rows, "", '#setUpPageParameters?viewUrl='+buildEncodedUrl(viewUrl)+'&entityDiv='+entityDiv+'&shownSubMenu='+shownSubMenu+'&sid='+(Math.random()*9), null, "View","View "+data.EntityName);
 						}						
 						//Contextual menu for Edit
 						if(showEdit==true && editURL) {
@@ -1278,7 +1364,7 @@ function listPagination(pagningAmt,currntPage,itemsInPage,retCount,addUrl,tableN
 				
 			}  */
 			
-			var url2call=zcServletPrefix+"/custom/JSON/list/adhocListCount.htm?rept_id="+reptId;
+			var url2call=zcServletPrefix+"/custom/JSON/list/adhocListCount.htm?rept_id="+reptId+adhoccnt_param_glb;
 			// var url2call = urlForList.replace('custom/JSON/list/adhocList.htm','custom/JSON/list/adhocListCount.htm');
 			// var url2call = urlForList.replace('custom/JSON/list/adhocList.htm','custom/JSON/list/adhocListCount.htm');
 			if(retCount=='search'||retCount=='reload') {
@@ -1290,9 +1376,9 @@ function listPagination(pagningAmt,currntPage,itemsInPage,retCount,addUrl,tableN
 			}
 			$.ajax({
 				type: "GET",
-				sync: true,
+				// sync: true,
 				dataType: "json",
-				url: url2call,
+				url: urlForList,
 				success: function (doc)
 				{				
 					adListCount = doc.NItem;
@@ -1584,7 +1670,8 @@ function drawFilterRow(cnt, toTbl, singleSelect) {
 function showColumnsForSingleSelect () {
 
 	//hit the url and get columns for entity id
-	var udm = '/atCRM/custom/metadata/eC.html?e='+$('#'+entityDiv+ ' #singleFilterSub').attr('entityListId');
+	//var udm = '/atCRM/custom/metadata/eC.html?e='+$('#'+entityDiv+ ' #singleFilterSub').attr('entityListId');
+	var udm = '/atCRM/custom/metadata/eC.html?e=' +container_json.EntityList_Id;
 	
 	//get  list of columns for particular entity
 	$.ajax({
@@ -1595,7 +1682,10 @@ function showColumnsForSingleSelect () {
 			entityColumns = data['columns']; //colsForEntity is global var
 			var dest = $('#'+entityDiv+ ' #singleFilterCont table');
 			if(dest.children().length == 0)			
-				drawFilterRow(1, dest, true);			
+				drawFilterRow(1, dest, true);		
+
+				//check for the menu size and make it drop down
+				makeListDropDown();	
 		},
 		error: function(response) {
 			console.log('Error while getgin entity columns..');
@@ -1728,7 +1818,7 @@ var rulesTriggerMappings = {
  				td.children('img').attr('alt', txtFld.val());
  				td.css('display','none');
  				txtFld.val('');
- 				$('#'+entityDiv+ ' .filtersLi').css('width', '390px');
+ 				$('#'+entityDiv+ ' .filtersLi').css('width', '340px');
  			}
  		}
  	});
@@ -1788,7 +1878,7 @@ var rulesTriggerMappings = {
  				td.children('img').attr('alt', txtFld.val());
  				td.css('display','none');
  				txtFld.val('');
- 				$('#commonPopupDiv  .filtersLi').css('width', '390px');
+ 				$('#commonPopupDiv  .filtersLi').css('width', '340px');
  			}
  		}
  	});

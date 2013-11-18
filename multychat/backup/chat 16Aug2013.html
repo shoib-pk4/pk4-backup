@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="/cssForChat/style.css">
+<link href="/cssForChat/perfect-scrollbar.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="/javascript/jquery.mousewheel.js"></script>
+<script src="/javascript/perfect-scrollbar.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+		var impelChatSckt = io.connect('http://192.168.11.11:60051');
+		var From_User='';
+		var To_User='';
+		var usernames = '';
+		var actvWidMe = []; // users list of currently chatting with.
+		var obj = {};	//  creating object of active user.
+		// on connection to server, ask for user's name with an anonymous callback
+		impelChatSckt.on('connect', function(){
+			// call the server-side function 'adduser' and send one parameter (value of the prompt)
+			From_User=prompt("what is your name?").replace(/^\s+|\s+$/g,'');
+			impelChatSckt.emit('addChatUser', {'username' :From_User} );
+			impelChatSckt.emit('usersFromImpel', {'username' :From_User} );
+		});
+		
+		//on successful connection add a button to send chat_request 
+		impelChatSckt.on('__ACK', function(){
+			connectedToImpel = true;
+			if( !$('#btnToChat').length )
+			$('body').append("<input type='button'  id='btnToChat' value='chat'  onclick='addChat()'>");
+			else $('#btnToChat').show();
+		});
+		
+		impelChatSckt.on('updateusers', function(usernames){
+			console.log(JSON.stringify(usernames));
+		});
+		
+		//client responding to chatRequest
+		impelChatSckt.on('chatReuest',function(senderName){
+			alert(senderName+" wants to chat with you");
+			doConfirm("Are you ready to chat with "+senderName, function yes() {
+					impelChatSckt.emit("chatRequestResponse", {"RequestResponse":"Ready", "To_User": senderName,"From_User":From_User});
+					if(!($('#usr_'+makeId(senderName)).length)){
+						createChatDiv(senderName);
+					}else{
+						$('#usr_'+makeId(senderName)).show();
+						if($('#usr_'+makeId(senderName)).find('.msgString').attr('disabled'))
+						enableTextArea($('#usr_'+makeId(senderName)));
+					}
+				addUsr2ActvLst(senderName);
+				}, function no(){
+					impelChatSckt.emit("chatRequestResponse", {"RequestResponse":"Busy","To_User":senderName,"From_User":From_User});
+			});
+		});
+		
+		//receiver responce status
+		impelChatSckt.on('UserLoginStatus', function(status,reciName){
+			if(status === false){
+			alert(reciName+' is currently unavailable , please try after some time ');
+			}else if(status === true){
+				addUsr2ActvLst(reciName);
+				if(!$('#usr_'+makeId(reciName)).length){
+					createChatDiv(reciName);
+				}else{
+					$('#usr_'+makeId(reciName)).show();
+					if($('#usr_'+makeId(reciName)).find('.msgString').attr('disabled'))
+					enableTextArea($('#usr_'+makeId(reciName)));
+				}
+			}
+		});
+		
+		impelChatSckt.on('chatResponse_from_sever',function(msg , userNtime){
+		console.log(" -----"+msg+"-------- "+userNtime);
+			var userNtimeArray = userNtime.split('~');
+			var sender = userNtimeArray[0];
+			var time = userNtimeArray[1];
+			var $targetDiv = $('#usr_'+makeId(sender));
+			if($targetDiv.length)
+			incomingMsg( msg, sender, time);
+			/*else{
+				var f1 = function(){createChatDiv(sender);}();
+				var f2 = function(){incomingMsg(msg, sender, time);}();
+				var xaa = [f1,f2];
+				for (i in xaa)xaa[i];
+			}*/
+		});
+		
+function incomingMsg(msg, sender, time)
+{
+var $targetDiv = $('#usr_'+makeId(sender));
+		if ( !( $targetDiv.find('.msgString').is(':focus') ) )
+				$targetDiv.css({"box-shadow":"0px 0px 10px red"});
+			console.log(sender+" -----"+msg+"-------- "+time);
+			$targetDiv.find('.content').append("<div class='client_msgWrap'><div class='glossy'><b>"+sender+" </b>: "+msg+"<br/><span class='timestamp'>"+time+"</span></div></div>");
+			$targetDiv.show('slow');
+			$targetDiv.find('.content').stop().animate({ scrollTop: $targetDiv.find('.content')[0].scrollHeight }, 100);
+			if($targetDiv.find('.msgString').attr('disabled'))
+			enableTextArea($targetDiv);			
+			/*
+			 $('#travelDetails_' + limit).removeAttr('disabled');
+        else
+            $('#travelDetails_' + limit).attr("disabled", "enabled");
+			
+			*/
+}		
+function enableTextArea($targetDiv)
+{
+	var $targetDiv2 = $targetDiv.find('.msgString');
+	$targetDiv2.removeAttr('disabled').val('');
+	$targetDiv2.attr({"style":"color:black;text-align:left;border:1px solid gray;"});
+	
+}
+		//on load of page .disabled=true;
+		$(function(){
+				/*$('.sizeC').live('click',function(e){
+					e.stopPropagation();
+					$(e.target).closest('.titleBar').click();
+				});*/
+				$(".chat_content_wrap").live('mouseenter',function(e){
+					
+					e.stopPropagation();
+					var $thisDiv =$(e.target).closest('.chat_content_wrap');	
+					var	ToUser = $thisDiv.data('to_user');
+					var clName = makeId(ToUser);
+					var hndl = "#tb_"+clName;
+					var cntid = "cnt_"+clName;
+					var wWidth = $(window).width();
+					$thisDiv.draggable({
+						handle : hndl,
+						scroll: false,
+						stop : function(eve, ui){
+								  var top = ui.offset['top'];
+								  var left = ui.offset['left'];
+								  var $cdiv = $(eve.target).closest('.chat_content_wrap');
+								  if( top < 0)
+									{	
+										$cdiv.css({"top":"2px"});
+									}
+								  if( left < 0)
+								  {
+										$cdiv.css({"left":"2px"});
+								  }
+								var cWidth = $cdiv.width();
+								var end = wWidth-cWidth;
+								if(left >= end)$cdiv.css({"left":end+"px"});
+								},
+						stack : $(".chat_content_wrap")
+					});
+				}).live('click',function(e){e.stopPropagation();});
+				$(".cClose").live('click',function(e){
+					e.stopPropagation();
+					ToUser = $(e.target).closest('.chat_content_wrap').data('to_user');
+					impelChatSckt.emit('closedChatWindow',{'RequestResponse':' Exited from chat, Please try later','To_User':ToUser,'From_User':From_User});
+					$('#usr_'+makeId(ToUser)).remove();
+					actvWidMe.pop(ToUser);
+					console.log('active users list '+JSON.stringify(actvWidMe));
+				});
+				$('.chat_content_wrap').live('mousedown',function(e){
+					ToUser = $(e.target).closest('.chat_content_wrap').data('to_user');
+					var $eTarget = $('#usr_'+makeId(ToUser));
+					$eTarget.css({"box-shadow":"0px 0px 0px gray"});
+					var zIndex = $eTarget.draggable( "option", "zIndex" , 1500 );
+						console.log(zIndex);
+				});
+				$('.sendBtn').live('click',function(e){
+					var $eTarget = $(e.target).closest('.chat_content_wrap');
+					ToUser = $eTarget.data('to_user');
+					var msg = $eTarget.find('.msgString').val();
+					msg = msg.replace(/\s{2,}/g, ' ');
+					if(msg != ' ' && msg != '')
+					{
+						if(msg.indexOf('[[dp]]' != -1))
+						{msg=msg.replace("[[dp]]","<img src='http://a0.twimg.com/profile_images/760887226/DP_twitter_icon.jpg' width='25px' height='25px'/>");}
+						if(msg.indexOf('impel' != -1))
+						{msg=msg.replace("impel","<img src='http://images04.olx.in/ui/20/54/10/1335341391_362165410_1-Pictures-of--Drive-Sales-with-Impel-CRM.png'  height='25px'/>");}
+						
+						//append message in client side
+						$eTarget.find('.content').append("<div class='client_msgWrap'><div class='glossy green'><b>Me</b> : "+msg+"<br/><span class='timestamp'>"+localTime()+"</span></div></div>");
+						$eTarget.find('.msgString').val('');
+						
+						//send msg to server[with receipient name]
+						impelChatSckt.emit("MessageFromImpeltouch", {"Test_Char":"b","Login_Name":ToUser,"chatBodyStr":msg,"timeStr":localTime()});
+					}
+					$eTarget.find('.msgString').focus();
+					$eTarget.find('.content').stop().animate({ scrollTop: $eTarget.find(".content")[0].scrollHeight }, 100);
+				});
+				$('.msgString').live('keypress',function(e){
+					var msg = $(e.target).closest('.chat_content_wrap').find('.msgString').val();
+					msg = msg.replace(/\s{2,}/g, ' ');
+					if(e.which == 13)
+					{	
+						e.preventDefault();
+						if(msg != ' ' && msg != '')
+						{	
+							$(e.target).closest('.chat_content_wrap').find('.sendBtn').click();
+						}
+					}
+				});
+				//***********************************************//
+				$('.titleBar').live('click',function(e){
+				//	$('body').append('<textarea ></textarea>').val($(e.target).closest('.chat_content_wrap').html());
+					e.stopPropagation();
+					var $cdiv = $(e.target).closest('.chat_content_wrap');
+					//$cdiv.draggable( "option", "stack", ".chat_content_wrap" );
+					$cdiv.find('.msgBdWrp').slideToggle(200);
+					setTimeout(function(){
+						$cdiv.find('.content').animate({ scrollTop: $cdiv.find(".content")[0].scrollHeight }, 255);
+					},555);
+				});
+		});
+function createChatDiv(createForUser)
+{
+//	alert($(".chat_content_wrap").length);
+	var prepareBox="<div class='chat_content_wrap' id='usr_"+makeId(createForUser)+"' data-to_user='"+createForUser+"' ><div class='titleBar' id='tb_"+makeId(createForUser)+"'><div class='msgIcon'><img src='/images/tIco.png' width='20px'/></div><div class='toUser_Name'>"+createForUser+"</div><div class='cClose' title='Close' ><img src='/images/close15.png' width='25px'/></div><div class='sizeC' title='Toggle size'><img src='/images/mnmx2.png' width='26px'/></div></div><div class='msgBdWrp'><div class='content default-skin' id='cnt_"+makeId(createForUser)+"'></div><div class='inputBar'><textarea class='msgString'></textarea><input type='button' class='sendBtn' value='send'/></div></div></div>";
+
+	$("body").append(prepareBox);
+	return true;
+}
+
+function localTime()
+{
+		var newDate = new Date();
+			  var currentTime = new Date();
+			  var hours = currentTime.getHours();
+			  var minutes = currentTime.getMinutes();
+			  var hrs12 = '';
+			  if (minutes < 10){
+					minutes = "0" + minutes;
+				}
+			  if( hours > 12)
+				hrs12 = hours % 12;
+			  else{
+				if(hours == 0)
+					hrs12 = 12;
+				else	
+					hrs12 = hours;
+			  }
+			  var currentTime = hrs12 + ":" + minutes ;
+			  if(hours > 11){
+					currentTime = currentTime + "PM";
+			  } else {
+				currentTime = currentTime + "AM";
+			  }
+
+			var month=new Array();
+			month = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+			var n = month[newDate.getMonth()];
+			var day=newDate.getDate();
+			currentTime = currentTime  + "," + " " +  n + " " + day;
+			return currentTime;
+}
+
+function addChat(){
+	var idOk = validateRcpntId();
+	if(idOk == true && To_User != '')
+	impelChatSckt.emit("MessageFromImpeltouch",{"Test_Char":"d","checkuser": To_User,"sender":From_User });
+	else addChat();
+}
+
+/*****************************************************************************/
+impelChatSckt.on('userDisconnected', function(msg, sender){disableChat(msg, sender);});
+
+/*****************************************************************************/
+function doConfirm(msg, yesFn, noFn) {
+    var confirmBox = $("#confirmBox");
+    confirmBox.find(".message").text(msg);
+    confirmBox.find(".yes,.no").unbind().click(function () {
+        confirmBox.hide();
+    });
+    confirmBox.find(".yes").click(yesFn);
+    confirmBox.find(".no").click(noFn);
+    confirmBox.show('shake',50);
+}
+/***********************************new code to be added**********************************/
+function validateRcpntId()
+{
+	To_User = prompt('Enter name with whom you want to chat with').replace(/^\s+|\s+$/g,'');
+	if ( To_User == From_User && To_User != ''){
+		alert('You have entered wrong email id, Sender and Receiver cannot be same, Please enter correct email id of whom you want to chat with.. ');
+		  return false;
+	}else return true;
+}
+
+impelChatSckt.on('exitFromChat', function(msg, sender){disableChat(msg, sender);} );
+
+function disableChat(msg, sender){
+		var $targetDiv = $('#usr_'+makeId(sender));
+		if($targetDiv.length)
+		{
+			if ( !( $targetDiv.find('.msgString').is(':focus') ) )
+					$targetDiv.css({"box-shadow":"0px 0px 10px red"});
+				//$targetDiv.find('.content').append("<div class='client_msgWrap'><div class='glossy'><span style='color:red;text-align:center;'>"+msg+"</span><br/><span class='timestamp'>"+localTime()+"</span></div></div>");
+				$targetDiv.find('.msgString').val(sender+" "+msg);
+				$targetDiv.show('slow');
+				$targetDiv.find('.content').stop().animate({ scrollTop: $targetDiv.find('.content')[0].scrollHeight }, 100);
+				$targetDiv.find('.msgString').attr({"disabled":"disabled","style":"color:firebrick;text-align:center;border:0;"});
+		}else{
+			//alert(sender+' Disconnected');
+			console.log('user '+sender+' disconnected');
+			
+		}
+		actvWidMe.pop(sender);
+		console.log('active users list '+JSON.stringify(actvWidMe));
+}
+function makeId(userName)
+{
+	return userName.replace(/[^a-zA-Z0-9]/g,'_');
+}
+
+function addUsr2ActvLst(usrNm)
+{	
+	actvWidMe.push(usrNm);
+	console.log('user '+usrNm+' added to active users list');
+	console.log('active users list '+JSON.stringify(actvWidMe));
+}
+/***********************************************************************************/
+
+</script>
+
+</head>
+<body>
+<div id="confirmBox">
+	<div class="message"></div>
+	<span class="button yes">Yes</span>
+	<span class="button no">No</span>
+</div>
+
+<!--  Following code is to display a compatibilyty message in IE-->
+<!--[if IE]>
+<div style='position:fixed;z-index:10000;top:250px;left:0px;width:100%;background:hotpink;color:black;font-weight:bold;font-size:20px;text-align:center;'>IE may show/give unexpected/inappropriate results.<br/>Please use Google Chrome or Mozilla Firefox.</div>
+<![endif]-->
+</body>
+</html>

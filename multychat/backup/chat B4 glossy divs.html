@@ -1,0 +1,182 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="/cssForChat/style.css">
+<link href="/cssForChat/perfect-scrollbar.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="/javascript/jquery.mousewheel.js"></script>
+<script src="/javascript/perfect-scrollbar.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+		var socket = io.connect('http://192.168.11.3:8080');
+		var From_User='';
+		var To_User='';
+		var usernames = '';
+		// on connection to server, ask for user's name with an anonymous callback
+		socket.on('connect', function(){
+			// call the server-side function 'adduser' and send one parameter (value of the prompt)
+			From_User=prompt("what is your name?");
+			socket.emit('adduser', {'username' :From_User} );
+			socket.emit('usersFromImpel', {'username' :From_User} );
+		});
+		
+		//on successful connection add a button to send chat_request 
+		socket.on('__ACK', function(){
+		$('#chatFooter').append("<input type='button'  id='btnToChat' value='chat' onclick='addChat()'>");
+		});
+		
+		socket.on('updateusers', function(usernames){
+			console.log(JSON.stringify(usernames));
+		});
+		
+		//client responding to chatRequest
+		socket.on('chatReuest',function(senderName){
+			alert(senderName+" wants to chat with you");
+			doConfirm("Are you ready to chat with "+senderName, function yes() {
+					socket.emit("chatRequestResponse", {"RequestResponse":"Ready","To_User": senderName,"From_User":From_User});
+					if(!($('#usr_'+senderName).length)){	
+						var prepareBox="<div class='chat_content_wrap' id='usr_"+senderName+"' data-to_user='"+senderName+"'><div class='titleBar'><div class='msgIcon'><img src='http://icons.iconarchive.com/icons/simplefly/simple-green-social-media/256/social-media-chat-icon.png' width='20px'/></div><div class='toUser_Name'>"+senderName+"</div><div class='cClose'>X</div><div class='min_max'><strong>-</strong></div></div><div class='msgBdWrp'><div class='content default-skin'></div><div class='inputBar'><textarea class='msgString'></textarea><input type='button' class='sendBtn' value=\'\'/></div></div></div>";
+						$("#chatFooter").append(prepareBox);
+						$('.content').perfectScrollbar({
+							wheelSpeed: 20,
+							wheelPropagation: false
+						});
+					}else{
+						$('#usr_'+senderName).show();
+					}
+				}, function no(){
+					socket.emit("chatRequestResponse", {"RequestResponse":"Busy","To_User":senderName,"From_User":From_User});
+			});
+		});
+		
+		//receiver responce status
+		socket.on('UserLoginStatus', function(status,reciName){
+			if(status === false){
+			alert(reciName+' is currently unavailable , please try after some time ');
+			}
+			else if(status === true){
+				if(!$('#usr_'+reciName).length){
+					var prepareBox="<div class='chat_content_wrap' id='usr_"+reciName+"' data-to_user='"+reciName+"'><div class='titleBar'><div class='msgIcon'><img src='http://icons.iconarchive.com/icons/simplefly/simple-green-social-media/256/social-media-chat-icon.png' width='20px'/></div><div class='toUser_Name'>"+reciName+"</div><div class='cClose'>X</div><div class='min_max'><strong>-</strong></div></div><div class='msgBdWrp'><div class='content default-skin'></div><div class='inputBar'><textarea class='msgString'></textarea><input type='button' class='sendBtn'/></div></div></div>";
+					$("#chatFooter").append(prepareBox);
+					$('.content').perfectScrollbar({
+							wheelSpeed: 20,
+							wheelPropagation: false
+					});
+				}else{
+					$('#usr_'+reciName).show();
+				}
+			}
+		});
+		
+		socket.on('chatResponse_from_sever',function(msg , userNtime){
+			var userNtimeArray = userNtime.split('~');
+			var userName = userNtimeArray[0];
+			var time = userNtimeArray[1];
+			console.log(userName+" -----"+msg+"-------- "+time);
+			$('#usr_'+userName).find('.content').append("<div class='client_msgWrap'><div class='servrMsg'>"+msg+"<br/><span class='timestamp'>"+time+"</span></div></div>");
+			$('#usr_'+userName).find('.msgString').focus();
+			$('#usr_'+userName).find('.content').stop().animate({ scrollTop: $('#usr_'+userName).find('.content')[0].scrollHeight }, 100);
+		});
+		
+		//on load of page
+		$(function(){				
+				$('.sendBtn').live('click',function(e){
+				//alert($(e.target).closest('.chat_content_wrap').html());
+					ToUser = $(e.target).closest('.chat_content_wrap').data('to_user');
+					var msg = $(e.target).closest('.chat_content_wrap').find('.msgString').val();
+					//alert(msg);
+					msg = msg.replace(/\s{2,}/g, ' ');
+					if(msg != ' ' && msg != '')
+					{
+						if(msg.indexOf('[[dp]]' != -1))
+						{msg=msg.replace("[[dp]]","<img src='http://a0.twimg.com/profile_images/760887226/DP_twitter_icon.jpg' width='25px' height='25px'/>");}
+						if(msg.indexOf('impel' != -1))
+						{msg=msg.replace("impel","<img src='http://images04.olx.in/ui/20/54/10/1335341391_362165410_1-Pictures-of--Drive-Sales-with-Impel-CRM.png'  height='25px'/>");}
+						//append message in client side
+						$(e.target).closest('.chat_content_wrap').find('.content').append("<div class='client_msgWrap'><div class='clientMsg'>"+msg+"</div></div>");
+						$(e.target).closest('.chat_content_wrap').find('.msgString').val('');
+						
+						//send msg to server[receipient]
+						socket.emit("MessageFromImpeltouch", {"Test_Char":"b","Login_Name":ToUser,"chatBodyStr":msg,"timeStr":''});
+					}
+					$(e.target).closest('.chat_content_wrap').find('.msgString').focus();
+					$(e.target).closest('.chat_content_wrap').find('.content').stop().animate({ scrollTop: $(e.target).closest('.chat_content_wrap').find(".content")[0].scrollHeight }, 100);
+				});
+				$('.msgString').live('keypress',function(e){
+					var msg = $(e.target).closest('.chat_content_wrap').find('.msgString').val();
+					//alert(msg);
+					msg = msg.replace(/\s{2,}/g, ' ');
+					if(e.which == 13)
+					{	e.preventDefault();
+						if(msg != ' ' && msg != '')
+						{	
+							//alert('13');
+							$(e.target).closest('.chat_content_wrap').find('.sendBtn').click();
+						}
+					}
+				});
+				//***********************************************//
+				$('.titleBar').live('click',function(e){
+				//	$('body').append('<textarea ></textarea>').val($(e.target).closest('.chat_content_wrap').html());
+					$(e.target).closest('.chat_content_wrap').find('.msgBdWrp').slideToggle(200);
+				});
+		});
+	
+function addChat(){
+	To_User = prompt('Enter name with whom you want to chat with');
+	socket.emit("MessageFromImpeltouch",{"Test_Char":"d","checkuser": To_User,"sender":From_User });
+}
+
+/*****************************************************************************/
+//Chat String to server[from sender]
+// socket.emit("MessageFromImpeltouch", {"Test_Char":"b","Login_Name":receiverName,"chatBodyStr":resp,"timeStr":timeStr});
+/*****************************************************************************/
+function doConfirm(msg, yesFn, noFn) {
+    var confirmBox = $("#confirmBox");
+    confirmBox.find(".message").text(msg);
+    confirmBox.find(".yes,.no").unbind().click(function () {
+        confirmBox.hide();
+    });
+    confirmBox.find(".yes").click(yesFn);
+    confirmBox.find(".no").click(noFn);
+    confirmBox.show();
+}
+
+
+</script>
+
+</head>
+<body>
+<div id="confirmBox">
+	<div class="message"></div>
+	<span class="button yes">Yes</span>
+	<span class="button no">No</span>
+</div>
+<div id="chatFooter">
+	<!-- <div class="chat_content_wrap">
+			<div class="titleBar">
+				<div class='msgIcon'><img src='http://icons.iconarchive.com/icons/simplefly/simple-green-social-media/256/social-media-chat-icon.png' width='20px'/></div>
+				<div class='toUser_Name'>title</div>
+				<div class='cClose'>X</div>
+				<div class='min_max'><strong>-</strong></div>
+			</div>
+			<div class='msgBdWrp'>
+				<div class="content"></div>
+				<div class="inputBar">
+					<input type="text" class='msgString'/>
+					<input type='button' class='sendBtn' value=''/>
+				</div> 
+			</div>
+        </div> 
+-->	
+</div>
+<!--
+<div id='chatDiv'  style='width:400px;height:200px;bottom:0px;right:0px;position:fixed;display:none;'>
+	<div id='chatBox'  style='float:left;height:100%;'>chatBox</div>
+	<div id='chatList' style='float:right;width:30%;height:100%;border-left:5px solid #53dfff;'>chatList</div>
+</div>
+-->
+
+</body>
+</html>

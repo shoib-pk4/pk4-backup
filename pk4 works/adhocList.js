@@ -369,6 +369,7 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 				} 
 				catch(e){
 					console.log('Failed to show view, of single row.'+ e);
+					closeLoadingDiv();
 				}
 
 			}
@@ -1374,11 +1375,12 @@ function listPagination(pagningAmt,currntPage,itemsInPage,retCount,addUrl,tableN
 				else url2call=deleteParameter (url2call,'search_str',true);
 				var prev_count = document.getElementById(subMnuItmId+'-dataCount').value;
 			}
+			//this contains hit to adhoclist.htm witha param c=1
 			$.ajax({
 				type: "GET",
 				// sync: true,
 				dataType: "json",
-				url: urlForList,
+				url: urlForList+'&c=1', 
 				success: function (doc)
 				{				
 					adListCount = doc.NItem;
@@ -1537,7 +1539,7 @@ function showFilterPopUp(entityId) {
 		var select, img, id;
 		// $('#commonPopupDiv #filterTblForm #filterTbl').append($('#'+entityDiv+' .addEditMorePopUpFiltersState').children().clone(true));
 		
-		$('#'+entityDiv+' .addEditMorePopUpFiltersState').children().appendTo('#commonPopupDiv #filterTblForm #filterTbl');
+		$('#'+entityDiv+' .addEditMorePopUpFiltersState').children().clone().appendTo('#commonPopupDiv #filterTblForm #filterTbl');
 
 			$('#commonPopupDiv #filterTblForm #filterTbl tr td').each(function() {
 				select = $(this).children('select');
@@ -1914,7 +1916,18 @@ var rulesTriggerMappings = {
 		}
 
 		//change the color of more filter
-		$('#'+entityDiv+' #filterTab').addClass('addEditMoreFilterApplied');		
+		$('#'+entityDiv+' #filterTab').addClass('addEditMoreFilterApplied');
+
+		//save form data
+		var tbl = $('#commonPopupDiv #filterTblForm #filterTbl');
+		if(tbl.length > 0 && typeof entityDiv !== 'object') {
+			var trg = $('#'+entityDiv+' .addEditMorePopUpFiltersState');
+			if(trg.length > 0) {
+				//update the state in div
+				$('#'+entityDiv+' .addEditMorePopUpFiltersState').html(tbl.children().clone(true));
+			}
+			return;
+		}		
 
 	});
 
@@ -2013,17 +2026,17 @@ var rulesTriggerMappings = {
 	});
 
 
-	$('body').on('mouseup', '.ui-state-default', function() {		
-		var tbl = $('#commonPopupDiv #filterTblForm #filterTbl');
-		if(tbl.length > 0 && typeof entityDiv !== 'object') {
-			var trg = $('#'+entityDiv+' .addEditMorePopUpFiltersState');
-			if(trg.length > 0) {
-				//update the state in div
-				$('#'+entityDiv+' .addEditMorePopUpFiltersState').html(tbl.children().clone(true));
-			}
-			return;
-		}
-	});
+	// $('body').on('mouseup', '.ui-state-default', function() {		
+	// 	var tbl = $('#commonPopupDiv #filterTblForm #filterTbl');
+	// 	if(tbl.length > 0 && typeof entityDiv !== 'object') {
+	// 		var trg = $('#'+entityDiv+' .addEditMorePopUpFiltersState');
+	// 		if(trg.length > 0) {
+	// 			//update the state in div
+	// 			$('#'+entityDiv+' .addEditMorePopUpFiltersState').html(tbl.children().clone(true));
+	// 		}
+	// 		return;
+	// 	}
+	// });
 	
 	//end of document ready
  });

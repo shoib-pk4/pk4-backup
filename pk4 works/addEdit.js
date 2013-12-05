@@ -785,31 +785,36 @@ function builtFooterListFields(data)
 		total.style.width="150px";
 		total.style.textAlign="right";
 		total.disabled=true;
-		if(data.UDMName=="custom/JSON/add/invoices")
+		var addUdmName = data.UDMName;
+		if(addUdmName=="custom/JSON/add/invoices"||addUdmName=="custom/JSON/add/purchOrders")
 		{
+			if(addUdmName=="custom/JSON/add/invoices"){var discPctId = '0-1-851'; var discAmtId = '0-1-850';}
+			else if(addUdmName=="custom/JSON/add/purchOrders"){var discPctId = '0-1-152'; var discAmtId = '0-1-102';}
 			var discTotalDiv=CreateDIV(sectionDivMain,'totalDiv','DisctotalDivId');
 			discTotalDiv.align="right";
 			discTotalDiv.style.cssFloat="right";
 			discTotalDiv.style.width="550px";
 			var discPctLbl = CreateLABEL(discTotalDiv, 'ItemLabel', '', 'Discount (%) ');
 			discPctLbl.style.display="inline";
-			var disc_pct=CreateTEXTBOX(discTotalDiv, 'inputFieldClass', '0-1-851');
+			var disc_pct=CreateTEXTBOX(discTotalDiv, 'inputFieldClass', discPctId);
 			disc_pct.setAttribute("onkeypress","return numbersonly(this,event,true,false);");
 			disc_pct.style.width="80px";
 			disc_pct.style.textAlign="right";
-			AddBlurEventListener(disc_pct,function (){calDisPctTotalPrice4Inv(document.getElementById('0-1-851').value)});
+			if(addUdmName=="custom/JSON/add/invoices") AddBlurEventListener(disc_pct,function (){calDisPctTotalPrice4Inv(document.getElementById(discPctId).value)});
+			if(addUdmName=="custom/JSON/add/purchOrders"){AddBlurEventListener(disc_pct,function (){calDisPctTotalPrice4PurchOrd($("#"+discPctId).val())});}
 			//If edit get the discount percent value and assign it to the disc pct elemt
-			if(priKey !="" && document.getElementById("0-1-851_hdn")) disc_pct.value=document.getElementById("0-1-851_hdn").value;
+			if(priKey !="" && document.getElementById(discPctId+"_hdn")) disc_pct.value=document.getElementById(discPctId+"_hdn").value;
 			var discAmtLbl=CreateLABEL(discTotalDiv, 'ItemLabel', '', ' OR Discount (Rs) ');
 			discAmtLbl.style.display="inline";
-			var disc_amt=CreateTEXTBOX(discTotalDiv, 'inputFieldClass', '0-1-850');
+			var disc_amt=CreateTEXTBOX(discTotalDiv, 'inputFieldClass', discAmtId);
 			disc_amt.setAttribute("onkeypress","return numbersonly(this,event,true,false);");
 			disc_amt.style.width="80px";
 			disc_amt.style.textAlign="right";
-			AddBlurEventListener(disc_amt,function (){calDisAmtTotalPrice4Inv(document.getElementById('0-1-850').value)});
+			if(addUdmName=="custom/JSON/add/invoices") AddBlurEventListener(disc_amt,function (){calDisAmtTotalPrice4Inv(document.getElementById(discAmtId).value)});
+			if(addUdmName=="custom/JSON/add/purchOrders"){AddBlurEventListener(disc_amt,function (){calDisAmtTotalPrice4PurchOrd($("#"+discAmtId).val())});}
 			//If edit get the discount percent value and assign it to the disc pct elemt
-			if(priKey !="" && document.getElementById("0-1-850_hdn")){
-				var discAmt = document.getElementById("0-1-850_hdn").value; discAmt=discAmt.replace(/,/g,"");discAmt=discAmt.replace(/Rs./g,"");
+			if(priKey !="" && document.getElementById(discAmtId+"_hdn")){
+				var discAmt = document.getElementById(discAmtId+"_hdn").value; discAmt=discAmt.replace(/,/g,"");discAmt=discAmt.replace(/Rs./g,"");
 				disc_amt.value=discAmt;
 			}
 		}
@@ -1162,13 +1167,11 @@ function createFormFields(fieldElemTd,fldData,formName,data,hideDropBox)
 		case "textBox":
 		case "Text":	if( (tblName == 'Contact' && elemId == '0-401-409' && colName == 'FirstName') || (tblName == 'Account' && elemId == '0-1-3' && colName == 'AccountName')  )
 						{
-						
 							var smartSuggestURL=zcServletPrefix+smartSuggURL;
 							fldObj=CreateTEXTBOX(fieldElemTd, "inputFieldClass", elemId, fldVal,maxLength);
 							fldObj.setAttribute("onkeyup","callAjax('smartDialog',this,event,'"+smartSuggestURL+"',this.value,'"+paramName+"','"+readNodeId+"');hideDivOnLengthZero(this);");
 							fldObj.setAttribute("onblur","hideSmartDialog(event);");
 							if(nullableFld=="0")mandatoryFldElem.push(elemId+"txt");
-							
 						}
 						else
 						{
@@ -2078,7 +2081,7 @@ function updateData(funOnsubmit,formSubmitPostFun,isAddNew)
 				);
 					
 			} else {
-				if(priKeyVal == '' && newTer === false) {
+				if(funOnsubmit == 'validateAddSBEUser' && priKeyVal == '' && newTer === false) {
 					var multiTxt = $('#0-201-2601'), arr = multiTxt.val().split(','), val=$('#defaultSelTerr').val();
 					if($.inArray(val, arr) == -1) {
 						arr.push(val)
@@ -2665,7 +2668,7 @@ function makeComboSearchable(val,searchParam,elemId,fieldType)
 			_create: function() {
 				var self = this;				
 				var select = this.element.hide();
-				var input = $("<input value='"+val+"' id='combo_"+elemId+"'  onblur='filterMe(this)' style='width:120px;'>" )  					
+				var input = $("<input value='"+val+"' id='combo_"+elemId+"'  onblur='filterMe(this)' style='width:120px;border-radius:2px 0px 0px 2px; '>" )  					
 					.insertAfter(select)
 					.autocomplete({
 						source: function(request, response,event) {
@@ -2731,7 +2734,7 @@ function makeComboSearchable(val,searchParam,elemId,fieldType)
 					})
 					.addClass("ui-widget ui-widget-content");
 					
-				$("<"+L_autoSuggElement +" id='div_"+elemId+"' style='left:-32px;width:15px;border:0px solid red;'>&nbsp;</div>")
+				$("<"+L_autoSuggElement +" id='div_"+elemId+"' style='left:-32px;width:25px;top:-6px;height:28px;border:none;border-radius:0px 2px 2px 0px;'>&nbsp;</div>")
 				.insertAfter(input)
 				.button({
 					icons: {
@@ -2746,7 +2749,7 @@ function makeComboSearchable(val,searchParam,elemId,fieldType)
 					at: "right center",
 					of: input,
 					offset: "-16.5"
-				}).css("top", "").click(function() {
+				}).click(function() {
 					
 					// close if already visible
 					if (input.autocomplete("widget").is(":visible")) {
@@ -3889,8 +3892,102 @@ $(document).ready(function() {
 		$('#defaultTerrCont').dialog('close');
 	});
 
+	//shoib for auto fill for accounts
+	$('body').on('click', '.sujjestDiv', function() {
+		var t=$(this), accFld=$('#0-501-503'), name, pkid=t.attr('id');
+		if(accFld.length == 0) {
+			return;
+		}
+		name = t.children('h5').text();
+		accFld.val(name);
+		hideSmartDialog();
+
+		//get the form details, #rept_id is the report created id
+		//rid is account id
+		$.ajax(  {
+			url: '/atCRM/custom/JSON/list/adhocList.htm?rept_id=1620&rid='+pkid,
+			// data: '',
+			// type: 'post',
+			dataType: 'JSON',
+			success: function(data) {
+				console.log(data);
+				fillAccountForm(data);
+			},
+			error: function(resp) {
+				alert('failed to get account details.');
+			}
+		}
+		);
+	});
+
+	// $('body').on('blur', '#0-501-503', function () {
+	// 	hideSmartDialog();
+	// });
+
 	//end of document ready
 });
+
+/*
+	* this will fill the columns each row contain single contact
+*/
+function fillAccountForm(data) {
+	var row = data['RowData'], eachRow, an, cd, padr1, padr2,pc, tid,pp,zp,peml,web,prntid,actid,toid,fn,ln,desig,cpp,cpeml;
+	var an_e = $('#0-501-503'), padr1_e = $('#0-501-563'), padr2_e=$('#0-501-564');
+	var pc_e = $('#0-501-565'), tid_e=$('#combo_0-301-354'), pp_e = $('#0-501-567'), pc_e=$('#0-501-566'), peml_e=$('#0-501-568'), web_e=$('#0-501-504');
+	var pid_e = $('#0-501-505'), actid_e=$('#0-501-520'), fn_e, ln_e,desig_e,cpp_e, cpeml_e;
+
+	var x=0;
+	$.each(row, function(k, v) {
+		eachRow = v['data'];
+		//get details
+		an = eachRow[0]['colTxt'];
+		cd = eachRow[1]['colTxt'];
+		padr1 = eachRow[2]['colTxt'];
+		padr2 = eachRow[3]['colTxt'];
+		pc = eachRow[4]['colTxt'];
+		tid = eachRow[5]['colTxt'];
+		pp = eachRow[6]['colTxt'];
+		zp = eachRow[7]['colTxt'];
+		peml = eachRow[8]['colTxt'];
+		web = eachRow[9]['colTxt'];
+		pid = eachRow[10]['colTxt'];
+		actid = eachRow[11]['colTxt'];
+		toid = eachRow[12]['colTxt'];
+		fn = eachRow[13]['colTxt'];
+		ln = eachRow[14]['colTxt'];
+		desig = eachRow[15]['colTxt'];
+		cpp = eachRow[16]['colTxt'];
+		cpeml = eachRow[17]['colTxt'];
+
+		//now check whether fields exists if so then add it ui
+		if(an_e.length > 0) { an_e.val(an); }
+
+		if(padr1_e.length > 0) { padr1_e.val(padr1).attr('disabled', 'disabled'); }
+		if(padr2_e.length > 0) { padr2_e.val(padr2).attr('disabled', 'disabled'); }
+		if(pc_e.length > 0) { pc_e.val(pc).attr('disabled', 'disabled');	}
+		if(tid_e.length > 0) { tid_e.val(tid).attr('disabled', 'disabled');	}
+		if(pp_e.length > 0) { pp_e.val(pp).attr('disabled', 'disabled');	}
+		if(pc_e.length > 0) { pc_e.val(pc).attr('disabled', 'disabled');	}
+		if(peml_e.length > 0) { peml_e.val(peml).attr('disabled', 'disabled');	}
+		if(web_e.length > 0) { web_e.val(web).attr('disabled', 'disabled');	}
+		if(pid_e.length > 0) { pid_e.val(pid).attr('disabled', 'disabled'); $('#0-501-505txt').attr('disabled', 'disabled'); }
+		if(actid_e.length > 0) { actid_e.val(actid).attr('disabled', 'disabled');	}
+
+		//now fill contact details
+		fn_e = $('#0-801:'+x+'-901-909');
+		ln_e = $('#0-801:'+x+'-901-911');
+		desig_e = $('#0-801:'+x+'-901-915');
+		cpp_e = $('#0-801:'+x+'-901-985');
+		cpeml_e = $('#0-801:'+x+'-901-986');
+		if(fn_e.length > 0) { fn_e.val(fn).attr('disabled', 'disabled'); }
+		if(ln_e.length > 0) { ln_e.val(ln).attr('disabled', 'disabled'); }
+		if(desig_e.length > 0) { desig_e.val(desig).attr('disabled', 'disabled'); }
+		if(cpp_e.length > 0) { cpp_e.val(cpp).attr('disabled', 'disabled'); }
+		if(cpeml_e.length > 0) { cpeml_e.val(cpeml).attr('disabled', 'disabled'); }
+
+		x++;
+	});
+}
 
 //add edit get last day of month
 function getLastDayOfMonth() {
@@ -4120,3 +4217,12 @@ function showUserDefinedDefaultTerritories(targetId) {
 
 }
 
+
+//shoib, code for filling form data automatically  on selecting of account name
+function autoFillForAcctAndCont() {
+	var acctFld = $('#0-501-503');
+	if(acctFld.length == 0) { return; } //return if now field found
+
+	//on keypress event for account field
+	acctFld.attr('onkeyup', "callAjax('smartDialog',this,event,'/atCRM/custom/JSON/smartSuggest/genericPicklist.xml?tblName=Account&pckListName=Account',this.value,'undefined','undefined');");
+}

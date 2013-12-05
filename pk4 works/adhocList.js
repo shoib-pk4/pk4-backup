@@ -262,6 +262,7 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 						break;
 
 		case "orderBy":
+						url2call = deleteParameter (url2call,'page_no',true); //remove page number
 						url2call=changeParameterValue(url2call,'order_by',paramVal,true);
 						break;	
 
@@ -324,7 +325,7 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 	xhr_request = $.ajax({		
 		type: "GET",
 		url: url2call,
-		// async: false,
+		async: false, //shoib: this fixes the sorting problem
 		success: function (data) {
 			var loginPage = data.indexOf("<title>Impel login page</title>");
 			var errorPage = data.indexOf("<title>Something wrong!</title>");
@@ -358,10 +359,22 @@ function retrieveListData(action,paramVal,DispTxt, filterParm) {
 				try {
 					var _row = doc['RowData'];
 					var tbl= subMnuItmId+'-listDataTbl';
-					if( _row !== undefined && _row.length == 1) {
+					var serch_el = $('#'+subMnuItmId+'searchTxt');
+					var serch_el_val = serch_el.val();
+					// alert( _row !== undefined);
+					// alert( _row.length == 1);
+					// alert( serch_el.length>0);
+					// alert( serch_el_val != '' );
+					// alert( serch_el_val.indexOf('Search for') == -1);
+					// alert( _row !== undefined && _row.length == 1 && serch_el.length>0 && serch_el_val != '' && serch_el_val.indexOf('Search for') == -1);
+					if( _row !== undefined && _row.length == 1 && serch_el.length>0 && serch_el_val != '' && (serch_el_val.indexOf('Search for') == -1)) {
 						var v = $('table#'+tbl + ' .'+ tbl+'-view-0');
 						if(v.length > 0) {
 							v.trigger('click'); //got to view page
+setTimeout(function() {
+closeLoadingDiv(); //if above trigger doesn't work close loading div
+}, 10000);
+
 						}
 					} else {
 						closeLoadingDiv();
@@ -847,7 +860,13 @@ function listPageToolsMenu(data,topMenuTr) {
 
 function listPageData(data,popupdiv,popUpWidth,popUpHeight) {
 	var listDataDiv=document.getElementById(subMnuItmId+'-lstTd');
-	document.getElementById(subMnuItmId+'-TitleSpan').innerHTML=data.ViewName;
+	//#shoib, fix for invalid title
+	var t=''
+	$('#'+subMnuItmId+'-Title').each(function() {
+		t = $('option:selected',this).text();	
+	});
+	
+	document.getElementById(subMnuItmId+'-TitleSpan').innerHTML=(t !== '')?t:data.ViewName;
 	document.getElementById(subMnuItmId+'-desc').innerHTML=data.ViewDesc;
 	document.getElementById(subMnuItmId+'-sortVal').value=data.OrderBy;
 	//Headers of data table
@@ -1970,6 +1989,7 @@ var rulesTriggerMappings = {
 			$(this).attr('id', 'removeAddEditFilter'); //mark current clicked button as remove
 		} else {
 			alert('No "and" condtions selected. Please atleast 1 complete row.');
+			closeLoadingDiv();
 		}		
 	});
 

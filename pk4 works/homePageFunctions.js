@@ -519,6 +519,7 @@
 	      var reqHt  = parseInt(mainHeight)/2;
 	    $("#loader_Img").offset({top:reqHt,left:reqWidth});
 	      currentRecIdsJSON =JSON.parse('{"acct_id":"","cont_id":"","state_id":"","brch_id":"","prod_id":"","prod_qty":"","rep_id":""}');
+		  currentRecIdsJSON['brch_id'] = rec_brchId;
 		  console.log("test console-"+currentRecIdsJSON["brch_id"]);
 	} 
 
@@ -536,6 +537,8 @@
 	function setUpPageParameters(uri,objId,fromMnu,subItmId,reloadFlag,listPopup,dropIndex,isCancel,recId)
 	{
 		console.log('set up page paramaters..');
+
+		openLoadingDiv();
 
 	    L_frm_lz=false;
 	    try{
@@ -653,7 +656,7 @@
 		 //  else
 		 //    $('#listAddTblContainer').css('display', 'none');   
 
-
+		 closeLoadingDiv();
 	}
 
 
@@ -783,7 +786,7 @@
 
 	function openLoadingDiv()
 	{
-		 document.getElementById('loadingDiv').style.display="block";
+	  document.getElementById('loadingDiv').style.display="block";
 	  document.getElementById('loadingDiv').innerHTML="Loading...";
 	  milisec=0;
 	  seconds=10; 
@@ -846,6 +849,7 @@
 
 	function retrieveJSONdata(uri,objId,fromMnu,add2History,reloadFlag,listPopup)
 	{  
+		openLoadingDiv();
 
 		//#shoib 
 		var dd = $('#detailDataDiv');
@@ -968,11 +972,11 @@
 		success: function (data)
 		{	
 			//entity list id, used for filter for list types
-			entityListId = 0;
-			if(data.indexOf('EntityList_Id') !== -1) {
-				var jsonObj = JSON.parse(data);
-				entityListId = (jsonObj.EntityList_Id !== undefined)?jsonObj.EntityList_Id:0;
-			}
+			// entityListId = 0;
+			// if(data.indexOf('EntityList_Id') !== -1) {
+			// 	var jsonObj = JSON.parse(data);
+			// 	entityListId = (jsonObj.EntityList_Id !== undefined)?jsonObj.EntityList_Id:0;
+			// }
 
 			xhr_request="";
 			var loginPage=data.indexOf("<title>Impel login page</title>");
@@ -1046,6 +1050,8 @@
 							else
 								CreateHIDDEN(document.getElementById('detailDataDiv'), '', 'addEdit-URL', mainUrl);
 								handleAddEditJsonData(doc);
+
+							autoFillForAcctAndCont();
 							break;
 				case "360View":
 							if(document.getElementById('360View-URL'))
@@ -1147,9 +1153,12 @@
 										
 				}
 			}
+
+			closeLoadingDiv();
 		},
 		error: function(request,status,errorThrown) 
 		{
+			closeLoadingDiv();
 		}
 		});		
 		callAsync=true;
